@@ -11,5 +11,6 @@ namespace FvpWebApp.Models
         public string VatCode { get; set; }
         public decimal VatValue { get; set; }
         public decimal VatAmount { get; set; }
+        public string VatTags { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BIWebApi.Models;
 
 namespace FvpWebApp.Models
 {
@@ -11,7 +13,6 @@ namespace FvpWebApp.Models
         public int DocumentId { get; set; }
         public int SourceId { get; set; }
         public int ExternalId { get; set; }
-        public int ContractorId { get; set; }
         public string DocumentNumber { get; set; }
         public string DocumentSymbol { get; set; }
         public DateTime SaleDate { get; set; }
@@ -19,7 +20,20 @@ namespace FvpWebApp.Models
         public decimal Net { get; set; }
         public decimal Gross { get; set; }
         public decimal Vat { get; set; }
-        public bool Valid { get; set; }
+        public bool DocumentValid { get; set; }
+        public string DocContractorId { get; set; }
+        public string DocContractorName { get; set; }
+        public string DocContractorVatCode { get; set; }
+        public string DocContractorCity { get; set; }
+        public string DocContractorPostCode { get; set; }
+        public string DocContractorCountryCode { get; set; }
+        public string DocContractorStreetAndNumber { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string UpdatedBy { get; set; }
+        public ICollection<DocumentVat> DocumentVats { get; set; }
+        public ICollection<Contractor> Contractors { get; set; }
+        public ICollection<Source> Sources { get; set; }
 
     }
 }
