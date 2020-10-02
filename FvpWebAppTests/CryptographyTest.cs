@@ -13,7 +13,9 @@ namespace FvpWebAppTests
 
             var password = "password";
             var encrypted = cryptography.Encrypt(password);
+            //Console.WriteLine(encrypted);
             var decrypted = cryptography.Decrypt(encrypted);
+            //Console.WriteLine(decrypted);
             Assert.Equal(password, decrypted);
         }
     }
