@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FvpWebApp.Models;
 
 namespace BIWebApi.Models
 {
@@ -19,6 +21,7 @@ namespace BIWebApi.Models
         public string StreetAndNumber { get; set; }
         public bool ContractorValid { get; set; }
         public DateTime? CheckDate { get; set; }
+        public ICollection<Document> Documents { get; set; }
 
     }
 }

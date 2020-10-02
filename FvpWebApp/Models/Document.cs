@@ -32,8 +32,6 @@ namespace FvpWebApp.Models
         public DateTime? UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
         public ICollection<DocumentVat> DocumentVats { get; set; }
-        public ICollection<Contractor> Contractors { get; set; }
-        public ICollection<Source> Sources { get; set; }
 
     }
 }

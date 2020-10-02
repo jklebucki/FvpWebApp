@@ -16,7 +16,6 @@ namespace FvpWebApp.Models
         public string DbName { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public ICollection<Target> Targets { get; set; }
-
+        public ICollection<Document> Documents { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,5 +14,6 @@ namespace FvpWebApp.Models
         public string DatabaseAddress { get; set; }
         public string DatabaseUsername { get; set; }
         public string DatabasePassword { get; set; }
+        public ICollection<Source> Sources { get; set; }
     }
 }
