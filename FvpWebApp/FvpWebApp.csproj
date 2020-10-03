@@ -16,4 +16,8 @@
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FvpWebAppModels\FvpWebAppModels.csproj" />
+  </ItemGroup>
+
 </Project>

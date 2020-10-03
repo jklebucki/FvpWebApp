@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using FvpWebApp.Models;
 
-namespace BIWebApi.Models
+namespace FvpWebAppModels.Models
 {
     [Table("Contractors")]
     public class Contractor

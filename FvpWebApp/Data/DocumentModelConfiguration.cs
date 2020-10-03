@@ -1,4 +1,4 @@
-using FvpWebApp.Models;
+using FvpWebAppModels.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

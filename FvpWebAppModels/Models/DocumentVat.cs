@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FvpWebApp.Models
+namespace FvpWebAppModels.Models
 {
     [Table("DocumentVats")]
     public class DocumentVat

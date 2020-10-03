@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using FvpWebApp.Models;
+using FvpWebAppModels.Models;
 
 namespace FvpWebApp.Services.Interfaces
 {

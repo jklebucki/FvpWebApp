@@ -1,4 +1,4 @@
-namespace FvpWebApp.Models
+namespace FvpWebAppModels.Models
 {
     public class ContractorErp
     {
