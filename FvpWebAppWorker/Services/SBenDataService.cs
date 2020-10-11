@@ -12,7 +12,7 @@ namespace FvpWebAppWorker.Services
 {
     public class SBenDataService : ISourceDataService
     {
-        public async Task<List<Document>> GetDocuments(Source source)
+        public async Task<List<Document>> GetDocuments(Source source, TaskTicket ticket)
         {
             List<Document> documents = new List<Document>();
             string sqlCommandText = "";
