@@ -4,8 +4,17 @@
    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
-   
-   
+       {
+           "name": ".NET Core Launch (Worker)",
+           "type": "coreclr",
+           "request": "launch",
+           "preLaunchTask": "buildWorker",
+           "program": "${workspaceFolder}/FvpWebAppWorker/bin/Debug/netcoreapp3.1/FvpWebAppWorker.dll",
+           "args": [],
+           "cwd": "${workspaceFolder}/FvpWebAppWorker",
+           "stopAtEntry": false,
+           "console": "internalConsole"
+       },
         {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",

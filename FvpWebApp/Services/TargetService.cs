@@ -33,15 +33,15 @@ namespace FvpWebApp.Services
         }
         public async Task<Target> GetTarget(int targetId)
         {
-            throw new System.NotImplementedException();
+            return await Task.FromResult<Target>(new Target());
         }
         public async Task UpdateTarget(Target target)
         {
-            throw new System.NotImplementedException();
+            await Task.CompletedTask;
         }
         public async Task RemoveTarget(int targetId)
         {
-            throw new System.NotImplementedException();
+            await Task.CompletedTask;
         }
     }
 }
