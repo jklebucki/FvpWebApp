@@ -6,6 +6,6 @@ namespace FvpWebAppWorker.Services.Interfaces
 {
     public interface ISourceDataService
     {
-        Task<List<Document>> GetDocuments(Source source);
+        Task<List<Document>> GetDocuments(Source source, TaskTicket ticket);
     }
 }

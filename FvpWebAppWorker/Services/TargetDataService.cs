@@ -75,11 +75,9 @@ namespace FvpWebAppWorker.Services
                 }
                 catch
                 {
-                    //Message = JsonSerializer.DeserializeObject<string>(await response.Content.ReadAsStringAsync());
                     return new List<GusContractor>();
                 }
             }
-            //Message = response.ReasonPhrase;
             return new List<GusContractor>();
         }
 
@@ -93,8 +91,8 @@ namespace FvpWebAppWorker.Services
                 {
                     contractors.Add(new Contractor
                     {
-                        Name = item.Name,
-                        VatCode = item.VatNumber,
+                        Name = System.Net.WebUtility.HtmlDecode(item.Name),
+                        VatId = item.VatNumber,
                         City = item.City,
                         PostCode = item.PostalCode,
                         CountryCode = "PL",
@@ -108,7 +106,6 @@ namespace FvpWebAppWorker.Services
             {
                 Console.WriteLine(ex.Message);
             }
-
             return contractors;
         }
 

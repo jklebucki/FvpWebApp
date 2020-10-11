@@ -18,7 +18,9 @@ namespace FvpWebAppWorker.Services
             string sqlCommandText = "";
             try
             {
-                sqlCommandText = (await FileUtils.GetQueryFile("sben.sql")).Replace("dataOd", "2020-08-01").Replace("dataDo", "2020-09-30");
+                sqlCommandText = (await FileUtils.GetQueryFile("sben.sql"))
+                    .Replace("dataOd", ticket.DateFrom.ToString("yyyy-MM-dd"))
+                    .Replace("dataDo", ticket.DateTo.ToString("yyyy-MM-dd"));
             }
             catch (Exception ex)
             {

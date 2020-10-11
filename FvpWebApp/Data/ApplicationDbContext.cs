@@ -17,6 +17,8 @@ namespace FvpWebApp.Data
         public DbSet<DocumentVat> DocumentVats { get; set; }
         public DbSet<Source> Sources { get; set; }
         public DbSet<SourceType> SourceTypes { get; set; }
+        public DbSet<Target> Targets { get; set; }
+        public DbSet<TaskTicket> TaskTicketsQueue { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

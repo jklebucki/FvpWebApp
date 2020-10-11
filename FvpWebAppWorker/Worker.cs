@@ -22,7 +22,6 @@ namespace FvpWebAppWorker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //var counter = 0;
             while (!stoppingToken.IsCancellationRequested)
             {
 
@@ -48,15 +47,23 @@ namespace FvpWebAppWorker
                 SBenDataService sBenDataService = new SBenDataService();
                 try
                 {
-                    documents.AddRange(await sBenDataService.GetDocuments(new Source
-                    {
-                        SourceId = 1,
-                        Address = "192.168.42.70",
-                        DbName = "sben",
-                        Username = "sben",
-                        Password = "almarwinnet"
-                    }).ConfigureAwait(false));
-                    Console.WriteLine($"Documents count: {documents.Count}");
+                    var documentsResponse = await sBenDataService.GetDocuments(
+                        new Source
+                        {
+                            SourceId = 1,
+                            Address = "192.168.42.70",
+                            DbName = "sben",
+                            Username = "sben",
+                            Password = "almarwinnet"
+                        },
+                        new TaskTicket
+                        {
+                            DateFrom = new DateTime(2020, 10, 1),
+                            DateTo = new DateTime(2020, 10, 10),
+                        }
+                        ).ConfigureAwait(false);
+                    documents.AddRange(documentsResponse);
+                    Console.WriteLine($"Documents count: {documentsResponse.Count}");
                 }
                 catch (Exception ex)
                 {
@@ -65,15 +72,23 @@ namespace FvpWebAppWorker
 
                 try
                 {
-                    documents.AddRange(await sBenDataService.GetDocuments(new Source
-                    {
-                        SourceId = 1,
-                        Address = "192.168.45.70",
-                        DbName = "sben",
-                        Username = "sben",
-                        Password = "almarwinnet"
-                    }).ConfigureAwait(false));
-                    Console.WriteLine($"Documents count: {documents.Count}");
+                    var documentsResponse = await sBenDataService.GetDocuments(
+                        new Source
+                        {
+                            SourceId = 1,
+                            Address = "192.168.45.70",
+                            DbName = "sben",
+                            Username = "sben",
+                            Password = "almarwinnet"
+                        },
+                        new TaskTicket
+                        {
+                            DateFrom = new DateTime(2020, 10, 1),
+                            DateTo = new DateTime(2020, 10, 10),
+                        }
+                        ).ConfigureAwait(false);
+                    documents.AddRange(documentsResponse);
+                    Console.WriteLine($"Documents count: {documentsResponse.Count}");
                 }
                 catch (Exception ex)
                 {
@@ -116,7 +131,7 @@ namespace FvpWebAppWorker
                         {
                             foreach (var element in response.Contractors)
                             {
-                                Console.WriteLine($"Nazwa: {element.Name}\tNip:{element.VatCode}");
+                                Console.WriteLine($"Nazwa: {element.Name}\tNip:{element.VatId}");
                             }
                             checkedContractors.AddRange(response.Contractors);
                         }
