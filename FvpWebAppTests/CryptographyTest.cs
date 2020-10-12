@@ -1,6 +1,6 @@
+using FvpWebApp.Services;
 using System;
 using Xunit;
-using FvpWebApp.Services;
 
 namespace FvpWebAppTests
 {

@@ -1,9 +1,9 @@
-using System.Threading.Tasks;
 using FvpWebApp.Data;
-using FvpWebAppModels.Models;
 using FvpWebApp.Services.Interfaces;
+using FvpWebAppModels.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Threading.Tasks;
 
 namespace FvpWebApp.Services
 {

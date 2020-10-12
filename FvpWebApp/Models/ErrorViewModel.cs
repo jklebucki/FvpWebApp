@@ -1,5 +1,3 @@
-using System;
-
 namespace FvpWebApp.Models
 {
     public class ErrorViewModel

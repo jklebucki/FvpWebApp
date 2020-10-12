@@ -1,5 +1,5 @@
-using System;
 using FvpWebApp.Infrastructure;
+using System;
 using Xunit;
 
 namespace FvpWebAppTests

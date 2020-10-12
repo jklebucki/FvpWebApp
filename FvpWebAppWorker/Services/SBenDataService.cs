@@ -1,12 +1,11 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
 using FvpWebAppModels.Models;
 using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Services.Interfaces;
 using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Services
 {

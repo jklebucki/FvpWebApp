@@ -1,6 +1,6 @@
+using FvpWebAppModels.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FvpWebAppModels.Models;
 
 namespace FvpWebAppWorker.Services.Interfaces
 {

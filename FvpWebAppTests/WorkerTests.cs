@@ -1,7 +1,7 @@
+using FvpWebAppWorker.Infrastructure;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using FvpWebAppWorker.Infrastructure;
 using Xunit;
 
 namespace FvpWebAppTests
