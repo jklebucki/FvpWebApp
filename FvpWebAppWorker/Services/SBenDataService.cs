@@ -61,7 +61,7 @@ namespace FvpWebAppWorker.Services
                                     DocumentValid = false,
                                     DocContractorId = row["KONTRAHID"].ToString(),
                                     DocContractorName = row["KONTRAHNAZWA"].ToString(),
-                                    DocContractorVatCode = row["NIP"].ToString(),
+                                    DocContractorVatId = row["NIP"].ToString(),
                                     DocContractorCity = row["MIEJSCOWOSC"].ToString(),
                                     DocContractorPostCode = row["KODPOCZTOWY"].ToString(),
                                     DocContractorCountryCode = row["KODKRAJU"].ToString(),

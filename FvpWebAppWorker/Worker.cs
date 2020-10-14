@@ -91,7 +91,7 @@ namespace FvpWebAppWorker
                 List<Contractor> checkedContractors = new List<Contractor>();
                 TargetDataService targetDataService = new TargetDataService();
                 var documentsContractors = documents
-                    .GroupBy(g => new 
+                    .GroupBy(g => new
                     {
                         g.SourceId,
                         g.DocContractorId,
@@ -100,25 +100,26 @@ namespace FvpWebAppWorker
                         g.DocContractorCity,
                         g.DocContractorCountryCode,
                         g.DocContractorPostCode,
-                        g.DocContractorVatCode
+                        g.DocContractorVatId
                     })
-                    .Select(c => new 
+                    .Select(c => new Contractor
                     {
-                        c.Key.SourceId,
-                        c.Key.DocContractorId,
-                        c.Key.DocContractorName,
-                        c.Key.DocContractorStreetAndNumber,
-                        c.Key.DocContractorCity,
-                        c.Key.DocContractorCountryCode,
-                        c.Key.DocContractorPostCode,
-                        c.Key.DocContractorVatCode
+                        SourceId = c.Key.SourceId,
+                        ContractorSourceId = c.Key.DocContractorId,
+                        Name = c.Key.DocContractorName,
+                        StreetAndNumber = c.Key.DocContractorStreetAndNumber,
+                        City = c.Key.DocContractorCity,
+                        CountryCode = c.Key.DocContractorCountryCode,
+                        PostCode = c.Key.DocContractorPostCode,
+                        VatId = c.Key.DocContractorVatId,
+                        ContractorValid = false
                     }).ToList();
                 Console.WriteLine($"Kontrahenci do sprawdzenia: {documentsContractors.Count}");
                 try
                 {
                     foreach (var item in documentsContractors)
                     {
-                        var vatId = new String(item.DocContractorVatCode.Where(Char.IsDigit).ToArray());
+                        var vatId = new String(item.VatId.Where(Char.IsDigit).ToArray());
                         var response = await targetDataService.CheckContractorByGusApi(vatId);
                         if (response.ApiStatus == Models.ApiStatus.Valid)
                         {
@@ -130,11 +131,11 @@ namespace FvpWebAppWorker
                         }
                         else if (response.ApiStatus == Models.ApiStatus.NotValid)
                         {
-                            Console.WriteLine($"Kontrahent niepoprawny: {item.DocContractorName} Nip : {item.DocContractorVatCode}");
+                            Console.WriteLine($"Kontrahent niepoprawny: {item.Name} Nip : {item.VatId}");
                         }
                         else if (response.ApiStatus == Models.ApiStatus.Error)
                         {
-                            Console.WriteLine($"Błąd sprawdzania kontrahenta: {item.DocContractorName} Nip : {item.DocContractorVatCode}");
+                            Console.WriteLine($"Błąd sprawdzania kontrahenta: {item.Name} Nip : {item.VatId}");
                         }
                     }
                 }

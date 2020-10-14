@@ -23,7 +23,7 @@ namespace FvpWebAppModels.Models
         public bool DocumentValid { get; set; }
         public string DocContractorId { get; set; }
         public string DocContractorName { get; set; }
-        public string DocContractorVatCode { get; set; }
+        public string DocContractorVatId { get; set; }
         public string DocContractorCity { get; set; }
         public string DocContractorPostCode { get; set; }
         public string DocContractorCountryCode { get; set; }
