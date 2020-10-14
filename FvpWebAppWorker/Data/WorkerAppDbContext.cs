@@ -1,12 +1,12 @@
 ﻿using FvpWebAppModels.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using FvpWebAppWorker.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-namespace FvpWebApp.Data
+namespace FvpWebAppWorker.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class WorkerAppDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public WorkerAppDbContext(DbContextOptions<WorkerAppDbContext> options)
             : base(options)
         {
         }

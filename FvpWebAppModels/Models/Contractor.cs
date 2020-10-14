@@ -10,7 +10,7 @@ namespace FvpWebAppModels.Models
     {
         [Key]
         public int ContractorId { get; set; }
-        public int ContractorErpId { get; set; }
+        public int? ContractorErpId { get; set; }
         public int ContractorSourceId { get; set; }
         public string Name { get; set; }
         public string VatId { get; set; }

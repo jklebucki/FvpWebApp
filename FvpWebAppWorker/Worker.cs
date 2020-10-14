@@ -1,5 +1,7 @@
 using FvpWebAppModels.Models;
+using FvpWebAppWorker.Data;
 using FvpWebAppWorker.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,17 +15,19 @@ namespace FvpWebAppWorker
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-
-        public Worker(ILogger<Worker> logger)
+        private readonly IServiceProvider _provider;
+        public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
+            _provider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-
+                IServiceScope scope = _provider.CreateScope();
+                var _dbContext = scope.ServiceProvider.GetRequiredService<WorkerAppDbContext>();
                 // await Task.Run(() =>
                 // {
                 //     _logger.LogInformation($"Worker running at: {DateTimeOffset.Now} counter: {counter}");
@@ -33,28 +37,21 @@ namespace FvpWebAppWorker
                 //     }
                 //     counter++;
                 // }).ConfigureAwait(true);
-
                 // //await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
                 // if (counter > 10)
                 // {
                 //     await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
                 //     await base.StopAsync(stoppingToken).ConfigureAwait(false);
                 //     Environment.Exit(0);
-                // };
+
+                var sources = _dbContext.Sources.ToList();
 
                 List<Document> documents = new List<Document>();
                 SBenDataService sBenDataService = new SBenDataService();
                 try
                 {
                     var documentsResponse = await sBenDataService.GetDocuments(
-                        new Source
-                        {
-                            SourceId = 1,
-                            Address = "192.168.42.70",
-                            DbName = "sben",
-                            Username = "sben",
-                            Password = "almarwinnet"
-                        },
+                        sources[0],
                         new TaskTicket
                         {
                             DateFrom = new DateTime(2020, 10, 1),
@@ -72,14 +69,7 @@ namespace FvpWebAppWorker
                 try
                 {
                     var documentsResponse = await sBenDataService.GetDocuments(
-                        new Source
-                        {
-                            SourceId = 1,
-                            Address = "192.168.45.70",
-                            DbName = "sben",
-                            Username = "sben",
-                            Password = "almarwinnet"
-                        },
+                        sources[1],
                         new TaskTicket
                         {
                             DateFrom = new DateTime(2020, 10, 1),
