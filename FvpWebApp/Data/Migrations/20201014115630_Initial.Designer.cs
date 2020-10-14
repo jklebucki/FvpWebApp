@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FvpWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201014073217_Initial")]
+    [Migration("20201014115630_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,9 @@ namespace FvpWebApp.Data.Migrations
                     b.Property<string>("PostCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SourceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("StreetAndNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -59,6 +62,8 @@ namespace FvpWebApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ContractorId");
+
+                    b.HasIndex("SourceId");
 
                     b.ToTable("Contractors");
                 });
@@ -121,7 +126,7 @@ namespace FvpWebApp.Data.Migrations
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SourceId")
+                    b.Property<int?>("SourceId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -536,6 +541,13 @@ namespace FvpWebApp.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("FvpWebAppModels.Models.Contractor", b =>
+                {
+                    b.HasOne("FvpWebAppModels.Models.Source", null)
+                        .WithMany("Contractors")
+                        .HasForeignKey("SourceId");
+                });
+
             modelBuilder.Entity("FvpWebAppModels.Models.Document", b =>
                 {
                     b.HasOne("FvpWebAppModels.Models.Contractor", null)
@@ -544,9 +556,7 @@ namespace FvpWebApp.Data.Migrations
 
                     b.HasOne("FvpWebAppModels.Models.Source", null)
                         .WithMany("Documents")
-                        .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SourceId");
                 });
 
             modelBuilder.Entity("FvpWebAppModels.Models.DocumentVat", b =>

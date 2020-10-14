@@ -14,5 +14,6 @@ namespace FvpWebAppModels.Models
         public decimal NetAmount { get; set; }
         public decimal GrossAmount { get; set; }
         public string VatTags { get; set; }
+        public int? DocumentId { get; set; }
     }
 }

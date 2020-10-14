@@ -91,7 +91,7 @@ namespace FvpWebAppWorker
                 List<Contractor> checkedContractors = new List<Contractor>();
                 TargetDataService targetDataService = new TargetDataService();
                 var documentsContractors = documents
-                    .GroupBy(g => new
+                    .GroupBy(g => new 
                     {
                         g.SourceId,
                         g.DocContractorId,
@@ -102,7 +102,7 @@ namespace FvpWebAppWorker
                         g.DocContractorPostCode,
                         g.DocContractorVatCode
                     })
-                    .Select(c => new
+                    .Select(c => new 
                     {
                         c.Key.SourceId,
                         c.Key.DocContractorId,

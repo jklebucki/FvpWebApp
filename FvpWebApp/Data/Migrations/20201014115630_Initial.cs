@@ -8,28 +8,6 @@ namespace FvpWebApp.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Contractors",
-                columns: table => new
-                {
-                    ContractorId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ContractorErpId = table.Column<int>(nullable: true),
-                    ContractorSourceId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    VatId = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
-                    PostCode = table.Column<string>(nullable: true),
-                    CountryCode = table.Column<string>(nullable: true),
-                    StreetAndNumber = table.Column<string>(nullable: true),
-                    ContractorValid = table.Column<bool>(nullable: false),
-                    CheckDate = table.Column<DateTime>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Contractors", x => x.ContractorId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SourceTypes",
                 columns: table => new
                 {
@@ -81,14 +59,14 @@ namespace FvpWebApp.Data.Migrations
                 {
                     SourceId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TargetId = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Code = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true),
                     Address = table.Column<string>(nullable: true),
                     DbName = table.Column<string>(nullable: true),
                     Username = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
-                    TargetId = table.Column<int>(nullable: true)
+                    Password = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,13 +80,43 @@ namespace FvpWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Contractors",
+                columns: table => new
+                {
+                    ContractorId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ContractorErpId = table.Column<int>(nullable: true),
+                    SourceId = table.Column<int>(nullable: true),
+                    ContractorSourceId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    VatId = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    PostCode = table.Column<string>(nullable: true),
+                    CountryCode = table.Column<string>(nullable: true),
+                    StreetAndNumber = table.Column<string>(nullable: true),
+                    ContractorValid = table.Column<bool>(nullable: false),
+                    CheckDate = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contractors", x => x.ContractorId);
+                    table.ForeignKey(
+                        name: "FK_Contractors_Sources_SourceId",
+                        column: x => x.SourceId,
+                        principalTable: "Sources",
+                        principalColumn: "SourceId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Documents",
                 columns: table => new
                 {
                     DocumentId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SourceId = table.Column<int>(nullable: false),
                     ExternalId = table.Column<int>(nullable: false),
+                    SourceId = table.Column<int>(nullable: true),
+                    ContractorId = table.Column<int>(nullable: true),
                     DocumentNumber = table.Column<string>(nullable: true),
                     DocumentSymbol = table.Column<string>(nullable: true),
                     SaleDate = table.Column<DateTime>(nullable: false),
@@ -126,8 +134,7 @@ namespace FvpWebApp.Data.Migrations
                     DocContractorStreetAndNumber = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: true),
-                    UpdatedBy = table.Column<string>(nullable: true),
-                    ContractorId = table.Column<int>(nullable: true)
+                    UpdatedBy = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -143,7 +150,7 @@ namespace FvpWebApp.Data.Migrations
                         column: x => x.SourceId,
                         principalTable: "Sources",
                         principalColumn: "SourceId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -189,6 +196,11 @@ namespace FvpWebApp.Data.Migrations
                     { 1, "192.168.21.20", "CITRONEX_FK", "#sa2015!", "sa", "Citronex I - Symfonia ERP" },
                     { 2, "192.168.21.20", "CITRONEX_MOP", "#sa2015!", "sa", "Citronex MOP - Symfonia ERP" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contractors_SourceId",
+                table: "Contractors",
+                column: "SourceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_ContractorId",

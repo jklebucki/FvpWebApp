@@ -10,8 +10,9 @@ namespace FvpWebAppModels.Models
     {
         [Key]
         public int DocumentId { get; set; }
-        public int SourceId { get; set; }
         public int ExternalId { get; set; }
+        public int? SourceId { get; set; }
+        public int? ContractorId { get; set; }
         public string DocumentNumber { get; set; }
         public string DocumentSymbol { get; set; }
         public DateTime SaleDate { get; set; }

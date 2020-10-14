@@ -9,6 +9,7 @@ namespace FvpWebAppModels.Models
     {
         [Key]
         public int SourceId { get; set; }
+        public int? TargetId { get; set; }
         public string Description { get; set; }
         public string Code { get; set; }
         public string Type { get; set; }
@@ -17,5 +18,6 @@ namespace FvpWebAppModels.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public ICollection<Document> Documents { get; set; }
+        public ICollection<Contractor> Contractors { get; set; }
     }
 }
