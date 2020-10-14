@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FvpWebApp.Data.Migrations
 {
@@ -155,8 +155,8 @@ namespace FvpWebApp.Data.Migrations
                     VatCode = table.Column<string>(nullable: true),
                     VatValue = table.Column<decimal>(type: "decimal(4,2)", nullable: false),
                     VatAmount = table.Column<decimal>(type: "decimal(12,4)", nullable: false),
-                    NetAmount = table.Column<decimal>(nullable: false),
-                    GrossAmount = table.Column<decimal>(nullable: false),
+                    NetAmount = table.Column<decimal>(type: "decimal(12,4)", nullable: false),
+                    GrossAmount = table.Column<decimal>(type: "decimal(12,4)", nullable: false),
                     VatTags = table.Column<string>(nullable: true),
                     DocumentId = table.Column<int>(nullable: true)
                 },
@@ -169,6 +169,25 @@ namespace FvpWebApp.Data.Migrations
                         principalTable: "Documents",
                         principalColumn: "DocumentId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Sources",
+                columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
+                values: new object[,]
+                {
+                    { 1, "192.168.42.70", "DP1", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", null, "oracle_sben_dp", "sben" },
+                    { 2, "192.168.45.70", "DP2", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", null, "oracle_sben_dp", "sben" },
+                    { 3, "I:\\DaneBP\\MOSTKI", "BPMOSTKI", "", "Stacja Paliw BP Mostki", "", null, "bp_flat_file", "" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Targets",
+                columns: new[] { "TargetId", "DatabaseAddress", "DatabaseName", "DatabasePassword", "DatabaseUsername", "Descryption" },
+                values: new object[,]
+                {
+                    { 1, "192.168.21.20", "CITRONEX_FK", "#sa2015!", "sa", "Citronex I - Symfonia ERP" },
+                    { 2, "192.168.21.20", "CITRONEX_MOP", "#sa2015!", "sa", "Citronex MOP - Symfonia ERP" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -10,7 +10,8 @@ namespace FvpWebApp.Data
         {
             modelBuilder.Property(p => p.VatAmount).HasColumnType("decimal(12,4)");
             modelBuilder.Property(p => p.VatValue).HasColumnType("decimal(4,2)");
+            modelBuilder.Property(p => p.GrossAmount).HasColumnType("decimal(12,4)");
+            modelBuilder.Property(p => p.NetAmount).HasColumnType("decimal(12,4)");
         }
-
     }
 }

@@ -151,10 +151,10 @@ namespace FvpWebApp.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("GrossAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(12,4)");
 
                     b.Property<decimal>("NetAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(12,4)");
 
                     b.Property<decimal>("VatAmount")
                         .HasColumnType("decimal(12,4)");
@@ -211,6 +211,41 @@ namespace FvpWebApp.Data.Migrations
                     b.HasIndex("TargetId");
 
                     b.ToTable("Sources");
+
+                    b.HasData(
+                        new
+                        {
+                            SourceId = 1,
+                            Address = "192.168.42.70",
+                            Code = "DP1",
+                            DbName = "sben",
+                            Description = "Dyskont Paliwowy Słowiańska",
+                            Password = "almarwinnet",
+                            Type = "oracle_sben_dp",
+                            Username = "sben"
+                        },
+                        new
+                        {
+                            SourceId = 2,
+                            Address = "192.168.45.70",
+                            Code = "DP2",
+                            DbName = "sben",
+                            Description = "Dyskont Paliwowy Słowiańska",
+                            Password = "almarwinnet",
+                            Type = "oracle_sben_dp",
+                            Username = "sben"
+                        },
+                        new
+                        {
+                            SourceId = 3,
+                            Address = "I:\\DaneBP\\MOSTKI",
+                            Code = "BPMOSTKI",
+                            DbName = "",
+                            Description = "Stacja Paliw BP Mostki",
+                            Password = "",
+                            Type = "bp_flat_file",
+                            Username = ""
+                        });
                 });
 
             modelBuilder.Entity("FvpWebAppModels.Models.SourceType", b =>
@@ -253,6 +288,26 @@ namespace FvpWebApp.Data.Migrations
                     b.HasKey("TargetId");
 
                     b.ToTable("Targets");
+
+                    b.HasData(
+                        new
+                        {
+                            TargetId = 1,
+                            DatabaseAddress = "192.168.21.20",
+                            DatabaseName = "CITRONEX_FK",
+                            DatabasePassword = "#sa2015!",
+                            DatabaseUsername = "sa",
+                            Descryption = "Citronex I - Symfonia ERP"
+                        },
+                        new
+                        {
+                            TargetId = 2,
+                            DatabaseAddress = "192.168.21.20",
+                            DatabaseName = "CITRONEX_MOP",
+                            DatabasePassword = "#sa2015!",
+                            DatabaseUsername = "sa",
+                            Descryption = "Citronex MOP - Symfonia ERP"
+                        });
                 });
 
             modelBuilder.Entity("FvpWebAppModels.Models.TaskTicket", b =>

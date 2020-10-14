@@ -47,6 +47,8 @@ namespace FvpWebAppWorker
                 var sources = _dbContext.Sources.ToList();
 
                 List<Document> documents = new List<Document>();
+                var dateFrom = new DateTime(2020, 9, 1);
+                var dateTo = new DateTime(2020, 9, 30);
                 SBenDataService sBenDataService = new SBenDataService();
                 try
                 {
@@ -54,8 +56,9 @@ namespace FvpWebAppWorker
                         sources[0],
                         new TaskTicket
                         {
-                            DateFrom = new DateTime(2020, 10, 1),
-                            DateTo = new DateTime(2020, 10, 10),
+                            SourceId = sources[0].SourceId,
+                            DateFrom = dateFrom,
+                            DateTo = dateTo
                         }
                         ).ConfigureAwait(false);
                     documents.AddRange(documentsResponse);
@@ -72,8 +75,9 @@ namespace FvpWebAppWorker
                         sources[1],
                         new TaskTicket
                         {
-                            DateFrom = new DateTime(2020, 10, 1),
-                            DateTo = new DateTime(2020, 10, 10),
+                            SourceId = sources[1].SourceId,
+                            DateFrom = dateFrom,
+                            DateTo = dateTo
                         }
                         ).ConfigureAwait(false);
                     documents.AddRange(documentsResponse);

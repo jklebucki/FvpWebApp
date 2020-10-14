@@ -12,6 +12,5 @@ namespace FvpWebAppWorker.Models.Configuration
             modelBuilder.Property(p => p.Net).HasColumnType("decimal(12,4)");
             modelBuilder.Property(p => p.Vat).HasColumnType("decimal(12,4)");
         }
-
     }
 }

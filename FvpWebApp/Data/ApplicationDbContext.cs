@@ -23,6 +23,8 @@ namespace FvpWebApp.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new DocumentModelConfiguration());
             modelBuilder.ApplyConfiguration(new DocumentVatModelConfiguration());
+            modelBuilder.ApplyConfiguration(new SourceModelConfiguration());
+            modelBuilder.ApplyConfiguration(new TargetModelConfiguration());
         }
     }
 }
