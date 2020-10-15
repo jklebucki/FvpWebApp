@@ -25,6 +25,7 @@ namespace FvpWebAppWorker.Services
                 return new ApiResponseContractor
                 {
                     ApiStatus = ApiStatus.Error,
+                    Contractors = new List<Contractor>(),
                 };
             var gusContractors = await GetGusDataAsync(vatId, apiToken);
             if (gusContractors.Count > 0)
@@ -36,6 +37,7 @@ namespace FvpWebAppWorker.Services
             return new ApiResponseContractor
             {
                 ApiStatus = ApiStatus.NotValid,
+                Contractors = new List<Contractor>(),
             };
         }
 

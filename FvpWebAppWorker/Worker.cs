@@ -2,6 +2,7 @@ using FvpWebAppModels;
 using FvpWebAppModels.Models;
 using FvpWebAppWorker.Data;
 using FvpWebAppWorker.Infrastructure;
+using FvpWebAppWorker.Models;
 using FvpWebAppWorker.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,39 +31,55 @@ namespace FvpWebAppWorker
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                IServiceScope scope = _provider.CreateScope();
-                using (var _dbContext = scope.ServiceProvider.GetRequiredService<WorkerAppDbContext>())
+                using (IServiceScope scope = _provider.CreateScope())
                 {
-                    var taskTicket = await _dbContext.TaskTickets.FirstOrDefaultAsync(s => s.TicketStatus == TicketStatus.Added).ConfigureAwait(false);
-                    if (taskTicket != null)
+                    using (var _dbContext = scope.ServiceProvider.GetRequiredService<WorkerAppDbContext>())
                     {
-                        var sources = await _dbContext.Sources.ToListAsync().ConfigureAwait(false);
-                        List<Document> documents = new List<Document>();
-                        try
+                        var taskTicket = await _dbContext.TaskTickets.FirstOrDefaultAsync(s => s.TicketStatus == TicketStatus.Added).ConfigureAwait(false);
+                        if (taskTicket != null)
                         {
-                            documents = await ProceedDocuments(_dbContext, sources, taskTicket).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                        Console.WriteLine($"Documents: {documents.Count}");
+                            var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
 
-                        try
-                        {
-                            await ProceedContractors(_dbContext, documents).ConfigureAwait(false);
+                            List<Document> documents = new List<Document>();
+                            if (source != null)
+                                try
+                                {
+                                    switch (source.Type)
+                                    {
+                                        case "oracle_sben_dp":
+                                            documents = await ProceedSbenOracleDpDocuments(_dbContext, source, taskTicket).ConfigureAwait(false);
+                                            break;
+                                        default:
+                                            await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                            break;
+                                    }
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                }
+                            else
+                                await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                            Console.WriteLine($"Documents: {documents.Count}");
+
+                            try
+                            {
+                                if (documents.Count > 0)
+                                    await ProceedContractors(_dbContext, documents).ConfigureAwait(false);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                };
+                    };
+                }
                 await Task.Delay(5000).ConfigureAwait(false);
             }
         }
 
-        private static async Task<List<Document>> ProceedDocuments(WorkerAppDbContext _dbContext, List<Source> sources, TaskTicket taskTicket)
+        private static async Task<List<Document>> ProceedSbenOracleDpDocuments(WorkerAppDbContext _dbContext, Source source, TaskTicket taskTicket)
         {
 
             List<Document> documents = new List<Document>();
@@ -70,7 +87,6 @@ namespace FvpWebAppWorker
             await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Pending);
             try
             {
-                var source = sources.FirstOrDefault(i => i.SourceId == taskTicket.SourceId);
                 var documentsResponse = await sBenDataService.GetDocuments(source, taskTicket).ConfigureAwait(false);
                 documents.AddRange(documentsResponse);
                 var dividedDocuments = FvpWebAppUtils.DividedRows(documents, 100);
@@ -148,22 +164,23 @@ namespace FvpWebAppWorker
                             {
                                 Console.WriteLine($"Nazwa: {element.Name}\tNip:{element.VatId}");
                             }
-                            await AddContractor(_dbContext, checkedContractors, item, response);
+                            await AddContractor(_dbContext, item, response);
                         }
                         else if (response.ApiStatus == Models.ApiStatus.NotValid)
                         {
-                            await AddContractor(_dbContext, new List<Contractor>() { item }, item, response);
+                            response.Contractors.Add(item);
+                            await AddContractor(_dbContext, item, response);
                             Console.WriteLine($"Kontrahent niepoprawny: {item.Name} Nip : {item.VatId}");
                         }
                         else if (response.ApiStatus == Models.ApiStatus.Error)
                         {
-                            await AddContractor(_dbContext, new List<Contractor>() { item }, item, response);
+                            response.Contractors.Add(item);
+                            await AddContractor(_dbContext, item, response);
                             Console.WriteLine($"Błąd sprawdzania kontrahenta: {item.Name} Nip : {item.VatId}");
                         }
                     }
                     else
                         Console.WriteLine($"Kontrahent istnieje: {item.Name} Nip : {item.VatId}");
-
                 }
             }
             catch (Exception ex)
@@ -172,7 +189,7 @@ namespace FvpWebAppWorker
             }
         }
 
-        private static async Task AddContractor(WorkerAppDbContext _dbContext, List<Contractor> checkedContractors, Contractor item, Models.ApiResponseContractor response)
+        private static async Task AddContractor(WorkerAppDbContext _dbContext, Contractor item, ApiResponseContractor response)
         {
             response.Contractors.ForEach(c =>
             {
@@ -181,7 +198,6 @@ namespace FvpWebAppWorker
                 c.ContractorSourceId = item.ContractorSourceId;
                 c.Firm = item.Firm;
             });
-            checkedContractors.AddRange(response.Contractors);
             await _dbContext.AddRangeAsync(response.Contractors);
             await _dbContext.SaveChangesAsync();
         }
