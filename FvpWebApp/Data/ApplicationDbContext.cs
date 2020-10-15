@@ -15,7 +15,7 @@ namespace FvpWebApp.Data
         public DbSet<Source> Sources { get; set; }
         public DbSet<SourceType> SourceTypes { get; set; }
         public DbSet<Target> Targets { get; set; }
-        public DbSet<TaskTicket> TaskTicketsQueue { get; set; }
+        public DbSet<TaskTicket> TaskTickets { get; set; }
         public DbSet<Contractor> Contractors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +24,7 @@ namespace FvpWebApp.Data
             modelBuilder.ApplyConfiguration(new DocumentModelConfiguration());
             modelBuilder.ApplyConfiguration(new DocumentVatModelConfiguration());
             modelBuilder.ApplyConfiguration(new SourceModelConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskTicketModelConfiguration());
             modelBuilder.ApplyConfiguration(new TargetModelConfiguration());
         }
     }

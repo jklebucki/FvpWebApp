@@ -14,7 +14,7 @@ namespace FvpWebAppWorker.Services
 {
     public class TargetDataService : ITargetDataService
     {
-        private static readonly HttpClient client = new HttpClient();
+        //private static readonly HttpClient client = new HttpClient();
         private static readonly string apiUrl = "https://api.ajk-software.pl/";
         private static readonly ApiUserKey apiUserKey = new ApiUserKey { UserKey = "8317EA7B-524B-4981-BADC-EA8654851FB8" };
         public async Task<ApiResponseContractor> CheckContractorByGusApi(string vatId)
@@ -94,10 +94,16 @@ namespace FvpWebAppWorker.Services
                         Name = System.Net.WebUtility.HtmlDecode(item.Name),
                         VatId = item.VatNumber,
                         City = item.City,
-                        PostCode = item.PostalCode,
+                        PostalCode = item.PostalCode,
                         CountryCode = "PL",
-                        StreetAndNumber = item.Street,
-                        ContractorValid = true,
+                        Street = item.Street,
+                        EstateNumber = item.EstateNumber,
+                        QuartersNumber = item.QuartersNumber,
+                        Province = item.Province,
+                        Regon = item.Regon,
+                        Phone = item.Phone,
+                        Email = item.Email,
+                        ContractorStatus = FvpWebAppModels.ContractorStatus.Valid,
                         CheckDate = DateTime.Now,
                     });
                 }

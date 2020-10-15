@@ -14,7 +14,7 @@ namespace FvpWebAppWorker.Services
         public async Task<List<Document>> GetDocuments(Source source, TaskTicket ticket)
         {
             List<Document> documents = new List<Document>();
-            string sqlCommandText = "";
+            string sqlCommandText;
             try
             {
                 sqlCommandText = (await FileUtils.GetQueryFile("sben.sql"))
@@ -27,7 +27,11 @@ namespace FvpWebAppWorker.Services
                 throw ex;
             }
 
-            using (OracleConnection conn = new OracleConnection("Data Source=" + source.Address + "/XE;User ID=" + source.Username + ";Password=" + source.Password + ";Connection Timeout=9999;"))
+            using (OracleConnection conn = new OracleConnection(
+                "Data Source=" + source.Address
+                + "/XE;User ID=" + source.Username
+                + ";Password=" + source.Password
+                + ";Connection Timeout=9999;"))
             {
                 using (OracleCommand cmd = conn.CreateCommand())
                 {
@@ -58,7 +62,7 @@ namespace FvpWebAppWorker.Services
                                     Net = decimal.Parse(row["NETTO"].ToString()),
                                     Gross = decimal.Parse(row["BRUTTO"].ToString()),
                                     Vat = decimal.Parse(row["VAT"].ToString()),
-                                    DocumentValid = false,
+                                    DocumentStatus = DocumentStatus.NotChecked,
                                     DocContractorId = row["KONTRAHID"].ToString(),
                                     DocContractorName = row["KONTRAHNAZWA"].ToString(),
                                     DocContractorVatId = row["NIP"].ToString(),
@@ -66,8 +70,10 @@ namespace FvpWebAppWorker.Services
                                     DocContractorPostCode = row["KODPOCZTOWY"].ToString(),
                                     DocContractorCountryCode = row["KODKRAJU"].ToString(),
                                     DocContractorStreetAndNumber = row["ULICANR"].ToString(),
+                                    DocContractorFirm = (int)decimal.Parse(row["FIRMA"].ToString()),
                                     CreatedAt = cratedAt,
                                     DocumentVats = ParseDocumentVat(row),
+                                    TaskTicketId = ticket.TaskTicketId
                                 });
                             }
                         }

@@ -15,7 +15,7 @@ namespace FvpWebAppWorker.Data
         public DbSet<Source> Sources { get; set; }
         public DbSet<SourceType> SourceTypes { get; set; }
         public DbSet<Target> Targets { get; set; }
-        public DbSet<TaskTicket> TaskTicketsQueue { get; set; }
+        public DbSet<TaskTicket> TaskTickets { get; set; }
         public DbSet<Contractor> Contractors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -125,3 +125,11 @@ Error Number:208,State:1,Class:16
 [20:46:45 INF] HTTP POST /SourceTypes/Create responded 302 in 11.8558 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"4e1bea52-a0ae-4a4b-92a1-b691dc5d2d60","ActionName":"FvpWebApp.Controllers.SourceTypesController.Create (FvpWebApp)","RequestId":"0HM3FKOAJO0MP:00000073","SpanId":"|fa768eda-44d0974a3628b5fd.","TraceId":"fa768eda-44d0974a3628b5fd","ParentId":""}
 [20:46:45 INF] HTTP GET /SourceTypes responded 200 in 4.8229 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"72a77391-3d44-45f7-ba1a-4c23f3055e8d","ActionName":"FvpWebApp.Controllers.SourceTypesController.Index (FvpWebApp)","RequestId":"0HM3FKOAJO0MP:00000075","SpanId":"|fa768edb-44d0974a3628b5fd.","TraceId":"fa768edb-44d0974a3628b5fd","ParentId":""}
 [20:47:31 INF] HTTP GET /SourceTypes/Create responded 200 in 0.7552 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3FKOAJO0MP:00000077","SpanId":"|fa768edc-44d0974a3628b5fd.","TraceId":"fa768edc-44d0974a3628b5fd","ParentId":""}
+[10:51:35 INF] Getting the motors running... {}
+[10:51:39 INF] HTTP GET / responded 200 in 94.3309 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3GSU3BQR0N:00000001","SpanId":"|acf04d9f-45fbc6cdf3381c29.","TraceId":"acf04d9f-45fbc6cdf3381c29","ParentId":""}
+[12:10:02 INF] Getting the motors running... {}
+[12:10:04 INF] HTTP GET / responded 200 in 228.7722 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3GU9TTHDHA:00000001","SpanId":"|a2e42fb3-45bf7c460fb3b0b6.","TraceId":"a2e42fb3-45bf7c460fb3b0b6","ParentId":""}
+[13:01:11 INF] Getting the motors running... {}
+[13:01:13 INF] HTTP GET / responded 200 in 225.2506 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3GV6GIPUPL:00000001","SpanId":"|17ab13e5-4cd73d51111ada31.","TraceId":"17ab13e5-4cd73d51111ada31","ParentId":""}
+[13:01:39 INF] Getting the motors running... {}
+[13:01:41 INF] HTTP GET / responded 200 in 226.7375 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3GV6OPI9L8:00000001","SpanId":"|864cd161-4dbc246b87edb5d7.","TraceId":"864cd161-4dbc246b87edb5d7","ParentId":""}
