@@ -88,14 +88,12 @@ namespace FvpWebAppWorker
                 TargetDataService targetDataService = new TargetDataService();
                 await targetDataService.TransferDocuments(documentsResponse, taskTicket, _dbContext);
             }
-            
+
             return documentsResponse;
         }
 
         private static async Task ProceedContractors(WorkerAppDbContext _dbContext, List<Document> documents)
         {
-            List<Contractor> checkedContractors = new List<Contractor>();
-            TargetDataService targetDataService = new TargetDataService();
             var documentsContractors = documents
                 .GroupBy(g => new
                 {
@@ -123,6 +121,7 @@ namespace FvpWebAppWorker
                     Firm = (Firm)c.Key.DocContractorFirm
                 }).ToList();
             Console.WriteLine($"Kontrahenci do sprawdzenia: {documentsContractors.Count}");
+            TargetDataService targetDataService = new TargetDataService();
             try
             {
                 ContractorService contractorService = new ContractorService(_dbContext);
@@ -165,14 +164,14 @@ namespace FvpWebAppWorker
             }
         }
 
-        private static async Task AddContractor(WorkerAppDbContext _dbContext, Contractor item, ApiResponseContractor response)
+        private static async Task AddContractor(WorkerAppDbContext _dbContext, Contractor contractor, ApiResponseContractor response)
         {
             response.Contractors.ForEach(c =>
             {
-                c.SourceId = item.SourceId;
+                c.SourceId = contractor.SourceId;
                 c.GusContractorEntriesCount = response.Contractors.Count;
-                c.ContractorSourceId = item.ContractorSourceId;
-                c.Firm = item.Firm;
+                c.ContractorSourceId = contractor.ContractorSourceId;
+                c.Firm = contractor.Firm;
             });
             await _dbContext.AddRangeAsync(response.Contractors);
             await _dbContext.SaveChangesAsync();
