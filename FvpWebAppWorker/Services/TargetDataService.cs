@@ -1,6 +1,9 @@
 using FvpWebAppModels.Models;
+using FvpWebAppWorker.Data;
+using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Models;
 using FvpWebAppWorker.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,20 +17,23 @@ namespace FvpWebAppWorker.Services
 {
     public class TargetDataService : ITargetDataService
     {
-        //private static readonly HttpClient client = new HttpClient();
-        private static readonly string apiUrl = "https://api.ajk-software.pl/";
-        private static readonly ApiUserKey apiUserKey = new ApiUserKey { UserKey = "8317EA7B-524B-4981-BADC-EA8654851FB8" };
+        private readonly ApiService _apiService;
+        public TargetDataService()
+        {
+            _apiService = new ApiService();
+        }
+
         public async Task<ApiResponseContractor> CheckContractorByGusApi(string vatId)
         {
 
-            var apiToken = await ApiLogin();
+            var apiToken = await _apiService.ApiLogin();
             if (apiToken.Token == null)
                 return new ApiResponseContractor
                 {
                     ApiStatus = ApiStatus.Error,
                     Contractors = new List<Contractor>(),
                 };
-            var gusContractors = await GetGusDataAsync(vatId, apiToken);
+            var gusContractors = await _apiService.GetGusDataAsync(vatId, apiToken);
             if (gusContractors.Count > 0)
                 return new ApiResponseContractor
                 {
@@ -39,48 +45,6 @@ namespace FvpWebAppWorker.Services
                 ApiStatus = ApiStatus.NotValid,
                 Contractors = new List<Contractor>(),
             };
-        }
-
-        private async Task<ApiToken> ApiLogin()
-        {
-            {
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Accept.Clear();
-                var userKeyJson = JsonConvert.SerializeObject(apiUserKey);
-                var httpContent = new StringContent(userKeyJson, Encoding.UTF8, "application/json");
-                var stringTask = client.PostAsync($"{apiUrl}login", httpContent);
-                var response = await stringTask;
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var token = JsonConvert.DeserializeObject<ApiToken>(content);
-                    return token;
-                }
-                return null;
-            }
-        }
-
-        public async Task<List<GusContractor>> GetGusDataAsync(string vatId, ApiToken apiToken)
-        {
-            var client = new HttpClient() { DefaultRequestHeaders = { Authorization = new AuthenticationHeaderValue("Bearer", apiToken.Token) } };
-            var vatNumberJson = JsonConvert.SerializeObject(new NipRequest { Nip = vatId });
-            var httpContent = new StringContent(vatNumberJson, Encoding.UTF8, "application/json");
-            var stringTask = client.PostAsync($"{apiUrl}gusapi/data", httpContent);
-            var response = await stringTask;
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                try
-                {
-                    return JsonConvert.DeserializeObject<List<GusContractor>>(await response.Content.ReadAsStringAsync());
-                }
-                catch
-                {
-                    return new List<GusContractor>();
-                }
-            }
-            return new List<GusContractor>();
         }
 
         private List<Contractor> GusContractorsToContractors(List<GusContractor> gusContractors
@@ -132,9 +96,35 @@ namespace FvpWebAppWorker.Services
             throw new System.NotImplementedException();
         }
 
-        public Task TransferDocuments(List<Document> documents, Target target)
+        public async Task TransferDocuments(List<Document> documents, TaskTicket taskTicket, WorkerAppDbContext dbContext)
         {
-            throw new System.NotImplementedException();
+            await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Pending);
+            try
+            {
+                var dividedDocuments = FvpWebAppUtils.DividedRows(documents, 100);
+                foreach (var documentPart in dividedDocuments)
+                {
+                    await dbContext.AddRangeAsync(documentPart);
+                    await dbContext.SaveChangesAsync();
+                }
+
+                await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                Console.WriteLine($"Documents count: {documents.Count}");
+            }
+            catch (Exception ex)
+            {
+                await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public static async Task ChangeTicketStatus(WorkerAppDbContext dbContext, int ticketId, TicketStatus ticketStatus)
+        {
+            var ticket = await dbContext.TaskTickets.FirstOrDefaultAsync(f => f.TaskTicketId == ticketId);
+            ticket.TicketStatus = ticketStatus;
+            ticket.StatusChangedAt = DateTime.Now;
+            dbContext.Update(ticket);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

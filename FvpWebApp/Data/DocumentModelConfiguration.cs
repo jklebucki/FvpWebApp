@@ -11,6 +11,9 @@ namespace FvpWebApp.Data
             modelBuilder.Property(p => p.Gross).HasColumnType("decimal(12,4)");
             modelBuilder.Property(p => p.Net).HasColumnType("decimal(12,4)");
             modelBuilder.Property(p => p.Vat).HasColumnType("decimal(12,4)");
+            modelBuilder.HasIndex(p => new { p.DocumentNumber, p.SourceId })
+                        .HasName("IX_DocumentUniqueInSource")
+                        .IsUnique();
         }
 
     }

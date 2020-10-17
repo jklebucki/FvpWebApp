@@ -88,7 +88,6 @@ namespace FvpWebAppWorker.Services
 
                 };
             }
-            //var test = documents.Where(c => c.DocumentVats.Select(s => s.VatCode).ToList().Contains(new List<string> { "C", "D" }) && c.DocumentVats.Count > 1).ToList();
 
             return await Task.FromResult<List<Document>>(documents).ConfigureAwait(false);
         }

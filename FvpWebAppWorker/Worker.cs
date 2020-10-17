@@ -50,7 +50,7 @@ namespace FvpWebAppWorker
                                             documents = await ProceedSbenOracleDpDocuments(_dbContext, source, taskTicket).ConfigureAwait(false);
                                             break;
                                         default:
-                                            await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                            await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
                                             break;
                                     }
 
@@ -60,7 +60,7 @@ namespace FvpWebAppWorker
                                     Console.WriteLine(ex.Message);
                                 }
                             else
-                                await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
                             Console.WriteLine($"Documents: {documents.Count}");
 
                             try
@@ -81,39 +81,15 @@ namespace FvpWebAppWorker
 
         private static async Task<List<Document>> ProceedSbenOracleDpDocuments(WorkerAppDbContext _dbContext, Source source, TaskTicket taskTicket)
         {
-
-            List<Document> documents = new List<Document>();
             SBenDataService sBenDataService = new SBenDataService();
-            await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Pending);
-            try
+            var documentsResponse = await sBenDataService.GetDocuments(source, taskTicket).ConfigureAwait(false);
+            if (documentsResponse != null && documentsResponse.Count > 0)
             {
-                var documentsResponse = await sBenDataService.GetDocuments(source, taskTicket).ConfigureAwait(false);
-                documents.AddRange(documentsResponse);
-                var dividedDocuments = FvpWebAppUtils.DividedRows(documents, 100);
-                foreach (var documentPart in dividedDocuments)
-                {
-                    await _dbContext.AddRangeAsync(documentPart);
-                    await _dbContext.SaveChangesAsync();
-                }
-
-                await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
-                Console.WriteLine($"Documents count: {documentsResponse.Count}");
+                TargetDataService targetDataService = new TargetDataService();
+                await targetDataService.TransferDocuments(documentsResponse, taskTicket, _dbContext);
             }
-            catch (Exception ex)
-            {
-                await ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                Console.WriteLine(ex.Message);
-            }
-            return documents;
-        }
-
-        private static async Task ChangeTicketStatus(WorkerAppDbContext _dbContext, int ticketId, TicketStatus ticketStatus)
-        {
-            var ticket = await _dbContext.TaskTickets.FirstOrDefaultAsync(f => f.TaskTicketId == ticketId);
-            ticket.TicketStatus = ticketStatus;
-            ticket.StatusChangedAt = DateTime.Now;
-            _dbContext.Update(ticket);
-            await _dbContext.SaveChangesAsync();
+            
+            return documentsResponse;
         }
 
         private static async Task ProceedContractors(WorkerAppDbContext _dbContext, List<Document> documents)
