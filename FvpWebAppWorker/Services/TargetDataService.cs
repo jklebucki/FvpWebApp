@@ -4,13 +4,8 @@ using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Models;
 using FvpWebAppWorker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Services
