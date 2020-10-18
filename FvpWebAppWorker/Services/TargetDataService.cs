@@ -87,6 +87,7 @@ namespace FvpWebAppWorker.Services
             var apiToken = await _apiService.ApiLogin();
             var response = await _apiService.GetViesDataAsync(request, apiToken);
             var contractors = new List<Contractor>();
+            contractor.CheckDate = DateTime.Now;
             if (response != null && response.Status)
             {
                 contractor.ContractorStatus = ContractorStatus.Valid;
@@ -261,22 +262,53 @@ namespace FvpWebAppWorker.Services
         {
             for (int i = 0; i < response.Contractors.Count; i++)
             {
-                response.Contractors[i].SourceId = contractor.SourceId;
-                response.Contractors[i].GusContractorEntriesCount = i + 1;
-                response.Contractors[i].ContractorSourceId = contractor.ContractorSourceId;
-                response.Contractors[i].Firm = contractor.Firm;
-
                 if (i == 0)
                 {
-                    response.Contractors[i].ContractorId = contractor.ContractorId;
-                    dbContext.Update(response.Contractors[i]);
-                    await dbContext.SaveChangesAsync();
+                    var contractorToUpdate = await dbContext.Contractors.FirstOrDefaultAsync(c => c.ContractorId == contractor.ContractorId).ConfigureAwait(false);
+                    contractorToUpdate = CopyContractorData(contractorToUpdate, response.Contractors[i]);
+                    contractorToUpdate.GusContractorEntriesCount = 1;
+                    try
+                    {
+                        dbContext.Update(contractorToUpdate);
+                        await dbContext.SaveChangesAsync();
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        _logger.LogError(ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message);
+                    }
                 }
                 else
                 {
+                    response.Contractors[i].SourceId = contractor.SourceId;
+                    response.Contractors[i].GusContractorEntriesCount = i + 1;
+                    response.Contractors[i].ContractorSourceId = contractor.ContractorSourceId;
+                    response.Contractors[i].Firm = contractor.Firm;
                     await AddContractor(dbContext, response.Contractors[i]);
                 }
             }
+        }
+
+        private Contractor CopyContractorData(Contractor destContractor, Contractor sourceContractor)
+        {
+            destContractor.Name = sourceContractor.Name;
+            destContractor.Street = sourceContractor.Street;
+            destContractor.EstateNumber = sourceContractor.EstateNumber;
+            destContractor.QuartersNumber = sourceContractor.QuartersNumber;
+            destContractor.City = sourceContractor.City;
+            destContractor.PostalCode = sourceContractor.PostalCode;
+            destContractor.Province = sourceContractor.Province;
+            destContractor.VatId = sourceContractor.VatId;
+            destContractor.Regon = sourceContractor.Regon;
+            destContractor.Phone = sourceContractor.Phone;
+            destContractor.Email = sourceContractor.Email;
+            destContractor.CountryCode = sourceContractor.CountryCode;
+            destContractor.ContractorStatus = sourceContractor.ContractorStatus;
+            destContractor.CheckDate = sourceContractor.CheckDate;
+            return destContractor;
         }
 
         private async Task AddContractor(WorkerAppDbContext dbContext, Contractor contractor)
@@ -286,8 +318,9 @@ namespace FvpWebAppWorker.Services
                 await dbContext.AddAsync(contractor);
                 await dbContext.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 Console.WriteLine($"B³¹d dodania kontrahenta (API): {contractor.Name} Nip : {contractor.VatId}");
             }
         }
