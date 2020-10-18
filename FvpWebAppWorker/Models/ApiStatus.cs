@@ -5,5 +5,6 @@ namespace FvpWebAppWorker.Models
         Valid,
         NotValid,
         Error,
+        NotSupportedByApi
     }
 }

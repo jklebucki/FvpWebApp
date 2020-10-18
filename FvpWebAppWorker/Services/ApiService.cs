@@ -21,8 +21,7 @@ namespace FvpWebAppWorker.Services
                 client.DefaultRequestHeaders.Accept.Clear();
                 var userKeyJson = JsonConvert.SerializeObject(apiUserKey);
                 var httpContent = new StringContent(userKeyJson, Encoding.UTF8, "application/json");
-                var stringTask = client.PostAsync($"{apiUrl}login", httpContent);
-                var response = await stringTask;
+                var response = await client.PostAsync($"{apiUrl}login", httpContent);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -39,8 +38,7 @@ namespace FvpWebAppWorker.Services
             var client = new HttpClient() { DefaultRequestHeaders = { Authorization = new AuthenticationHeaderValue("Bearer", apiToken.Token) } };
             var vatNumberJson = JsonConvert.SerializeObject(new NipRequest { Nip = vatId });
             var httpContent = new StringContent(vatNumberJson, Encoding.UTF8, "application/json");
-            var stringTask = client.PostAsync($"{apiUrl}gusapi/data", httpContent);
-            var response = await stringTask;
+            var response = await client.PostAsync($"{apiUrl}gusapi/data", httpContent);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -61,16 +59,43 @@ namespace FvpWebAppWorker.Services
             var client = new HttpClient() { DefaultRequestHeaders = { Authorization = new AuthenticationHeaderValue("Bearer", apiToken.Token) } };
             var vatNumberJson = JsonConvert.SerializeObject(viesRequest);
             var httpContent = new StringContent(vatNumberJson, Encoding.UTF8, "application/json");
-            var stringTask = client.PostAsync($"{apiUrl}ViesApi/simpleCheck", httpContent);
-            var response = await stringTask;
+            try
+            {
+                var response = await client.PostAsync($"{apiUrl}ViesApi/simpleCheck", httpContent);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var resp = await response.Content.ReadAsByteArrayAsync();
+                    var encodedText = Encoding.UTF8.GetString(resp, 0, resp.Length);
+                    client.Dispose();
+                    return JsonConvert.DeserializeObject<ViesContractorResponse>(encodedText);
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public async Task<List<Country>> GetCountriesAsync(ApiToken apiToken)
+        {
+            var client = new HttpClient() { DefaultRequestHeaders = { Authorization = new AuthenticationHeaderValue("Bearer", apiToken.Token) } };
+            var emptyContent = JsonConvert.SerializeObject("");
+            var httpContent = new StringContent(emptyContent, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"{apiUrl}gusapi/countries", httpContent);
+
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                var resp = await response.Content.ReadAsByteArrayAsync();
-                var encodedText = Encoding.UTF8.GetString(resp, 0, resp.Length);
-                return JsonConvert.DeserializeObject<ViesContractorResponse>(encodedText);
+                try
+                {
+                    return JsonConvert.DeserializeObject<List<Country>>(response.Content.ReadAsStringAsync().Result);
+                }
+                catch
+                {
+                    return new List<Country>();
+                }
             }
             client.Dispose();
-            return null;
+            return new List<Country>();
         }
 
     }

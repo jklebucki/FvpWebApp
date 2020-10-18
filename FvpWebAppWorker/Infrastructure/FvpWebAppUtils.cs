@@ -1,5 +1,10 @@
-﻿using System;
+﻿using FvpWebAppModels.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace FvpWebAppWorker.Infrastructure
 {
@@ -21,6 +26,16 @@ namespace FvpWebAppWorker.Infrastructure
                 index = (maxSalesRows * i);
             }
             return dividedList;
+        }
+
+        public static bool CheckUeCountry(List<Country> countries, string countryCode)
+        {
+            return countries.Select(c => c.Symbol).Contains(countryCode) ? true : false;
+        }
+
+        public static string GetDigitsFromString(string stringWithDigist)
+        {
+            return new String(stringWithDigist.Where(Char.IsDigit).ToArray());
         }
     }
 }

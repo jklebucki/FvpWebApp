@@ -14,6 +14,7 @@ namespace FvpWebAppModels.Models
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public TicketStatus TicketStatus { get; set; }
+        public TicketType TicketType { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime StatusChangedAt { get; set; }
         public ICollection<Document> Documents { get; set; }

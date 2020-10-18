@@ -1,11 +1,14 @@
+using FvpWebAppModels;
 using FvpWebAppModels.Models;
 using FvpWebAppWorker.Data;
 using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Models;
 using FvpWebAppWorker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Services
@@ -13,14 +16,16 @@ namespace FvpWebAppWorker.Services
     public class TargetDataService : ITargetDataService
     {
         private readonly ApiService _apiService;
-        public TargetDataService()
+        private ILogger _logger;
+        public TargetDataService(ILogger logger)
         {
             _apiService = new ApiService();
+            _logger = logger;
+
         }
 
         public async Task<ApiResponseContractor> CheckContractorByGusApi(string vatId)
         {
-
             var apiToken = await _apiService.ApiLogin();
             if (apiToken.Token == null)
                 return new ApiResponseContractor
@@ -64,31 +69,227 @@ namespace FvpWebAppWorker.Services
                         Regon = item.Regon,
                         Phone = item.Phone,
                         Email = item.Email,
-                        ContractorStatus = FvpWebAppModels.ContractorStatus.Valid,
+                        ContractorStatus = ContractorStatus.Valid,
                         CheckDate = DateTime.Now,
                     });
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
             }
             return contractors;
         }
 
-        public Task<ApiResponseContractor> CheckContractorByViesApi(string countryCode, string vatId)
+        public async Task<ApiResponseContractor> CheckContractorByViesApi(Contractor contractor)
         {
-            throw new System.NotImplementedException();
+            var request = ContractorViesRequest(contractor);
+            var apiToken = await _apiService.ApiLogin();
+            var response = await _apiService.GetViesDataAsync(request, apiToken);
+            var contractors = new List<Contractor>();
+            if (response != null && response.Status)
+            {
+                contractor.ContractorStatus = ContractorStatus.Valid;
+                contractors.Add(contractor);
+            }
+
+            if (response != null)
+                return new ApiResponseContractor
+                {
+                    ApiStatus = response.Status ? ApiStatus.Valid : ApiStatus.NotValid,
+                    Contractors = contractors
+                };
+            else
+                return new ApiResponseContractor
+                {
+                    ApiStatus = ApiStatus.Error,
+                    Contractors = new List<Contractor>()
+                };
+
         }
 
-        public Task<Contractor> GetContractorByVatId(string vatId)
+        private ViesSimpleRequest ContractorViesRequest(Contractor contractor)
         {
-            throw new System.NotImplementedException();
+            var suffix = FvpWebAppUtils.GetDigitsFromString(contractor.VatId);
+            var prefix = contractor.CountryCode;
+            return new ViesSimpleRequest
+            {
+                ContractorPrefix = prefix,
+                ContractorSuffix = suffix
+            };
         }
 
-        public Task TransferContractors(List<Document> documents, Target target)
+        public async Task<List<Contractor>> GetContractorByVatId(string vatId, WorkerAppDbContext dbContext)
         {
-            throw new System.NotImplementedException();
+            var contractors = await dbContext.Contractors.Where(c => c.VatId == vatId).ToListAsync();
+            if (contractors != null && contractors.Count > 0)
+                return contractors;
+            else
+                return new List<Contractor>();
+        }
+
+        public async Task TransferContractors(List<Document> documents, WorkerAppDbContext _dbContext)
+        {
+            try
+            {
+                ContractorService contractorService = new ContractorService(_dbContext);
+                var documentsContractors = AggregateContractorsFromDocuments(documents);
+                _logger.LogInformation($"Kontrahenci do dodania: {documentsContractors.Count}");
+                foreach (var documentContractor in documentsContractors)
+                {
+                    var contractorServiceResponse = await contractorService.ContractorExist((int)documentContractor.SourceId, documentContractor.ContractorSourceId);
+                    if (!contractorServiceResponse.Exist)
+                    {
+                        await _dbContext.AddAsync(documentContractor).ConfigureAwait(true);
+                        await _dbContext.SaveChangesAsync().ConfigureAwait(true);
+                        Console.WriteLine($"Kontrahent dodany: {documentContractor.Name} Nip : {documentContractor.VatId}");
+                    }
+                    else
+                        Console.WriteLine($"Kontrahent istnieje: {documentContractor.Name} Nip : {documentContractor.VatId}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+        }
+
+        public async Task CheckContractors(WorkerAppDbContext dbContext, int taskTicketId)
+        {
+            await ChangeTicketStatus(dbContext, taskTicketId, TicketStatus.Pending).ConfigureAwait(false);
+            try
+            {
+                var token = await _apiService.ApiLogin().ConfigureAwait(false);
+                var ueCountries = (await dbContext.Countries.ToListAsync().ConfigureAwait(false)).Where(u => u.UE).Select(c => c.Symbol).ToList();
+
+                ContractorService contractorService = new ContractorService(dbContext);
+                var documentsContractors = await dbContext.Contractors.Where(s => s.ContractorStatus == ContractorStatus.NotChecked).ToListAsync().ConfigureAwait(false);
+                _logger.LogInformation($"Kontrahenci do sprawdzenia: {documentsContractors.Count}");
+                foreach (var documentContractor in documentsContractors)
+                {
+
+                    if (documentContractor.CountryCode == "PL" || documentContractor.Firm == Firm.FirmaPolska)
+                    {
+                        var response = await CheckContractorByGusApi(FvpWebAppUtils.GetDigitsFromString(documentContractor.VatId));
+                        await ClassificateContractor(dbContext, documentContractor, response);
+                    }
+                    else if (ueCountries.Contains(documentContractor.CountryCode))
+                    {
+                        var response = await CheckContractorByViesApi(documentContractor);
+                        await ClassificateContractor(dbContext, documentContractor, response);
+                    }
+                    else
+                    {
+                        var response = new ApiResponseContractor
+                        {
+                            ApiStatus = ApiStatus.NotSupportedByApi,
+                            Contractors = new List<Contractor>()
+                        };
+                        await ClassificateContractor(dbContext, documentContractor, response);
+                    }
+
+                }
+                await ChangeTicketStatus(dbContext, taskTicketId, TicketStatus.Done).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await ChangeTicketStatus(dbContext, taskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                _logger.LogError(ex.Message);
+            }
+        }
+
+        private async Task ClassificateContractor(WorkerAppDbContext _dbContext, Contractor documentContractor, ApiResponseContractor response)
+        {
+            if (response.ApiStatus == ApiStatus.Valid)
+            {
+                await UpdateContractor(_dbContext, documentContractor, response);
+            }
+            else if (response.ApiStatus == ApiStatus.NotValid)
+            {
+                documentContractor.ContractorStatus = ContractorStatus.Invalid;
+                response.Contractors.Add(documentContractor);
+                await UpdateContractor(_dbContext, documentContractor, response);
+                Console.WriteLine($"Kontrahent niepoprawny: {documentContractor.Name} Nip : {documentContractor.VatId}");
+            }
+            else if (response.ApiStatus == ApiStatus.NotSupportedByApi)
+            {
+                documentContractor.ContractorStatus = ContractorStatus.Valid;
+                response.Contractors.Add(documentContractor);
+                await UpdateContractor(_dbContext, documentContractor, response);
+                Console.WriteLine($"Nazwa: {documentContractor.Name}\tNip:{documentContractor.VatId}");
+            }
+            else if (response.ApiStatus == ApiStatus.Error)
+            {
+                documentContractor.ContractorStatus = ContractorStatus.NotChecked;
+                response.Contractors.Add(documentContractor);
+                await UpdateContractor(_dbContext, documentContractor, response);
+                Console.WriteLine($"B³¹d sprawdzania kontrahenta: {documentContractor.Name} Nip : {documentContractor.VatId}");
+            }
+        }
+
+        private List<Contractor> AggregateContractorsFromDocuments(List<Document> documents)
+        {
+            return documents
+                .GroupBy(g => new
+                {
+                    g.SourceId,
+                    g.DocContractorId,
+                    g.DocContractorName,
+                    g.DocContractorStreetAndNumber,
+                    g.DocContractorCity,
+                    g.DocContractorCountryCode,
+                    g.DocContractorPostCode,
+                    g.DocContractorVatId,
+                    g.DocContractorFirm,
+                })
+                .Select(c => new Contractor
+                {
+                    SourceId = c.Key.SourceId,
+                    ContractorSourceId = c.Key.DocContractorId,
+                    Name = c.Key.DocContractorName,
+                    Street = c.Key.DocContractorStreetAndNumber,
+                    City = c.Key.DocContractorCity,
+                    CountryCode = c.Key.DocContractorCountryCode,
+                    PostalCode = c.Key.DocContractorPostCode,
+                    VatId = c.Key.DocContractorVatId,
+                    ContractorStatus = ContractorStatus.NotChecked,
+                    Firm = (Firm)c.Key.DocContractorFirm
+                }).ToList();
+        }
+
+        private async Task UpdateContractor(WorkerAppDbContext dbContext, Contractor contractor, ApiResponseContractor response)
+        {
+            for (int i = 0; i < response.Contractors.Count; i++)
+            {
+                response.Contractors[i].SourceId = contractor.SourceId;
+                response.Contractors[i].GusContractorEntriesCount = i + 1;
+                response.Contractors[i].ContractorSourceId = contractor.ContractorSourceId;
+                response.Contractors[i].Firm = contractor.Firm;
+
+                if (i == 0)
+                {
+                    response.Contractors[i].ContractorId = contractor.ContractorId;
+                    dbContext.Update(response.Contractors[i]);
+                    await dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    await AddContractor(dbContext, response.Contractors[i]);
+                }
+            }
+        }
+
+        private async Task AddContractor(WorkerAppDbContext dbContext, Contractor contractor)
+        {
+            try
+            {
+                await dbContext.AddAsync(contractor);
+                await dbContext.SaveChangesAsync();
+            }
+            catch
+            {
+                Console.WriteLine($"B³¹d dodania kontrahenta (API): {contractor.Name} Nip : {contractor.VatId}");
+            }
         }
 
         public async Task TransferDocuments(List<Document> documents, TaskTicket taskTicket, WorkerAppDbContext dbContext)
@@ -104,12 +305,12 @@ namespace FvpWebAppWorker.Services
                 }
 
                 await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
-                Console.WriteLine($"Documents count: {documents.Count}");
+                _logger.LogInformation($"Documents count: {documents.Count}");
             }
             catch (Exception ex)
             {
                 await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
             }
         }
 

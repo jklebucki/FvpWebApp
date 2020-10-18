@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FvpWebApp.Data.Migrations
 {
@@ -7,6 +7,23 @@ namespace FvpWebApp.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    CountryId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Symbol = table.Column<string>(nullable: true),
+                    NamePL = table.Column<string>(nullable: true),
+                    NameENG = table.Column<string>(nullable: true),
+                    Info = table.Column<string>(nullable: true),
+                    UE = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.CountryId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "SourceTypes",
                 columns: table => new
@@ -47,6 +64,7 @@ namespace FvpWebApp.Data.Migrations
                     DateFrom = table.Column<DateTime>(nullable: false),
                     DateTo = table.Column<DateTime>(nullable: false),
                     TicketStatus = table.Column<int>(nullable: false),
+                    TicketType = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     StatusChangedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -197,6 +215,41 @@ namespace FvpWebApp.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Countries",
+                columns: new[] { "CountryId", "Info", "NameENG", "NamePL", "Symbol", "UE" },
+                values: new object[,]
+                {
+                    { 1, null, null, "Austria", "AT", true },
+                    { 28, null, null, "Słowacja", "SK", true },
+                    { 27, null, null, "Słowenia", "SI", true },
+                    { 26, null, null, "Szwecja", "SE", true },
+                    { 25, null, null, "Rumunia", "RO", true },
+                    { 24, null, null, "Portugalia", "PT", true },
+                    { 23, null, null, "Polska", "PL", true },
+                    { 22, null, null, "Holandia", "NL", true },
+                    { 21, null, null, "Malta", "MT", true },
+                    { 20, null, null, "Łotwa", "LV", true },
+                    { 19, null, null, "Luksemburg", "LU", true },
+                    { 17, null, null, "Włochy", "IT", true },
+                    { 16, null, null, "Irlandia", "IE", true },
+                    { 15, null, null, "Węgry", "HU", true },
+                    { 18, null, null, "Litwa", "LT", true },
+                    { 13, null, null, "Wielka Brytania", "GB", true },
+                    { 2, null, null, "Belgia", "BE", true },
+                    { 3, null, null, "Bułgaria", "BG", true },
+                    { 4, null, null, "Cypr", "CY", true },
+                    { 14, null, null, "Chorwacja", "HR", true },
+                    { 6, null, null, "Niemcy", "DE", true },
+                    { 7, null, null, "Dania", "DK", true },
+                    { 5, null, null, "Czechy", "CZ", true },
+                    { 9, null, null, "Grecja", "EL", true },
+                    { 10, null, null, "Hiszpania", "ES", true },
+                    { 11, null, null, "Finlandia", "FI", true },
+                    { 12, null, null, "Francja", "FR", true },
+                    { 8, null, null, "Estonia", "EE", true }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Sources",
                 columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
                 values: new object[,]
@@ -217,11 +270,11 @@ namespace FvpWebApp.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "TaskTickets",
-                columns: new[] { "TaskTicketId", "CreatedAt", "DateFrom", "DateTo", "SourceId", "StatusChangedAt", "TicketStatus" },
+                columns: new[] { "TaskTicketId", "CreatedAt", "DateFrom", "DateTo", "SourceId", "StatusChangedAt", "TicketStatus", "TicketType" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2020, 10, 15, 12, 50, 12, 362, DateTimeKind.Local).AddTicks(6687), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0 },
-                    { 2, new DateTime(2020, 10, 15, 12, 50, 12, 365, DateTimeKind.Local).AddTicks(2147), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0 }
+                    { 1, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0 },
+                    { 2, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -245,6 +298,13 @@ namespace FvpWebApp.Data.Migrations
                 column: "TaskTicketId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DocumentUniqueInSource",
+                table: "Documents",
+                columns: new[] { "DocumentNumber", "SourceId" },
+                unique: true,
+                filter: "[DocumentNumber] IS NOT NULL AND [SourceId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DocumentVats_DocumentId",
                 table: "DocumentVats",
                 column: "DocumentId");
@@ -257,6 +317,9 @@ namespace FvpWebApp.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Countries");
+
             migrationBuilder.DropTable(
                 name: "DocumentVats");
 

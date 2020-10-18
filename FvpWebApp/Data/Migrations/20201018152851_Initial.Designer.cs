@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FvpWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201015105012_Initial")]
+    [Migration("20201018152851_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,6 +92,231 @@ namespace FvpWebApp.Data.Migrations
                     b.ToTable("Contractors");
                 });
 
+            modelBuilder.Entity("FvpWebAppModels.Models.Country", b =>
+                {
+                    b.Property<int>("CountryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Info")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameENG")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NamePL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Symbol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("UE")
+                        .HasColumnType("bit");
+
+                    b.HasKey("CountryId");
+
+                    b.ToTable("Countries");
+
+                    b.HasData(
+                        new
+                        {
+                            CountryId = 1,
+                            NamePL = "Austria",
+                            Symbol = "AT",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 2,
+                            NamePL = "Belgia",
+                            Symbol = "BE",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 3,
+                            NamePL = "Bułgaria",
+                            Symbol = "BG",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 4,
+                            NamePL = "Cypr",
+                            Symbol = "CY",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 5,
+                            NamePL = "Czechy",
+                            Symbol = "CZ",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 6,
+                            NamePL = "Niemcy",
+                            Symbol = "DE",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 7,
+                            NamePL = "Dania",
+                            Symbol = "DK",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 8,
+                            NamePL = "Estonia",
+                            Symbol = "EE",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 9,
+                            NamePL = "Grecja",
+                            Symbol = "EL",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 10,
+                            NamePL = "Hiszpania",
+                            Symbol = "ES",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 11,
+                            NamePL = "Finlandia",
+                            Symbol = "FI",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 12,
+                            NamePL = "Francja",
+                            Symbol = "FR",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 13,
+                            NamePL = "Wielka Brytania",
+                            Symbol = "GB",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 14,
+                            NamePL = "Chorwacja",
+                            Symbol = "HR",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 15,
+                            NamePL = "Węgry",
+                            Symbol = "HU",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 16,
+                            NamePL = "Irlandia",
+                            Symbol = "IE",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 17,
+                            NamePL = "Włochy",
+                            Symbol = "IT",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 18,
+                            NamePL = "Litwa",
+                            Symbol = "LT",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 19,
+                            NamePL = "Luksemburg",
+                            Symbol = "LU",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 20,
+                            NamePL = "Łotwa",
+                            Symbol = "LV",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 21,
+                            NamePL = "Malta",
+                            Symbol = "MT",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 22,
+                            NamePL = "Holandia",
+                            Symbol = "NL",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 23,
+                            NamePL = "Polska",
+                            Symbol = "PL",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 24,
+                            NamePL = "Portugalia",
+                            Symbol = "PT",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 25,
+                            NamePL = "Rumunia",
+                            Symbol = "RO",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 26,
+                            NamePL = "Szwecja",
+                            Symbol = "SE",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 27,
+                            NamePL = "Słowenia",
+                            Symbol = "SI",
+                            UE = true
+                        },
+                        new
+                        {
+                            CountryId = 28,
+                            NamePL = "Słowacja",
+                            Symbol = "SK",
+                            UE = true
+                        });
+                });
+
             modelBuilder.Entity("FvpWebAppModels.Models.Document", b =>
                 {
                     b.Property<int>("DocumentId")
@@ -133,7 +358,7 @@ namespace FvpWebApp.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DocumentNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("DocumentStatus")
                         .HasColumnType("int");
@@ -175,6 +400,11 @@ namespace FvpWebApp.Data.Migrations
                     b.HasIndex("SourceId");
 
                     b.HasIndex("TaskTicketId");
+
+                    b.HasIndex("DocumentNumber", "SourceId")
+                        .IsUnique()
+                        .HasName("IX_DocumentUniqueInSource")
+                        .HasFilter("[DocumentNumber] IS NOT NULL AND [SourceId] IS NOT NULL");
 
                     b.ToTable("Documents");
                 });
@@ -374,6 +604,9 @@ namespace FvpWebApp.Data.Migrations
                     b.Property<int>("TicketStatus")
                         .HasColumnType("int");
 
+                    b.Property<int>("TicketType")
+                        .HasColumnType("int");
+
                     b.HasKey("TaskTicketId");
 
                     b.ToTable("TaskTickets");
@@ -382,22 +615,24 @@ namespace FvpWebApp.Data.Migrations
                         new
                         {
                             TaskTicketId = 1,
-                            CreatedAt = new DateTime(2020, 10, 15, 12, 50, 12, 362, DateTimeKind.Local).AddTicks(6687),
+                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DateFrom = new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DateTo = new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SourceId = 1,
                             StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TicketStatus = 0
+                            TicketStatus = 0,
+                            TicketType = 0
                         },
                         new
                         {
                             TaskTicketId = 2,
-                            CreatedAt = new DateTime(2020, 10, 15, 12, 50, 12, 365, DateTimeKind.Local).AddTicks(2147),
+                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DateFrom = new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DateTo = new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SourceId = 2,
                             StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TicketStatus = 0
+                            TicketStatus = 0,
+                            TicketType = 0
                         });
                 });
 

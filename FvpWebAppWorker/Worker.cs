@@ -36,40 +36,62 @@ namespace FvpWebAppWorker
                         var taskTicket = await _dbContext.TaskTickets.FirstOrDefaultAsync(s => s.TicketStatus == TicketStatus.Added).ConfigureAwait(false);
                         if (taskTicket != null)
                         {
-                            var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
+                            TargetDataService targetDataService = new TargetDataService(_logger);
+                            switch (taskTicket.TicketType)
+                            {
+                                case TicketType.ImportDocuments:
+                                    var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
+                                    List<Document> documents = new List<Document>();
+                                    if (source != null)
+                                        try
+                                        {
+                                            switch (source.Type)
+                                            {
+                                                case "oracle_sben_dp":
+                                                    documents = await ProceedSbenOracleDpDocuments(_dbContext, source, taskTicket, targetDataService).ConfigureAwait(false);
+                                                    break;
+                                                default:
+                                                    await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                                    break;
+                                            }
 
-                            List<Document> documents = new List<Document>();
-                            if (source != null)
-                                try
-                                {
-                                    switch (source.Type)
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError(ex.Message);
+                                        }
+                                    else
+                                        await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                    _logger.LogInformation($"Documents: {documents.Count}");
+
+                                    try
                                     {
-                                        case "oracle_sben_dp":
-                                            documents = await ProceedSbenOracleDpDocuments(_dbContext, source, taskTicket).ConfigureAwait(false);
-                                            break;
-                                        default:
-                                            await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                            break;
+                                        if (documents.Count > 0)
+                                            await ProceedContractors(_dbContext, documents, targetDataService).ConfigureAwait(false);
                                     }
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
-                            else
-                                await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                            Console.WriteLine($"Documents: {documents.Count}");
-
-                            try
-                            {
-                                if (documents.Count > 0)
-                                    await ProceedContractors(_dbContext, documents).ConfigureAwait(false);
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError(ex.Message);
+                                    }
+                                    break;
+                                case TicketType.ImportContractors:
+                                    break;
+                                case TicketType.CheckContractors:
+                                    try
+                                    {
+                                        await targetDataService.CheckContractors(_dbContext, taskTicket.TaskTicketId);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError(ex.Message);
+                                    }
+                                    break;
+                                case TicketType.ExportToErp:
+                                    break;
+                                default:
+                                    break;
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
+
                         }
                     };
                 }
@@ -77,102 +99,22 @@ namespace FvpWebAppWorker
             }
         }
 
-        private static async Task<List<Document>> ProceedSbenOracleDpDocuments(WorkerAppDbContext _dbContext, Source source, TaskTicket taskTicket)
+        private async Task<List<Document>> ProceedSbenOracleDpDocuments(WorkerAppDbContext _dbContext, Source source, TaskTicket taskTicket, TargetDataService targetDataService)
         {
             SBenDataService sBenDataService = new SBenDataService();
             var documentsResponse = await sBenDataService.GetDocuments(source, taskTicket).ConfigureAwait(false);
             if (documentsResponse != null && documentsResponse.Count > 0)
             {
-                TargetDataService targetDataService = new TargetDataService();
                 await targetDataService.TransferDocuments(documentsResponse, taskTicket, _dbContext);
             }
-
             return documentsResponse;
         }
 
-        private static async Task ProceedContractors(WorkerAppDbContext _dbContext, List<Document> documents)
+        private async Task ProceedContractors(WorkerAppDbContext _dbContext, List<Document> documents, TargetDataService targetDataService)
         {
-            var documentsContractors = documents
-                .GroupBy(g => new
-                {
-                    g.SourceId,
-                    g.DocContractorId,
-                    g.DocContractorName,
-                    g.DocContractorStreetAndNumber,
-                    g.DocContractorCity,
-                    g.DocContractorCountryCode,
-                    g.DocContractorPostCode,
-                    g.DocContractorVatId,
-                    g.DocContractorFirm,
-                })
-                .Select(c => new Contractor
-                {
-                    SourceId = c.Key.SourceId,
-                    ContractorSourceId = c.Key.DocContractorId,
-                    Name = c.Key.DocContractorName,
-                    Street = c.Key.DocContractorStreetAndNumber,
-                    City = c.Key.DocContractorCity,
-                    CountryCode = c.Key.DocContractorCountryCode,
-                    PostalCode = c.Key.DocContractorPostCode,
-                    VatId = c.Key.DocContractorVatId,
-                    ContractorStatus = ContractorStatus.NotChecked,
-                    Firm = (Firm)c.Key.DocContractorFirm
-                }).ToList();
-            Console.WriteLine($"Kontrahenci do sprawdzenia: {documentsContractors.Count}");
-            TargetDataService targetDataService = new TargetDataService();
-            try
-            {
-                ContractorService contractorService = new ContractorService(_dbContext);
-                foreach (var item in documentsContractors)
-                {
-                    //tutaj skończyłem
-                    var contractorServiceResponse = await contractorService.ContractorExist((int)item.SourceId, item.ContractorSourceId);
-                    if (!contractorServiceResponse.Exist)
-                    {
-                        var vatId = new String(item.VatId.Where(Char.IsDigit).ToArray());
-                        var response = await targetDataService.CheckContractorByGusApi(vatId);
-                        if (response.ApiStatus == Models.ApiStatus.Valid)
-                        {
-                            foreach (var element in response.Contractors)
-                            {
-                                Console.WriteLine($"Nazwa: {element.Name}\tNip:{element.VatId}");
-                            }
-                            await AddContractor(_dbContext, item, response);
-                        }
-                        else if (response.ApiStatus == Models.ApiStatus.NotValid)
-                        {
-                            response.Contractors.Add(item);
-                            await AddContractor(_dbContext, item, response);
-                            Console.WriteLine($"Kontrahent niepoprawny: {item.Name} Nip : {item.VatId}");
-                        }
-                        else if (response.ApiStatus == Models.ApiStatus.Error)
-                        {
-                            response.Contractors.Add(item);
-                            await AddContractor(_dbContext, item, response);
-                            Console.WriteLine($"Błąd sprawdzania kontrahenta: {item.Name} Nip : {item.VatId}");
-                        }
-                    }
-                    else
-                        Console.WriteLine($"Kontrahent istnieje: {item.Name} Nip : {item.VatId}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            await targetDataService.TransferContractors(documents, _dbContext);
         }
 
-        private static async Task AddContractor(WorkerAppDbContext _dbContext, Contractor contractor, ApiResponseContractor response)
-        {
-            response.Contractors.ForEach(c =>
-            {
-                c.SourceId = contractor.SourceId;
-                c.GusContractorEntriesCount = response.Contractors.Count;
-                c.ContractorSourceId = contractor.ContractorSourceId;
-                c.Firm = contractor.Firm;
-            });
-            await _dbContext.AddRangeAsync(response.Contractors);
-            await _dbContext.SaveChangesAsync();
-        }
+
     }
 }

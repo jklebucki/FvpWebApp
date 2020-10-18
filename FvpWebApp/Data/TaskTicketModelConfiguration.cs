@@ -17,7 +17,8 @@ namespace FvpWebApp.Data
                     DateFrom = new DateTime(2020, 9, 1),
                     DateTo = new DateTime(2020, 9, 30),
                     TicketStatus = TicketStatus.Added,
-                    CreatedAt = DateTime.Now
+                    TicketType = TicketType.ImportDocuments,
+                    CreatedAt = new DateTime(2020, 1, 1),
                 },
                 new TaskTicket
                 {
@@ -26,7 +27,8 @@ namespace FvpWebApp.Data
                     DateFrom = new DateTime(2020, 9, 1),
                     DateTo = new DateTime(2020, 9, 30),
                     TicketStatus = TicketStatus.Added,
-                    CreatedAt = DateTime.Now
+                    TicketType = TicketType.ImportDocuments,
+                    CreatedAt = new DateTime(2020, 1, 1),
                 });
         }
     }
