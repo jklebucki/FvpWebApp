@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\C2FKInterface\C2FKInterface.csproj" />
     <ProjectReference Include="..\FvpWebApp\FvpWebApp.csproj" />
     <ProjectReference Include="..\FvpWebAppWorker\FvpWebAppWorker.csproj" />
   </ItemGroup>
