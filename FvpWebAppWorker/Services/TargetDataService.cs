@@ -431,7 +431,6 @@ namespace FvpWebAppWorker.Services
                     dbContext.UpdateRange(contractors);
                     await dbContext.SaveChangesAsync();
                     Console.WriteLine("Contactors matched!");
-                    await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Done);
                 }
                 catch (Exception ex)
                 {

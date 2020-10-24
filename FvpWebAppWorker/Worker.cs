@@ -83,10 +83,28 @@ namespace FvpWebAppWorker
                                     }
                                     break;
                                 case TicketType.MatchContractors:
-                                    var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                    await targetDataService.MatchContractors(_dbContext, taskTicket, target);
+                                    try
+                                    {
+                                        var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
+                                        await targetDataService.MatchContractors(_dbContext, taskTicket, target);
+                                        await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                    }
                                     break;
                                 case TicketType.ExportContractorsToErp:
+                                    try
+                                    {
+                                        var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
+                                        await targetDataService.ExportContractorsToErp(_dbContext, taskTicket, target);
+                                        await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                    }
                                     break;
                                 default:
                                     break;
