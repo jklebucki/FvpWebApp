@@ -18,7 +18,9 @@ namespace FvpWebApp.Data
                     Address = "192.168.42.70",
                     DbName = "sben",
                     Username = "sben",
-                    Password = "almarwinnet"
+                    Password = "almarwinnet",
+                    TargetId = 1
+
                 },
                 new Source
                 {
@@ -29,7 +31,8 @@ namespace FvpWebApp.Data
                     Address = "192.168.45.70",
                     DbName = "sben",
                     Username = "sben",
-                    Password = "almarwinnet"
+                    Password = "almarwinnet",
+                    TargetId = 1
                 },
                 new Source
                 {
@@ -40,7 +43,8 @@ namespace FvpWebApp.Data
                     Address = @"I:\DaneBP\MOSTKI",
                     DbName = "",
                     Username = "",
-                    Password = ""
+                    Password = "",
+                    TargetId = 1
                 }
            );
         }

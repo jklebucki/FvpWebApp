@@ -17,16 +17,25 @@ namespace FvpWebAppTests
         {
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
 
-            ContractorService contractorService = new ContractorService(dbConnectionSettings);
+            C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
+            var erpContractors = await contractorService.GetC21FvpContractorsAsync(true);
+            int? erpContractorId = null;
+            if (erpContractors != null)
+            {
+                var erpContractor = erpContractors.FirstOrDefault(v => v.VatId == "6912503886TEST");
+                if (erpContractor != null)
+                    erpContractorId = erpContractor.Id;
+            }
+
             C21Contractor contractor = new C21Contractor
             {
-                id = null,
+                id = erpContractorId,
                 skrot = "FVP-TestKh",
-                nazwa = "FVP - Kontrahent testowy",
+                nazwa = $"FVP - Kontrahent testowy {string.Format("{0:HH:mm:ss}",DateTime.Now)}",
                 ulica = "ul. Okrzei",
                 numerDomu = "13",
                 kod = "59-220",
-                nip = "6912503886",
+                nip = "6912503886TEST",
                 Kraj = "PL",
                 aktywny = true,
                 statusUE = 0,
@@ -46,7 +55,7 @@ namespace FvpWebAppTests
         public async void C21ContractorServiceGetFvpContractorTest()
         {
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
-            ContractorService contractorService = new ContractorService(dbConnectionSettings);
+            C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
 
             var memBefore = GC.GetTotalMemory(false);
             var fvpContractors = await contractorService.GetC21FvpContractorsAsync(true).ConfigureAwait(false);
@@ -54,6 +63,18 @@ namespace FvpWebAppTests
             Console.WriteLine($"C21ContractorServiceGetFvpContractorTest - contractorsReaded : {fvpContractors.Count}");
             Console.WriteLine($"C21ContractorServiceGetFvpContractorTest - size in MB : {memDiff}");
             Assert.True(fvpContractors.Count > 0);
+        }
+
+        [Fact]
+        public async void C21ContractorServiceProceedContractorTest()
+        {
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
+            C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
+
+            var output = await contractorService.ProceedContractorsAsync();
+
+            Console.WriteLine($"C21ContractorServiceGetFvpContractorTest - contractorsReaded : {output.Count}");
+            Assert.True(output.Count > 0);
         }
     }
 }

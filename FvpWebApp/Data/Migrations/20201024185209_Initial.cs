@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FvpWebApp.Data.Migrations
 {
@@ -106,6 +106,7 @@ namespace FvpWebApp.Data.Migrations
                     ContractorId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ContractorErpId = table.Column<int>(nullable: true),
+                    ContractorErpPosition = table.Column<int>(nullable: true),
                     SourceId = table.Column<int>(nullable: true),
                     GusContractorEntriesCount = table.Column<int>(nullable: true),
                     ContractorSourceId = table.Column<string>(nullable: true),
@@ -229,34 +230,24 @@ namespace FvpWebApp.Data.Migrations
                     { 22, null, null, "Holandia", "NL", true },
                     { 21, null, null, "Malta", "MT", true },
                     { 20, null, null, "Łotwa", "LV", true },
-                    { 19, null, null, "Luksemburg", "LU", true },
+                    { 18, null, null, "Litwa", "LT", true },
                     { 17, null, null, "Włochy", "IT", true },
                     { 16, null, null, "Irlandia", "IE", true },
                     { 15, null, null, "Węgry", "HU", true },
-                    { 18, null, null, "Litwa", "LT", true },
+                    { 19, null, null, "Luksemburg", "LU", true },
                     { 13, null, null, "Wielka Brytania", "GB", true },
                     { 2, null, null, "Belgia", "BE", true },
                     { 3, null, null, "Bułgaria", "BG", true },
-                    { 4, null, null, "Cypr", "CY", true },
                     { 14, null, null, "Chorwacja", "HR", true },
+                    { 5, null, null, "Czechy", "CZ", true },
                     { 6, null, null, "Niemcy", "DE", true },
                     { 7, null, null, "Dania", "DK", true },
-                    { 5, null, null, "Czechy", "CZ", true },
+                    { 4, null, null, "Cypr", "CY", true },
                     { 9, null, null, "Grecja", "EL", true },
                     { 10, null, null, "Hiszpania", "ES", true },
                     { 11, null, null, "Finlandia", "FI", true },
                     { 12, null, null, "Francja", "FR", true },
                     { 8, null, null, "Estonia", "EE", true }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Sources",
-                columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
-                values: new object[,]
-                {
-                    { 1, "192.168.42.70", "DP1", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", null, "oracle_sben_dp", "sben" },
-                    { 2, "192.168.45.70", "DP2", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", null, "oracle_sben_dp", "sben" },
-                    { 3, "I:\\DaneBP\\MOSTKI", "BPMOSTKI", "", "Stacja Paliw BP Mostki", "", null, "bp_flat_file", "" }
                 });
 
             migrationBuilder.InsertData(
@@ -273,9 +264,29 @@ namespace FvpWebApp.Data.Migrations
                 columns: new[] { "TaskTicketId", "CreatedAt", "DateFrom", "DateTo", "SourceId", "StatusChangedAt", "TicketStatus", "TicketType" },
                 values: new object[,]
                 {
+                    { 6, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 4 },
                     { 1, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0 },
-                    { 2, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0 }
+                    { 2, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 0 },
+                    { 3, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 2 },
+                    { 4, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 3 },
+                    { 5, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 3 },
+                    { 7, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 4 }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Sources",
+                columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
+                values: new object[] { 1, "192.168.42.70", "DP1", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", 1, "oracle_sben_dp", "sben" });
+
+            migrationBuilder.InsertData(
+                table: "Sources",
+                columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
+                values: new object[] { 2, "192.168.45.70", "DP2", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", 1, "oracle_sben_dp", "sben" });
+
+            migrationBuilder.InsertData(
+                table: "Sources",
+                columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
+                values: new object[] { 3, "I:\\DaneBP\\MOSTKI", "BPMOSTKI", "", "Stacja Paliw BP Mostki", "", 1, "bp_flat_file", "" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contractors_SourceId",

@@ -39,7 +39,7 @@ namespace C2FKInterface.Models
         public string Telex { get; set; }
         [Column(Name = "email")]
         public string email { get; set; }
-        [Column(Name = "PlatnikVAt"), Nullable]
+        [Column(Name = "PlatnikVAT"), Nullable]
         public byte? PlatnikVAT { get; set; }
         [Column(Name = "naglowek")]
         public string naglowek { get; set; }

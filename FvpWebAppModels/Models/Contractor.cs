@@ -11,6 +11,7 @@ namespace FvpWebAppModels.Models
         [Key]
         public int ContractorId { get; set; }
         public int? ContractorErpId { get; set; }
+        public int? ContractorErpPosition { get; set; }
         public int? SourceId { get; set; }
         public int? GusContractorEntriesCount { get; set; }
         public string ContractorSourceId { get; set; }

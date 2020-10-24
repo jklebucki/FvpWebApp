@@ -1,6 +1,7 @@
 ﻿using FvpWebAppModels.Models;
 using FvpWebAppWorker.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace FvpWebAppWorker.Data
 {
@@ -24,6 +25,17 @@ namespace FvpWebAppWorker.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new DocumentModelConfiguration());
             modelBuilder.ApplyConfiguration(new DocumentVatModelConfiguration());
+        }
+        public void DetachAllEntities()
+        {
+            var changedEntriesCopy = ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added ||
+                            e.State == EntityState.Modified ||
+                            e.State == EntityState.Deleted)
+                .ToList();
+
+            foreach (var entry in changedEntriesCopy)
+                entry.State = EntityState.Detached;
         }
     }
 }

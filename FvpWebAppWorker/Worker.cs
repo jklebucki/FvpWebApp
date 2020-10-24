@@ -34,10 +34,10 @@ namespace FvpWebAppWorker
                         if (taskTicket != null)
                         {
                             TargetDataService targetDataService = new TargetDataService(_logger);
+                            var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
                             switch (taskTicket.TicketType)
                             {
                                 case TicketType.ImportDocuments:
-                                    var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
                                     List<Document> documents = new List<Document>();
                                     if (source != null)
                                         try
@@ -45,7 +45,7 @@ namespace FvpWebAppWorker
                                             switch (source.Type)
                                             {
                                                 case "oracle_sben_dp":
-                                                    documents = await ProceedSbenOracleDpDocuments(_dbContext, source, taskTicket, targetDataService).ConfigureAwait(false);
+                                                    documents = await ProceedSbenOracleDpDocuments(_dbContext, source, taskTicket, targetDataService);
                                                     break;
                                                 default:
                                                     await TargetDataService.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
@@ -63,8 +63,7 @@ namespace FvpWebAppWorker
 
                                     try
                                     {
-                                        if (documents.Count > 0)
-                                            await ProceedContractors(_dbContext, documents, targetDataService).ConfigureAwait(false);
+                                        await ProceedContractors(_dbContext, documents, targetDataService).ConfigureAwait(false);
                                     }
                                     catch (Exception ex)
                                     {
@@ -83,7 +82,11 @@ namespace FvpWebAppWorker
                                         _logger.LogError(ex.Message);
                                     }
                                     break;
-                                case TicketType.ExportToErp:
+                                case TicketType.MatchContractors:
+                                    var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
+                                    await targetDataService.MatchContractors(_dbContext, taskTicket, target);
+                                    break;
+                                case TicketType.ExportContractorsToErp:
                                     break;
                                 default:
                                     break;

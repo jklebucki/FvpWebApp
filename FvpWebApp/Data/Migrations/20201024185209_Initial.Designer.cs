@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FvpWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201018152851_Initial")]
+    [Migration("20201024185209_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,9 @@ namespace FvpWebApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ContractorErpId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ContractorErpPosition")
                         .HasColumnType("int");
 
                     b.Property<string>("ContractorSourceId")
@@ -490,6 +493,7 @@ namespace FvpWebApp.Data.Migrations
                             DbName = "sben",
                             Description = "Dyskont Paliwowy Słowiańska",
                             Password = "almarwinnet",
+                            TargetId = 1,
                             Type = "oracle_sben_dp",
                             Username = "sben"
                         },
@@ -501,6 +505,7 @@ namespace FvpWebApp.Data.Migrations
                             DbName = "sben",
                             Description = "Dyskont Paliwowy Słowiańska",
                             Password = "almarwinnet",
+                            TargetId = 1,
                             Type = "oracle_sben_dp",
                             Username = "sben"
                         },
@@ -512,6 +517,7 @@ namespace FvpWebApp.Data.Migrations
                             DbName = "",
                             Description = "Stacja Paliw BP Mostki",
                             Password = "",
+                            TargetId = 1,
                             Type = "bp_flat_file",
                             Username = ""
                         });
@@ -633,6 +639,61 @@ namespace FvpWebApp.Data.Migrations
                             StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketStatus = 0,
                             TicketType = 0
+                        },
+                        new
+                        {
+                            TaskTicketId = 3,
+                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateFrom = new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateTo = new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SourceId = 0,
+                            StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketStatus = 0,
+                            TicketType = 2
+                        },
+                        new
+                        {
+                            TaskTicketId = 4,
+                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateFrom = new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateTo = new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SourceId = 1,
+                            StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketStatus = 0,
+                            TicketType = 3
+                        },
+                        new
+                        {
+                            TaskTicketId = 5,
+                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateFrom = new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateTo = new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SourceId = 2,
+                            StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketStatus = 0,
+                            TicketType = 3
+                        },
+                        new
+                        {
+                            TaskTicketId = 6,
+                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateFrom = new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateTo = new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SourceId = 1,
+                            StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketStatus = 0,
+                            TicketType = 4
+                        },
+                        new
+                        {
+                            TaskTicketId = 7,
+                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateFrom = new DateTime(2020, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateTo = new DateTime(2020, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SourceId = 2,
+                            StatusChangedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketStatus = 0,
+                            TicketType = 4
                         });
                 });
 

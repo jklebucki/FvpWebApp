@@ -62,7 +62,7 @@ namespace FvpWebAppWorker.Services
                                     Net = decimal.Parse(row["NETTO"].ToString()),
                                     Gross = decimal.Parse(row["BRUTTO"].ToString()),
                                     Vat = decimal.Parse(row["VAT"].ToString()),
-                                    DocumentStatus = DocumentStatus.NotChecked,
+                                    DocumentStatus = DocumentStatus.Added,
                                     DocContractorId = row["KONTRAHID"].ToString(),
                                     DocContractorName = row["KONTRAHNAZWA"].ToString(),
                                     DocContractorVatId = row["NIP"].ToString(),

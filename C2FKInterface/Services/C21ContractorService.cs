@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace C2FKInterface.Services
 {
-    public class ContractorService : IContractorService
+    public class C21ContractorService : IContractorService
     {
         private readonly DbConnectionSettings _dbConnectionSettings;
-        public ContractorService(DbConnectionSettings dbConnectionSettings)
+        public C21ContractorService(DbConnectionSettings dbConnectionSettings)
         {
             _dbConnectionSettings = dbConnectionSettings;
             DataConnection.DefaultSettings = new DbSettings(_dbConnectionSettings.ConnStr());
@@ -62,6 +62,20 @@ namespace C2FKInterface.Services
             {
                 return await db.C21Contractors.ToListAsync();
             }
+        }
+
+        public async Task<List<string>> ProceedContractorsAsync(int debug = 1)
+        {
+            List<string> procOutput = new List<string>();
+            using (var db = new SageDb("Db"))
+            {
+                var response = await db.QueryProcAsync<string>(
+                    "[FK].[sp_C21_importKH]",
+                    new DataParameter("Debug", debug, DataType.Int32)
+                    ).ConfigureAwait(false);
+                procOutput = response.ToList();
+            }
+            return procOutput;
         }
     }
 }

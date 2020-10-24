@@ -137,3 +137,5 @@ Error Number:208,State:1,Class:16
 [16:01:39 INF] HTTP GET / responded 200 in 232.7622 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3H2BB4H8GL:00000001","SpanId":"|9a52df95-4a74e3bfb7cc826f.","TraceId":"9a52df95-4a74e3bfb7cc826f","ParentId":""}
 [18:44:13 INF] Getting the motors running... {}
 [18:44:15 INF] HTTP GET / responded 200 in 256.3857 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3JGK67OU5B:00000001","SpanId":"|291144a9-437f6a8459c49e9d.","TraceId":"291144a9-437f6a8459c49e9d","ParentId":""}
+[20:44:57 INF] Getting the motors running... {}
+[20:44:59 INF] HTTP GET / responded 200 in 213.3246 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3O9JKCE47N:00000001","SpanId":"|3c6defa8-4ac9cd669bb35e7d.","TraceId":"3c6defa8-4ac9cd669bb35e7d","ParentId":""}

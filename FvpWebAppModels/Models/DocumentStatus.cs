@@ -2,9 +2,10 @@
 {
     public enum DocumentStatus
     {
-        NotChecked,
+        Added,
         Valid,
         Invalid,
         ManyContractors,
+        SentToErp
     }
 }
