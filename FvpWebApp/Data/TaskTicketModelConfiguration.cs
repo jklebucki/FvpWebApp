@@ -59,7 +59,7 @@ namespace FvpWebApp.Data
                     TicketStatus = TicketStatus.Added,
                     TicketType = TicketType.MatchContractors,
                     CreatedAt = new DateTime(2020, 1, 1),
-                }, 
+                },
                 new TaskTicket
                 {
                     TaskTicketId = 6,

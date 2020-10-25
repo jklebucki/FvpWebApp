@@ -25,9 +25,9 @@ namespace FvpWebAppWorker.Infrastructure
             return dividedList;
         }
 
-        public static bool CheckUeCountry(List<Country> countries, string countryCode)
+        public static short CheckUeCountry(List<Country> countries, string countryCode)
         {
-            return countries.Select(c => c.Symbol).Contains(countryCode) ? true : false;
+            return (countries != null && countryCode != "PL") ? (countries.Select(c => c.Symbol).Contains(countryCode) ? (short)1 : (short)0) : (short)0;
         }
 
         public static string GetDigitsFromString(string stringWithDigist)

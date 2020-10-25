@@ -1,9 +1,7 @@
 ﻿using FvpWebAppModels.Models;
 using FvpWebAppWorker.Data;
-using LinqToDB;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Services
 {
@@ -19,7 +17,7 @@ namespace FvpWebAppWorker.Services
         public ContractorServiceResponse ContractorExist(int sourceId, string contractorSourceId)
         {
 
-            var contractor = contractors.FirstOrDefault(c =>c.ContractorSourceId == contractorSourceId && c.SourceId == sourceId);
+            var contractor = contractors.FirstOrDefault(c => c.ContractorSourceId == contractorSourceId && c.SourceId == sourceId);
             if (contractor != null)
                 return new ContractorServiceResponse
                 {

@@ -7,7 +7,7 @@ namespace FvpWebAppModels.Models
         ImportContractors,
         CheckContractors,
         MatchContractors,
-        ExportContractorsToErp, 
+        ExportContractorsToErp,
         ExportDocumentsToErp,
     }
 }

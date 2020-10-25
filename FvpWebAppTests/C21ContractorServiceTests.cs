@@ -4,7 +4,6 @@ using C2FKInterface.Models;
 using C2FKInterface.Services;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using Xunit;
 
@@ -31,7 +30,7 @@ namespace FvpWebAppTests
             {
                 id = erpContractorId,
                 skrot = "FVP-TestKh",
-                nazwa = $"FVP - Kontrahent testowy {string.Format("{0:HH:mm:ss}",DateTime.Now)}",
+                nazwa = $"FVP - Kontrahent testowy {string.Format("{0:HH:mm:ss}", DateTime.Now)}",
                 ulica = "ul. Okrzei",
                 numerDomu = "13",
                 kod = "59-220",

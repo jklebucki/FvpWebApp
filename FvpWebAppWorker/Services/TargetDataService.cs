@@ -8,9 +8,7 @@ using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Models;
 using FvpWebAppWorker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -450,6 +448,7 @@ namespace FvpWebAppWorker.Services
 
         public async Task ExportContractorsToErp(WorkerAppDbContext dbContext, TaskTicket taskTicket, Target target)
         {
+            var countries = await dbContext.Countries.ToListAsync().ConfigureAwait(false);
             await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Pending);
             var allSourcesFromTarget = await dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
             var notMatchedContractors = await dbContext.Contractors.Where(
@@ -483,13 +482,15 @@ namespace FvpWebAppWorker.Services
                     numerDomu = c.Key.EstateNumber,
                     numerMieszk = c.Key.QuartersNumber,
                     Miejscowosc = FvpWebAppUtils.TruncateToLength(c.Key.City, 40),
+                    rejon = c.Key.Province,
                     Kraj = c.Key.CountryCode,
                     kod = c.Key.PostalCode,
                     //= c.Key.Province,
                     Telefon1 = c.Key.Phone,
                     email = c.Key.Email,
                     aktywny = true,
-                    skrot = $"FVP-1-{c.Key.VatId}"
+                    skrot = $"FVP-1-{c.Key.VatId}",
+                    statusUE = FvpWebAppUtils.CheckUeCountry(countries, c.Key.CountryCode),
                 }).ToList();
 
             var c21ConnectionSettings = new DbConnectionSettings(
