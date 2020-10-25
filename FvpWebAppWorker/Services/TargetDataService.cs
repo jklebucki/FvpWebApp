@@ -450,6 +450,7 @@ namespace FvpWebAppWorker.Services
 
         public async Task ExportContractorsToErp(WorkerAppDbContext dbContext, TaskTicket taskTicket, Target target)
         {
+            await ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Pending);
             var allSourcesFromTarget = await dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
             var notMatchedContractors = await dbContext.Contractors.Where(
                 c => c.ContractorErpId == null &&
