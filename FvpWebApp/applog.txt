@@ -139,3 +139,96 @@ Error Number:208,State:1,Class:16
 [18:44:15 INF] HTTP GET / responded 200 in 256.3857 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3JGK67OU5B:00000001","SpanId":"|291144a9-437f6a8459c49e9d.","TraceId":"291144a9-437f6a8459c49e9d","ParentId":""}
 [20:44:57 INF] Getting the motors running... {}
 [20:44:59 INF] HTTP GET / responded 200 in 213.3246 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3O9JKCE47N:00000001","SpanId":"|3c6defa8-4ac9cd669bb35e7d.","TraceId":"3c6defa8-4ac9cd669bb35e7d","ParentId":""}
+[18:37:46 INF] Getting the motors running... {}
+[18:37:49 INF] HTTP GET / responded 200 in 230.4644 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3P1IOA868N:00000001","SpanId":"|72820941-4bf9ef03cae2ef1c.","TraceId":"72820941-4bf9ef03cae2ef1c","ParentId":""}
+[18:38:03 INF] HTTP GET /AccountingRecords responded 200 in 817.9043 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"66f263ac-750f-4d31-9f0f-415162b39936","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1IOA868N:00000003","SpanId":"|72820942-4bf9ef03cae2ef1c.","TraceId":"72820942-4bf9ef03cae2ef1c","ParentId":""}
+[18:38:07 INF] HTTP GET /AccountingRecords/Create responded 200 in 98.5842 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3P1IOA868N:00000005","SpanId":"|72820943-4bf9ef03cae2ef1c.","TraceId":"72820943-4bf9ef03cae2ef1c","ParentId":""}
+[18:38:40 INF] HTTP GET /AccountingRecords responded 200 in 29.8508 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"66f263ac-750f-4d31-9f0f-415162b39936","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1IOA868N:0000000B","SpanId":"|72820946-4bf9ef03cae2ef1c.","TraceId":"72820946-4bf9ef03cae2ef1c","ParentId":""}
+[18:42:05 INF] Getting the motors running... {}
+[18:42:08 INF] HTTP GET / responded 200 in 222.7426 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3P1L5H0A5D:00000001","SpanId":"|1f2b8834-47b13be92f8549e6.","TraceId":"1f2b8834-47b13be92f8549e6","ParentId":""}
+[18:42:17 INF] HTTP GET /AccountingRecords responded 200 in 808.9728 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"aeb96958-4791-4b68-9817-88a85a3c3845","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1L5H0A5D:00000003","SpanId":"|1f2b8835-47b13be92f8549e6.","TraceId":"1f2b8835-47b13be92f8549e6","ParentId":""}
+[18:42:19 ERR] HTTP GET /AccountingRecords/Create responded 500 in 257.1871 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b6b533b3-719f-4afb-b8b2-731ab87903fc","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Create (FvpWebApp)","RequestId":"0HM3P1L5H0A5D:00000005","SpanId":"|1f2b8836-47b13be92f8549e6.","TraceId":"1f2b8836-47b13be92f8549e6","ParentId":""}
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot implicitly convert type 'System.Collections.Generic.List<FvpWebAppModels.Models.Source>' to 'System.Collections.Generic.IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>'. An explicit conversion exists (are you missing a cast?)
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at AspNetCore.Views_AccountingRecords_Create.<ExecuteAsync>b__19_0() in C:\VSC\repos\FvpWebApp\FvpWebApp\Views\AccountingRecords\Create.cshtml:line 18
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.GetChildContentAsync(Boolean useCachedResult, HtmlEncoder encoder)
+   at Microsoft.AspNetCore.Mvc.TagHelpers.RenderAtEndOfFormTagHelper.ProcessAsync(TagHelperContext context, TagHelperOutput output)
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner.<RunAsync>g__Awaited|0_0(Task task, TagHelperExecutionContext executionContext, Int32 i, Int32 count)
+   at AspNetCore.Views_AccountingRecords_Create.ExecuteAsync() in C:\VSC\repos\FvpWebApp\FvpWebApp\Views\AccountingRecords\Create.cshtml:line 5
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+[18:42:19 ERR] An unhandled exception has occurred while executing the request. {"EventId":{"Id":1,"Name":"UnhandledException"},"SourceContext":"Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware","RequestId":"0HM3P1L5H0A5D:00000005","RequestPath":"/AccountingRecords/Create","SpanId":"|1f2b8836-47b13be92f8549e6.","TraceId":"1f2b8836-47b13be92f8549e6","ParentId":""}
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot implicitly convert type 'System.Collections.Generic.List<FvpWebAppModels.Models.Source>' to 'System.Collections.Generic.IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>'. An explicit conversion exists (are you missing a cast?)
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at AspNetCore.Views_AccountingRecords_Create.<ExecuteAsync>b__19_0() in C:\VSC\repos\FvpWebApp\FvpWebApp\Views\AccountingRecords\Create.cshtml:line 18
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.GetChildContentAsync(Boolean useCachedResult, HtmlEncoder encoder)
+   at Microsoft.AspNetCore.Mvc.TagHelpers.RenderAtEndOfFormTagHelper.ProcessAsync(TagHelperContext context, TagHelperOutput output)
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner.<RunAsync>g__Awaited|0_0(Task task, TagHelperExecutionContext executionContext, Int32 i, Int32 count)
+   at AspNetCore.Views_AccountingRecords_Create.ExecuteAsync() in C:\VSC\repos\FvpWebApp\FvpWebApp\Views\AccountingRecords\Create.cshtml:line 5
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.MigrationsEndPointMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+[18:44:51 INF] Getting the motors running... {}
+[18:44:54 INF] HTTP GET / responded 200 in 221.8958 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3P1MMVCE8D:00000001","SpanId":"|622ba70a-439a433fb3d643c1.","TraceId":"622ba70a-439a433fb3d643c1","ParentId":""}
+[18:44:58 INF] HTTP GET /api/jobs responded 404 in 0.0717 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3P1MMVCE8D:00000003","SpanId":"|622ba70b-439a433fb3d643c1.","TraceId":"622ba70b-439a433fb3d643c1","ParentId":""}
+[18:45:06 INF] HTTP GET /AccountingRecords responded 200 in 815.7170 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"3a184d91-caf8-4643-927a-c09448f65d9b","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1MMVCE8D:00000005","SpanId":"|622ba70c-439a433fb3d643c1.","TraceId":"622ba70c-439a433fb3d643c1","ParentId":""}
+[18:45:08 INF] HTTP GET /AccountingRecords/Create responded 200 in 150.3483 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"a61c16ff-b81f-411e-bf82-ff6658c4c84b","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Create (FvpWebApp)","RequestId":"0HM3P1MMVCE8D:00000007","SpanId":"|622ba70d-439a433fb3d643c1.","TraceId":"622ba70d-439a433fb3d643c1","ParentId":""}
+[18:45:27 INF] HTTP POST /AccountingRecords/Create responded 200 in 34.7335 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3P1MMVCE8D:00000009","SpanId":"|622ba70e-439a433fb3d643c1.","TraceId":"622ba70e-439a433fb3d643c1","ParentId":""}
+[18:45:33 INF] HTTP GET /AccountingRecords responded 200 in 13.0130 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"3a184d91-caf8-4643-927a-c09448f65d9b","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1MMVCE8D:0000000B","SpanId":"|622ba70f-439a433fb3d643c1.","TraceId":"622ba70f-439a433fb3d643c1","ParentId":""}
+[18:45:34 INF] HTTP GET /AccountingRecords/Create responded 200 in 13.8370 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"a61c16ff-b81f-411e-bf82-ff6658c4c84b","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Create (FvpWebApp)","RequestId":"0HM3P1MMVCE8D:0000000D","SpanId":"|622ba710-439a433fb3d643c1.","TraceId":"622ba710-439a433fb3d643c1","ParentId":""}
+[18:45:43 INF] HTTP GET /AccountingRecords responded 200 in 8.3835 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"3a184d91-caf8-4643-927a-c09448f65d9b","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1MMVCE8D:0000000F","SpanId":"|622ba711-439a433fb3d643c1.","TraceId":"622ba711-439a433fb3d643c1","ParentId":""}
+[18:45:47 INF] HTTP GET /AccountingRecords responded 200 in 8.8255 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"3a184d91-caf8-4643-927a-c09448f65d9b","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1MMVCE8D:00000011","SpanId":"|622ba712-439a433fb3d643c1.","TraceId":"622ba712-439a433fb3d643c1","ParentId":""}
+[18:52:30 INF] Getting the motors running... {}
+[18:52:32 INF] HTTP GET / responded 200 in 225.7054 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3P1QVL3REH:00000001","SpanId":"|8057d7d9-47a3c38c0ec4a3f2.","TraceId":"8057d7d9-47a3c38c0ec4a3f2","ParentId":""}
+[18:52:38 INF] HTTP GET /AccountingRecords responded 200 in 814.7275 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"2061ff54-a9c5-49aa-bca2-deea86cce204","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1QVL3REH:00000003","SpanId":"|8057d7da-47a3c38c0ec4a3f2.","TraceId":"8057d7da-47a3c38c0ec4a3f2","ParentId":""}
+[18:52:40 INF] HTTP GET /AccountingRecords/Create responded 200 in 152.4751 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"58aef4a5-16fc-4ece-aa28-f0aad5e5c34f","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Create (FvpWebApp)","RequestId":"0HM3P1QVL3REH:00000005","SpanId":"|8057d7db-47a3c38c0ec4a3f2.","TraceId":"8057d7db-47a3c38c0ec4a3f2","ParentId":""}
+[18:53:16 INF] HTTP POST /AccountingRecords/Create responded 302 in 186.4310 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ad5ae58c-6583-433b-aa17-0f896430c2c4","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Create (FvpWebApp)","RequestId":"0HM3P1QVL3REH:00000007","SpanId":"|8057d7dc-47a3c38c0ec4a3f2.","TraceId":"8057d7dc-47a3c38c0ec4a3f2","ParentId":""}
+[18:53:16 INF] HTTP GET /AccountingRecords responded 200 in 11.0482 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"2061ff54-a9c5-49aa-bca2-deea86cce204","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1QVL3REH:00000009","SpanId":"|8057d7dd-47a3c38c0ec4a3f2.","TraceId":"8057d7dd-47a3c38c0ec4a3f2","ParentId":""}
+[18:53:40 INF] HTTP GET /AccountingRecords/Delete/1 responded 200 in 72.6135 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"cde217a7-6e44-4b25-92f4-3f6148983675","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Delete (FvpWebApp)","RequestId":"0HM3P1QVL3REH:0000000B","SpanId":"|8057d7de-47a3c38c0ec4a3f2.","TraceId":"8057d7de-47a3c38c0ec4a3f2","ParentId":""}
+[18:53:41 INF] HTTP POST /AccountingRecords/Delete/1 responded 302 in 48.1422 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"25ecf06f-0533-4338-8890-ec30f238c77d","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.DeleteConfirmed (FvpWebApp)","RequestId":"0HM3P1QVL3REH:0000000D","SpanId":"|8057d7df-47a3c38c0ec4a3f2.","TraceId":"8057d7df-47a3c38c0ec4a3f2","ParentId":""}
+[18:53:41 INF] HTTP GET /AccountingRecords responded 200 in 5.0186 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"2061ff54-a9c5-49aa-bca2-deea86cce204","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1QVL3REH:0000000F","SpanId":"|8057d7e0-47a3c38c0ec4a3f2.","TraceId":"8057d7e0-47a3c38c0ec4a3f2","ParentId":""}
+[18:53:44 INF] HTTP GET /AccountingRecords/Delete/1 responded 404 in 10.3868 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"cde217a7-6e44-4b25-92f4-3f6148983675","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Delete (FvpWebApp)","RequestId":"0HM3P1QVL3REH:00000011","SpanId":"|8057d7e1-47a3c38c0ec4a3f2.","TraceId":"8057d7e1-47a3c38c0ec4a3f2","ParentId":""}
+[18:53:51 INF] HTTP GET /AccountingRecords/ responded 200 in 7.1688 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"2061ff54-a9c5-49aa-bca2-deea86cce204","ActionName":"FvpWebApp.Controllers.AccountingRecordsController.Index (FvpWebApp)","RequestId":"0HM3P1QVL3REH:00000013","SpanId":"|8057d7e2-47a3c38c0ec4a3f2.","TraceId":"8057d7e2-47a3c38c0ec4a3f2","ParentId":""}
