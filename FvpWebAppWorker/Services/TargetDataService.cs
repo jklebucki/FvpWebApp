@@ -1,4 +1,5 @@
 using C2FKInterface.Data;
+using C2FKInterface.Models;
 using C2FKInterface.Services;
 using FvpWebAppModels;
 using FvpWebAppModels.Models;
@@ -7,7 +8,9 @@ using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Models;
 using FvpWebAppWorker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -404,6 +407,7 @@ namespace FvpWebAppWorker.Services
                 target.DatabaseName);
             C21ContractorService contractorService = new C21ContractorService(c21ConnectionSettings);
             var erpContractors = await contractorService.GetC21FvpContractorsAsync(false).ConfigureAwait(false);
+            erpContractors.Where(c => c.Country == "PL" || string.IsNullOrEmpty(c.Country)).ToList().ForEach(c => c.VatId = FvpWebAppUtils.GetDigitsFromString(c.VatId));
             var allSourcesFromTarget = await dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
             var contractors = await dbContext.Contractors.Where(
                 c => c.ContractorErpId == null &&
@@ -417,7 +421,11 @@ namespace FvpWebAppWorker.Services
                     string vatId = contractor.VatId;
                     if (contractor.CountryCode == "PL")
                         vatId = FvpWebAppUtils.GetDigitsFromString(contractor.VatId);
-                    var erpcontractor = erpContractors.FirstOrDefault(c => c.VatId == vatId && c.Active);
+                    var erpcontractor = erpContractors.FirstOrDefault(c => c.VatId == vatId && c.Active && c.Name == contractor.Name);
+                    if (erpcontractor == null)
+                        erpcontractor = erpContractors.FirstOrDefault(c => c.VatId == vatId && c.Active);
+                    if (erpcontractor == null)
+                        erpcontractor = erpContractors.FirstOrDefault(c => c.VatId == vatId && !c.Active && c.Name == contractor.Name);
                     if (erpcontractor == null)
                         erpcontractor = erpContractors.FirstOrDefault(c => c.VatId == vatId && !c.Active);
                     if (erpcontractor != null)
@@ -439,9 +447,65 @@ namespace FvpWebAppWorker.Services
                 }
             }
         }
+
         public async Task ExportContractorsToErp(WorkerAppDbContext dbContext, TaskTicket taskTicket, Target target)
         {
-            await Task.FromResult("nothing");
+            var allSourcesFromTarget = await dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
+            var notMatchedContractors = await dbContext.Contractors.Where(
+                c => c.ContractorErpId == null &&
+                c.GusContractorEntriesCount == 1 &&
+                c.ContractorStatus == ContractorStatus.Valid &&
+                allSourcesFromTarget.Contains((int)c.SourceId) &&
+                c.ContractorErpPosition == null).ToListAsync().ConfigureAwait(false);
+            var c21Contractors = notMatchedContractors.GroupBy(c =>
+                new
+                {
+                    c.VatId,
+                    c.Regon,
+                    c.Name,
+                    c.Street,
+                    c.EstateNumber,
+                    c.QuartersNumber,
+                    c.City,
+                    c.CountryCode,
+                    c.PostalCode,
+                    c.Province,
+                    c.Phone,
+                    c.Email,
+                }).Select(c =>
+                new C21Contractor
+                {
+                    nip = c.Key.VatId,
+                    Regon = c.Key.Regon,
+                    nazwa = FvpWebAppUtils.TruncateToLength(c.Key.Name, 100),
+                    ulica = FvpWebAppUtils.TruncateToLength(c.Key.Street.Replace("ul. ", "").Replace("UL. ", ""), 35),
+                    numerDomu = c.Key.EstateNumber,
+                    numerMieszk = c.Key.QuartersNumber,
+                    Miejscowosc = FvpWebAppUtils.TruncateToLength(c.Key.City, 40),
+                    Kraj = c.Key.CountryCode,
+                    kod = c.Key.PostalCode,
+                    //= c.Key.Province,
+                    Telefon1 = c.Key.Phone,
+                    email = c.Key.Email,
+                    aktywny = true,
+                    skrot = $"FVP-1-{c.Key.VatId}"
+                }).ToList();
+
+            var c21ConnectionSettings = new DbConnectionSettings(
+                target.DatabaseAddress,
+                target.DatabaseUsername,
+                target.DatabasePassword,
+                target.DatabaseName);
+            C21ContractorService c21ContractorService = new C21ContractorService(c21ConnectionSettings);
+            await c21ContractorService.AddContractorsAsync(c21Contractors);
+            var output = await c21ContractorService.ProceedContractorsAsync();
+            string outputData = "";
+            foreach (var item in output)
+            {
+                outputData += "; " + item;
+            }
+            Console.WriteLine(outputData);
+            await MatchContractors(dbContext, taskTicket, target);
         }
     }
 }

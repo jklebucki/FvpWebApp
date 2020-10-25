@@ -32,7 +32,15 @@ namespace FvpWebAppWorker.Infrastructure
 
         public static string GetDigitsFromString(string stringWithDigist)
         {
-            return new String(stringWithDigist.Where(Char.IsDigit).ToArray());
+            return new string(stringWithDigist.Where(Char.IsDigit).ToArray());
+        }
+
+        public static string TruncateToLength(string stringToCut, int length)
+        {
+            if (stringToCut.Length > length)
+                return stringToCut.Substring(0, length);
+            else
+                return stringToCut;
         }
     }
 }
