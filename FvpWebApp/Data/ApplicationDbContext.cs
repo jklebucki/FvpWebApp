@@ -18,6 +18,7 @@ namespace FvpWebApp.Data
         public DbSet<TaskTicket> TaskTickets { get; set; }
         public DbSet<Contractor> Contractors { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<AccountingRecord> AccountingRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

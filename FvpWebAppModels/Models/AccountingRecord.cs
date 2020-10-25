@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace FvpWebAppModels.Models
 {
     [Table("AccountingRecords")]
-    class AccountingRecords
+    public class AccountingRecord
     {
         [Key]
-        public int AccountingRecordsId { get; set; }
-        public string Account { get; set; }
-        public string Debit { get; set; }
-        public string Credit { get; set; }
-        public char Sign { get; set; }
+        public int AccountingRecordId { get; set; }
         public int SourceId { get; set; }
+        public int RecordOrder { get; set; }
+        public string Account { get; set; }
+        public string DebitCredit { get; set; }
+        public char Sign { get; set; }
     }
 }

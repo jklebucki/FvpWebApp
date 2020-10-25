@@ -19,5 +19,6 @@ namespace FvpWebAppModels.Models
         public string Password { get; set; }
         public ICollection<Document> Documents { get; set; }
         public ICollection<Contractor> Contractors { get; set; }
+        public ICollection<AccountingRecord> AccountingRecords { get; set; }
     }
 }
