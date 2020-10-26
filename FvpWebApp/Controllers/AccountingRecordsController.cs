@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FvpWebApp.Data;
+using FvpWebAppModels.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FvpWebApp.Data;
-using FvpWebAppModels.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FvpWebApp.Controllers
 {
@@ -35,8 +33,8 @@ namespace FvpWebApp.Controllers
 
             var accountingRecord = await _context.AccountingRecords
                 .FirstOrDefaultAsync(m => m.AccountingRecordId == id);
-            if (accountingRecord == null) 
-             {
+            if (accountingRecord == null)
+            {
                 return NotFound();
             }
 

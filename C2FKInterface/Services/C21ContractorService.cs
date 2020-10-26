@@ -56,13 +56,6 @@ namespace C2FKInterface.Services
             }
         }
 
-        public async Task<List<C21Contractor>> GetC21ContractorsAsync(string vatId)
-        {
-            using (var db = new SageDb("Db"))
-            {
-                return await db.C21Contractors.ToListAsync();
-            }
-        }
 
         public async Task<List<string>> ProceedContractorsAsync(int debug = 1)
         {
