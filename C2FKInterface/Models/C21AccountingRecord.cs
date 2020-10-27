@@ -4,7 +4,7 @@ using System;
 namespace C2FKInterface.Models
 {
     [Table(Name = "C21_zapisy", Schema = "FK")]
-    class C21AccountingRecord
+    public class C21AccountingRecord
     {
         [PrimaryKey]
         public int id { get; set; }

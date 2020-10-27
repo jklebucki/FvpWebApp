@@ -7,7 +7,7 @@ namespace C2FKInterface.Services.Interfaces
     interface IDocumentService
     {
         Task<int> GetNextDocumentId(int incrementValue);
-        Task AddDocument(C21Document document);
+        Task AddDocumentAggregate(C21DocumentAggregate documentAggregate);
         Task<List<string>> ProceedDocumentsAsync(int debug = 1);
     }
 }

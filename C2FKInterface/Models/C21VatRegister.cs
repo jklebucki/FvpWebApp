@@ -4,7 +4,7 @@ using System;
 namespace C2FKInterface.Models
 {
     [Table(Name = "C21_rejVat", Schema = "FK")]
-    class C21VatRegister
+    public class C21VatRegister
     {
         [PrimaryKey]
         public int id { get; set; }

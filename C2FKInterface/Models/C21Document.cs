@@ -4,7 +4,7 @@ using System;
 namespace C2FKInterface.Models
 {
     [Table(Name = "C21_dokumenty", Schema = "FK")]
-    class C21Document
+    public class C21Document
     {
         [PrimaryKey]
         public int id { get; set; }

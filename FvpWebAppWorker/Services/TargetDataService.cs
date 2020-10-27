@@ -345,7 +345,14 @@ namespace FvpWebAppWorker.Services
                     {
                         foreach (var document in documents)
                         {
-                            var matchedContractors = contractors.Where(c => c.ContractorSourceId == document.DocContractorId && c.SourceId == document.SourceId).ToList();
+                            ///Find by name
+                            var matchedContractors = contractors.Where(c =>
+                                c.Name == document.DocContractorName &&
+                                c.VatId == FvpWebAppUtils.GetDigitsFromString(document.DocContractorVatId) &&
+                                c.SourceId == document.SourceId).ToList();
+                            if (matchedContractors == null)
+                                ///If not found by name - find by DocContractorId
+                                matchedContractors = contractors.Where(c => c.ContractorSourceId == document.DocContractorId && c.SourceId == document.SourceId).ToList();
                             if (matchedContractors != null && matchedContractors.Count > 0)
                                 document.ContractorId = matchedContractors[0].ContractorId;
                             if (matchedContractors.Count > 1)
