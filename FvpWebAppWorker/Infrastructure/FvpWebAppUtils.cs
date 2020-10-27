@@ -1,20 +1,23 @@
 ﻿using FvpWebAppModels.Models;
+using FvpWebAppWorker.Data;
+using LinqToDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Infrastructure
 {
     public class FvpWebAppUtils
     {
-        public static List<List<T>> DividedRows<T>(List<T> data, int maxSalesRows)
+        public static List<List<T>> DividedDataList<T>(List<T> data, int maxSalesRows)
         {
             List<List<T>> dividedList = new List<List<T>>();
             int divideCount = (int)Math.Ceiling((double)data.Count / (double)maxSalesRows);
             int index = 0;
-            var rows = new List<T>();
             for (int i = 1; i <= divideCount; i++)
             {
+                List<T> rows;
                 if (i < divideCount)
                     rows = data.GetRange(index, maxSalesRows);
                 else
@@ -41,6 +44,15 @@ namespace FvpWebAppWorker.Infrastructure
                 return stringToCut.Substring(0, length);
             else
                 return stringToCut;
+        }
+        public static async Task ChangeTicketStatus(WorkerAppDbContext dbContext, int ticketId, TicketStatus ticketStatus)
+        {
+            dbContext.DetachAllEntities();
+            var ticket = await dbContext.TaskTickets.FirstOrDefaultAsync(f => f.TaskTicketId == ticketId);
+            ticket.TicketStatus = ticketStatus;
+            ticket.StatusChangedAt = DateTime.Now;
+            dbContext.Update(ticket);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

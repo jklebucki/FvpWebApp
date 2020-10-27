@@ -5,7 +5,7 @@ using LinqToDB;
 using LinqToDB.Data;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace C2FKInterface.Services
@@ -28,13 +28,39 @@ namespace C2FKInterface.Services
             }
             return incrementValue;
         }
-        public Task AddDocumentAggregate(C21DocumentAggregate documentAggregate)
+        public async Task AddDocumentAggregate(C21DocumentAggregate documentAggregate)
         {
-            throw new NotImplementedException();
+            if (documentAggregate != null)
+                using (var db = new SageDb("Db"))
+                {
+                    await db.BeginTransactionAsync();
+                    try
+                    {
+                        await db.InsertAsync(documentAggregate.Document);
+                        await db.InsertAsync(documentAggregate.AccountingRecords);
+                        await db.InsertAsync(documentAggregate.VatRegisters);
+
+                        await db.CommitTransactionAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        await db.RollbackTransactionAsync();
+                    }
+                }
         }
-        public Task<List<string>> ProceedDocumentsAsync(int debug = 1)
+        public async Task<List<string>> ProceedDocumentsAsync(int debug = 1)
         {
-            throw new NotImplementedException();
+            List<string> procOutput = new List<string>();
+            using (var db = new SageDb("Db"))
+            {
+                var response = await db.QueryProcAsync<string>(
+                    "[FK].[sp_C21_importDK]",
+                    new DataParameter("Debug", debug, DataType.Int32)
+                    ).ConfigureAwait(false);
+                procOutput = response.ToList();
+            }
+            return procOutput;
         }
     }
 }

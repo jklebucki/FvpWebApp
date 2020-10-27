@@ -1,8 +1,6 @@
 ﻿using C2FKInterface.Data;
 using C2FKInterface.Services;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace FvpWebAppTests
