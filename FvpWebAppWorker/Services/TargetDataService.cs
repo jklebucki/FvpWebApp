@@ -17,16 +17,18 @@ namespace FvpWebAppWorker.Services
     class TargetDataService : ITargetDataService
     {
         private readonly ILogger _logger;
-        public TargetDataService(ILogger logger)
+        private readonly WorkerAppDbContext _dbContext;
+        public TargetDataService(ILogger logger, WorkerAppDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
-        public async Task ExportContractorsToErp(WorkerAppDbContext dbContext, TaskTicket taskTicket, Target target)
+        public async Task ExportContractorsToErp(TaskTicket taskTicket, Target target)
         {
-            var countries = await dbContext.Countries.ToListAsync().ConfigureAwait(false);
-            await FvpWebAppUtils.ChangeTicketStatus(dbContext, taskTicket.TaskTicketId, TicketStatus.Pending);
-            var allSourcesFromTarget = await dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
-            var notMatchedContractors = await dbContext.Contractors.Where(
+            var countries = await _dbContext.Countries.ToListAsync().ConfigureAwait(false);
+            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Pending);
+            var allSourcesFromTarget = await _dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
+            var notMatchedContractors = await _dbContext.Contractors.Where(
                 c => c.ContractorErpId == null &&
                 c.GusContractorEntriesCount == 1 &&
                 c.ContractorStatus == ContractorStatus.Valid &&
@@ -35,18 +37,18 @@ namespace FvpWebAppWorker.Services
             var c21Contractors = notMatchedContractors.GroupBy(c =>
                 new
                 {
-                    c.VatId,
-                    c.Regon,
-                    c.Name,
-                    c.Street,
-                    c.EstateNumber,
-                    c.QuartersNumber,
-                    c.City,
-                    c.CountryCode,
-                    c.PostalCode,
-                    c.Province,
-                    c.Phone,
-                    c.Email,
+                    VatId = string.IsNullOrEmpty(c.VatId) ? "" : c.VatId,
+                    Regon = string.IsNullOrEmpty(c.Regon) ? "" : c.Regon,
+                    Name = string.IsNullOrEmpty(c.Name) ? "" : c.Name,
+                    Street = string.IsNullOrEmpty(c.Street) ? "" : c.Street,
+                    EstateNumber = string.IsNullOrEmpty(c.EstateNumber) ? "" : c.EstateNumber,
+                    QuartersNumber = string.IsNullOrEmpty(c.QuartersNumber) ? "" : c.QuartersNumber,
+                    City = string.IsNullOrEmpty(c.City) ? "" : c.City,
+                    CountryCode = string.IsNullOrEmpty(c.CountryCode) ? "" : c.CountryCode,
+                    PostalCode = string.IsNullOrEmpty(c.PostalCode) ? "" : c.PostalCode,
+                    Province = string.IsNullOrEmpty(c.Province) ? "" : c.Province,
+                    Phone = string.IsNullOrEmpty(c.Phone) ? "" : c.Phone,
+                    Email = string.IsNullOrEmpty(c.Email) ? "" : c.Email,
                 }).Select(c =>
                 new C21Contractor
                 {
@@ -76,17 +78,17 @@ namespace FvpWebAppWorker.Services
                 outputData += "; " + item;
             }
             Console.WriteLine(outputData);
-            SystemDataService systemDataService = new SystemDataService(_logger);
-            await systemDataService.MatchContractors(dbContext, taskTicket, target);
+            SystemDataService systemDataService = new SystemDataService(_logger, _dbContext);
+            await systemDataService.MatchContractors(taskTicket, target);
         }
 
-        public async Task InsertDocumentsToTarget(WorkerAppDbContext dbContext, TaskTicket taskTicket, Target target)
+        public async Task InsertDocumentsToTarget(TaskTicket taskTicket, Target target)
         {
             C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target));
-            var documentsToInsert = await dbContext.Documents.ToListAsync();
+            var documentsToInsert = await _dbContext.Documents.ToListAsync();
         }
 
-        public Task<C21DocumentAggregate> PrepareDocumentAggregate(WorkerAppDbContext workerAppDbContext, TaskTicket taskTicket, Target target)
+        public Task<C21DocumentAggregate> PrepareDocumentAggregate(TaskTicket taskTicket, Target target)
         {
             throw new NotImplementedException();
         }

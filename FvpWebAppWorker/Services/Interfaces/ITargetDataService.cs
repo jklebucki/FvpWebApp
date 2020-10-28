@@ -7,9 +7,9 @@ namespace FvpWebAppWorker.Services.Interfaces
 {
     interface ITargetDataService
     {
-        Task InsertDocumentsToTarget(WorkerAppDbContext workerAppDbContext, TaskTicket taskTicket, Target target);
-        Task<C21DocumentAggregate> PrepareDocumentAggregate(WorkerAppDbContext workerAppDbContext, TaskTicket taskTicket, Target target);
-        Task ExportContractorsToErp(WorkerAppDbContext dbContext, TaskTicket taskTicket, Target target);
+        Task InsertDocumentsToTarget(TaskTicket taskTicket, Target target);
+        Task<C21DocumentAggregate> PrepareDocumentAggregate(TaskTicket taskTicket, Target target);
+        Task ExportContractorsToErp(TaskTicket taskTicket, Target target);
 
     }
 }

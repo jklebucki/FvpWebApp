@@ -34,7 +34,7 @@ namespace FvpWebAppWorker
                         var taskTicket = await _dbContext.TaskTickets.FirstOrDefaultAsync(s => s.TicketStatus == TicketStatus.Added).ConfigureAwait(false);
                         if (taskTicket != null)
                         {
-                            SystemDataService systemDataService = new SystemDataService(_logger);
+                            SystemDataService systemDataService = new SystemDataService(_logger, _dbContext);
                             var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
                             switch (taskTicket.TicketType)
                             {
@@ -46,7 +46,7 @@ namespace FvpWebAppWorker
                                             switch (source.Type)
                                             {
                                                 case "oracle_sben_dp":
-                                                    documents = await ProceedSbenOracleDpDocuments(_dbContext, source, taskTicket, systemDataService);
+                                                    documents = await ProceedSbenOracleDpDocuments(source, taskTicket, systemDataService);
                                                     break;
                                                 default:
                                                     await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
@@ -64,7 +64,7 @@ namespace FvpWebAppWorker
 
                                     try
                                     {
-                                        await ProceedContractors(_dbContext, documents, systemDataService).ConfigureAwait(false);
+                                        await ProceedContractors(documents, systemDataService).ConfigureAwait(false);
                                     }
                                     catch (Exception ex)
                                     {
@@ -76,7 +76,7 @@ namespace FvpWebAppWorker
                                 case TicketType.CheckContractors:
                                     try
                                     {
-                                        await systemDataService.CheckContractors(_dbContext, taskTicket.TaskTicketId);
+                                        await systemDataService.CheckContractors(taskTicket.TaskTicketId);
                                     }
                                     catch (Exception ex)
                                     {
@@ -87,7 +87,7 @@ namespace FvpWebAppWorker
                                     try
                                     {
                                         var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                        await systemDataService.MatchContractors(_dbContext, taskTicket, target);
+                                        await systemDataService.MatchContractors(taskTicket, target);
                                         await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                     }
                                     catch (Exception)
@@ -99,8 +99,8 @@ namespace FvpWebAppWorker
                                     try
                                     {
                                         var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                        TargetDataService targetDataService = new TargetDataService(_logger);
-                                        await targetDataService.ExportContractorsToErp(_dbContext, taskTicket, target);
+                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext);
+                                        await targetDataService.ExportContractorsToErp(taskTicket, target);
                                         await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                     }
                                     catch (Exception)
@@ -119,22 +119,20 @@ namespace FvpWebAppWorker
             }
         }
 
-        private async Task<List<Document>> ProceedSbenOracleDpDocuments(WorkerAppDbContext _dbContext, Source source, TaskTicket taskTicket, SystemDataService targetDataService)
+        private async Task<List<Document>> ProceedSbenOracleDpDocuments(Source source, TaskTicket taskTicket, SystemDataService systemDataService)
         {
             SBenDataService sBenDataService = new SBenDataService();
             var documentsResponse = await sBenDataService.GetDocuments(source, taskTicket).ConfigureAwait(false);
             if (documentsResponse != null && documentsResponse.Count > 0)
             {
-                await targetDataService.TransferDocuments(documentsResponse, taskTicket, _dbContext);
+                await systemDataService.TransferDocuments(documentsResponse, taskTicket);
             }
             return documentsResponse;
         }
 
-        private async Task ProceedContractors(WorkerAppDbContext _dbContext, List<Document> documents, SystemDataService targetDataService)
+        private async Task ProceedContractors(List<Document> documents, SystemDataService systemDataService)
         {
-            await targetDataService.TransferContractors(documents, _dbContext);
+            await systemDataService.TransferContractors(documents);
         }
-
-
     }
 }
