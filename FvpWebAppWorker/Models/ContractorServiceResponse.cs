@@ -1,6 +1,4 @@
-﻿using FvpWebAppModels;
-
-namespace FvpWebAppWorker.Services
+﻿namespace FvpWebAppWorker.Services
 {
     public class ContractorServiceResponse
     {

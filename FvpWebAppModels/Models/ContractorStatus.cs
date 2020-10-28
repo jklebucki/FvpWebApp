@@ -1,4 +1,4 @@
-﻿namespace FvpWebAppModels
+﻿namespace FvpWebAppModels.Models
 {
     public enum ContractorStatus
     {

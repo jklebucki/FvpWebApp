@@ -1,6 +1,5 @@
 ﻿using C2FKInterface.Models;
 using FvpWebAppModels.Models;
-using FvpWebAppWorker.Data;
 using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Services.Interfaces

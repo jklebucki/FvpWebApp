@@ -1,7 +1,6 @@
 ﻿using C2FKInterface.Data;
 using C2FKInterface.Models;
 using C2FKInterface.Services;
-using FvpWebAppModels;
 using FvpWebAppModels.Models;
 using FvpWebAppWorker.Data;
 using FvpWebAppWorker.Infrastructure;
@@ -90,7 +89,8 @@ namespace FvpWebAppWorker.Services
 
         public Task<C21DocumentAggregate> PrepareDocumentAggregate(TaskTicket taskTicket, Target target)
         {
-            throw new NotImplementedException();
+            C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target));
+            return null;
         }
 
         private DbConnectionSettings GetDbSettings(Target target)
