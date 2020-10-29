@@ -9,14 +9,14 @@ namespace FvpWebAppTests
     {
 
         [Fact]
-        public async void C21ContractorServiceProceedContractorTest()
+        public async void C21GetNextDocumentIdTest()
         {
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
             C21DocumentService documentService = new C21DocumentService(dbConnectionSettings);
 
             var output = await documentService.GetNextDocumentId(10);
 
-            Console.WriteLine($"C21ContractorServiceGetNextDocumentIdTest - Next ID: {output}");
+            Console.WriteLine($"C21GetNextDocumentIdTest - Next ID: {output}");
             Assert.True(output > 0);
         }
 
