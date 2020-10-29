@@ -26,10 +26,10 @@ namespace FvpWebAppTests
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
             C21DocumentService documentService = new C21DocumentService(dbConnectionSettings);
 
-            var output = await documentService.GetVarRegistersDefs();
+            var output = await documentService.GetVarRegistersDefs(1);
 
-            Console.WriteLine($"C21GetVatRegisterDefsTest - Defs count: {output.Count}");
-            Assert.True(output.Count > 0);
+            Console.WriteLine($"C21GetVatRegisterDefsTest - Vat register name: {output.rNazwa}");
+            Assert.True(output != null);
         }
 
         [Fact]
@@ -38,10 +38,10 @@ namespace FvpWebAppTests
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
             C21DocumentService documentService = new C21DocumentService(dbConnectionSettings);
 
-            var output = await documentService.GetYears();
+            var output = await documentService.GetYearId(new DateTime(2020, 5, 20));
 
-            Console.WriteLine($"C21GetYearsTest - Years count: {output.Count}");
-            Assert.True(output.Count > 0);
+            Console.WriteLine($"C21GetYearsTest - Year id: {output}");
+            Assert.True(output != null);
         }
     }
 }

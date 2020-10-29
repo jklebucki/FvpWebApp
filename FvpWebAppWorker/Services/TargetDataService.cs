@@ -129,7 +129,7 @@ namespace FvpWebAppWorker.Services
             c21DocumentAggregate.Document = new C21Document
             {
                 id = c21documentId,
-                rokId = 19,
+                rokId = (short)(await c21DocumentService.GetYearId(document.SaleDate)),
                 skrot = targetDocumentSettings.DocumentShortcut
 
             };

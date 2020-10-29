@@ -9,7 +9,7 @@ namespace C2FKInterface.Models
     public class C21Year
     {
         [PrimaryKey]
-        public int rokId { get; set; }
+        public short rokId { get; set; }
         [Column(Name = "katalog")]
         public string katalog { get; set; }
         [Column(Name = "zamkniety")]

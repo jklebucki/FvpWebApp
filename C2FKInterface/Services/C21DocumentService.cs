@@ -13,6 +13,8 @@ namespace C2FKInterface.Services
     public class C21DocumentService : IDocumentService
     {
         private readonly DbConnectionSettings _dbConnectionSettings;
+        private List<C21Year> years;
+        private List<C21VatRegisterDef> c21VatRegisterDefs;
         public C21DocumentService(DbConnectionSettings dbConnectionSettings)
         {
             _dbConnectionSettings = dbConnectionSettings;
@@ -28,6 +30,30 @@ namespace C2FKInterface.Services
             }
             return incrementValue;
         }
+
+        public async Task<short?> GetYearId(DateTime documentSaleDate)
+        {
+            short? yearId = null;
+            using (var db = new SageDb("Db"))
+            {
+                var year = await db.C21Years.FirstOrDefaultAsync(y => documentSaleDate >= y.poczatek && documentSaleDate <= y.koniec);
+                if (year != null)
+                    yearId = year.rokId;
+            }
+            return yearId;
+        }
+
+        public async Task<C21VatRegisterDef> GetVarRegistersDefs(int vatRegisterId)
+        {
+            if (c21VatRegisterDefs == null)
+                using (var db = new SageDb("Db"))
+                {
+                    c21VatRegisterDefs = await db.C21VatRegisterDefs.ToListAsync();
+                }
+
+            return c21VatRegisterDefs.FirstOrDefault(v => v.id == vatRegisterId);
+        }
+
         public async Task AddDocumentAggregate(C21DocumentAggregate documentAggregate)
         {
             if (documentAggregate != null)
@@ -50,25 +76,6 @@ namespace C2FKInterface.Services
                 }
         }
 
-        public async Task<List<C21VatRegisterDef>> GetVarRegistersDefs()
-        {
-            List<C21VatRegisterDef> c21VatRegisterDefs;
-            using (var db = new SageDb("Db"))
-            {
-                c21VatRegisterDefs = await db.C21VatRegisterDefs.ToListAsync();
-            }
-            return c21VatRegisterDefs;
-        }
-
-        public async Task<List<C21Year>> GetYears()
-        {
-            List<C21Year> c21Years;
-            using (var db = new SageDb("Db"))
-            {
-                c21Years = await db.C21Years.ToListAsync();
-            }
-            return c21Years;
-        }
 
         public async Task<List<string>> ProceedDocumentsAsync(int debug = 1)
         {
