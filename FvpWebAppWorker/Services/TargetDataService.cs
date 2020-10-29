@@ -101,6 +101,7 @@ namespace FvpWebAppWorker.Services
                         }
                 }
             }
+            ///TODO - insert documents to C21 tables
         }
 
         public async Task<C21DocumentAggregate> PrepareDocumentAggregate(Document document, TaskTicket taskTicket, Target target)

@@ -11,7 +11,8 @@ namespace FvpWebAppModels.Models
         public int SourceId { get; set; }
         public int RecordOrder { get; set; }
         public string Account { get; set; }
-        public string DebitCredit { get; set; }
+        public string Debit { get; set; }
+        public string Credit { get; set; }
         public char Sign { get; set; }
     }
 }

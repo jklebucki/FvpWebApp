@@ -2,7 +2,7 @@
 
 namespace FvpWebApp.Data.Migrations
 {
-    public partial class AccountingRecords : Migration
+    public partial class AccountingRecord : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,8 @@ namespace FvpWebApp.Data.Migrations
                     SourceId = table.Column<int>(nullable: false),
                     RecordOrder = table.Column<int>(nullable: false),
                     Account = table.Column<string>(nullable: true),
-                    DebitCredit = table.Column<string>(nullable: true),
+                    Debit = table.Column<string>(nullable: true),
+                    Credit = table.Column<string>(nullable: true),
                     Sign = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -29,6 +30,21 @@ namespace FvpWebApp.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TargetDocumentsSettings",
+                columns: table => new
+                {
+                    TargetDocumentSettingsId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SourceId = table.Column<int>(nullable: false),
+                    DocumentShortcut = table.Column<string>(nullable: true),
+                    VatRegisterId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TargetDocumentsSettings", x => x.TargetDocumentSettingsId);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AccountingRecords_SourceId",
                 table: "AccountingRecords",
@@ -39,6 +55,9 @@ namespace FvpWebApp.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AccountingRecords");
+
+            migrationBuilder.DropTable(
+                name: "TargetDocumentsSettings");
         }
     }
 }

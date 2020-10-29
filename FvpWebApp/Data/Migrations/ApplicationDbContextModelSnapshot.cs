@@ -29,7 +29,10 @@ namespace FvpWebApp.Data.Migrations
                     b.Property<string>("Account")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DebitCredit")
+                    b.Property<string>("Credit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Debit")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RecordOrder")
@@ -611,6 +614,27 @@ namespace FvpWebApp.Data.Migrations
                             DatabaseUsername = "sa",
                             Descryption = "Citronex MOP - Symfonia ERP"
                         });
+                });
+
+            modelBuilder.Entity("FvpWebAppModels.Models.TargetDocumentSettings", b =>
+                {
+                    b.Property<int>("TargetDocumentSettingsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DocumentShortcut")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VatRegisterId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TargetDocumentSettingsId");
+
+                    b.ToTable("TargetDocumentsSettings");
                 });
 
             modelBuilder.Entity("FvpWebAppModels.Models.TaskTicket", b =>
