@@ -72,7 +72,7 @@ namespace FvpWebAppTests
 
             var output = await contractorService.ProceedContractorsAsync();
 
-            Console.WriteLine($"C21ContractorServiceGetFvpContractorTest - contractorsReaded : {output.Count}");
+            Console.WriteLine($"C21ContractorServiceProceedContractorTest - output records : {output.Count}");
             Assert.True(output.Count > 0);
         }
     }
