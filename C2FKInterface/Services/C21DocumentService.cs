@@ -49,6 +49,27 @@ namespace C2FKInterface.Services
                     }
                 }
         }
+
+        public async Task<List<C21VatRegisterDef>> GetVarRegistersDefs()
+        {
+            List<C21VatRegisterDef> c21VatRegisterDefs;
+            using (var db = new SageDb("Db"))
+            {
+                c21VatRegisterDefs = await db.C21VatRegisterDefs.ToListAsync();
+            }
+            return c21VatRegisterDefs;
+        }
+
+        public async Task<List<C21Year>> GetYears()
+        {
+            List<C21Year> c21Years;
+            using (var db = new SageDb("Db"))
+            {
+                c21Years = await db.C21Years.ToListAsync();
+            }
+            return c21Years;
+        }
+
         public async Task<List<string>> ProceedDocumentsAsync(int debug = 1)
         {
             List<string> procOutput = new List<string>();

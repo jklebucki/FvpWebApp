@@ -8,6 +8,7 @@ using FvpWebAppWorker.Services.Interfaces;
 using LinqToDB;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -84,13 +85,55 @@ namespace FvpWebAppWorker.Services
         public async Task InsertDocumentsToTarget(TaskTicket taskTicket, Target target)
         {
             C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target));
-            var documentsToInsert = await _dbContext.Documents.ToListAsync();
+            List<C21DocumentAggregate> c21DocumentAggregates = new List<C21DocumentAggregate>();
+            var documentsToSend = await _dbContext.Documents.Where(d => d.DocumentStatus == DocumentStatus.Valid && d.SourceId == taskTicket.SourceId).ToListAsync();
+            if (documentsToSend != null)
+            {
+                foreach (var document in documentsToSend)
+                {
+                    var documentAggregate = await PrepareDocumentAggregate(document, taskTicket, target);
+                    if (documentAggregate.IsPrepared)
+                        c21DocumentAggregates.Add(documentAggregate);
+                    else
+                        foreach (var msg in documentAggregate.Messages)
+                        {
+                            _logger.LogError($"Błąd w: {msg.Key}\tKomunikat: {msg.Value}");
+                        }
+                }
+            }
         }
 
-        public Task<C21DocumentAggregate> PrepareDocumentAggregate(TaskTicket taskTicket, Target target)
+        public async Task<C21DocumentAggregate> PrepareDocumentAggregate(Document document, TaskTicket taskTicket, Target target)
         {
+            C21DocumentAggregate c21DocumentAggregate = new C21DocumentAggregate();
+
+            var documentsVatsToSend = await _dbContext.DocumentVats.Where(d => d.DocumentId == document.DocumentId).ToListAsync();
+            var accountingRecords = await _dbContext.AccountingRecords.FirstOrDefaultAsync(a => a.SourceId == taskTicket.SourceId);
+            if (accountingRecords == null)
+            {
+                c21DocumentAggregate.IsPrepared = false;
+                c21DocumentAggregate.Messages.Add(new KeyValuePair<string, string>("Zapisy księgowe", "Brak konfiguracji zapisów księgowych"));
+                return c21DocumentAggregate;
+            }
+            var targetDocumentSettings = await _dbContext.TargetDocumentsSettings.FirstOrDefaultAsync(s => s.SourceId == taskTicket.SourceId);
+            if (targetDocumentSettings == null)
+            {
+                c21DocumentAggregate.IsPrepared = false;
+                c21DocumentAggregate.Messages.Add(new KeyValuePair<string, string>("Konfiguracja dokumentu", "Brak dokumentów do wysłania"));
+                return c21DocumentAggregate;
+            }
+
             C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target));
-            return null;
+            var c21documentId = await c21DocumentService.GetNextDocumentId(1000);
+            c21DocumentAggregate.Document = new C21Document
+            {
+                id = c21documentId,
+                rokId = 19,
+                skrot = targetDocumentSettings.DocumentShortcut
+
+            };
+
+            return c21DocumentAggregate;
         }
 
         private DbConnectionSettings GetDbSettings(Target target)

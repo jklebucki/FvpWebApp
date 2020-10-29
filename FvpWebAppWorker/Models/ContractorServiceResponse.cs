@@ -1,4 +1,6 @@
-﻿namespace FvpWebAppWorker.Services
+﻿using FvpWebAppModels.Models;
+
+namespace FvpWebAppWorker.Services
 {
     public class ContractorServiceResponse
     {

@@ -8,7 +8,7 @@ namespace FvpWebAppWorker.Services
     public class ContractorService
     {
         private readonly WorkerAppDbContext _dbContex;
-        private List<Contractor> contractors;
+        private readonly List<Contractor> contractors;
         public ContractorService(WorkerAppDbContext dbContex)
         {
             _dbContex = dbContex;
@@ -27,7 +27,7 @@ namespace FvpWebAppWorker.Services
             else
                 return new ContractorServiceResponse
                 {
-                    ContractorStatus = FvpWebAppModels.ContractorStatus.NotChecked,
+                    ContractorStatus = ContractorStatus.NotChecked,
                     Exist = false
                 };
         }
