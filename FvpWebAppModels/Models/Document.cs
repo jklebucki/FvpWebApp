@@ -21,6 +21,7 @@ namespace FvpWebAppModels.Models
         public decimal Net { get; set; }
         public decimal Gross { get; set; }
         public decimal Vat { get; set; }
+        public string JpkV7 { get; set; }
         public DocumentStatus DocumentStatus { get; set; }
         public string DocContractorId { get; set; }
         public string DocContractorName { get; set; }

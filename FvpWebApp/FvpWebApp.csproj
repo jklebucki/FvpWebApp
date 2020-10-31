@@ -65,8 +65,12 @@
     <Compile Remove="Data\Migrations\20201022212445_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20201022212920_Initial.cs" />
     <Compile Remove="Data\Migrations\20201022212920_Initial.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201024185209_Initial.cs" />
+    <Compile Remove="Data\Migrations\20201024185209_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20201025172633_AccountingRecords.cs" />
     <Compile Remove="Data\Migrations\20201025172633_AccountingRecords.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201029114436_AccountingRecord.cs" />
+    <Compile Remove="Data\Migrations\20201029114436_AccountingRecord.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

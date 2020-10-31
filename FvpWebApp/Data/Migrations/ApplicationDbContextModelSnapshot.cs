@@ -406,6 +406,9 @@ namespace FvpWebApp.Data.Migrations
                     b.Property<decimal>("Gross")
                         .HasColumnType("decimal(12,4)");
 
+                    b.Property<string>("JpkV7")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Net")
                         .HasColumnType("decimal(12,4)");
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FvpWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201024185209_Initial")]
+    [Migration("20201031180247_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,39 @@ namespace FvpWebApp.Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("FvpWebAppModels.Models.AccountingRecord", b =>
+                {
+                    b.Property<int>("AccountingRecordId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Account")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Credit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Debit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RecordOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sign")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AccountingRecordId");
+
+                    b.HasIndex("SourceId");
+
+                    b.ToTable("AccountingRecords");
+                });
 
             modelBuilder.Entity("FvpWebAppModels.Models.Contractor", b =>
                 {
@@ -375,6 +408,9 @@ namespace FvpWebApp.Data.Migrations
                     b.Property<decimal>("Gross")
                         .HasColumnType("decimal(12,4)");
 
+                    b.Property<string>("JpkV7")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Net")
                         .HasColumnType("decimal(12,4)");
 
@@ -583,6 +619,27 @@ namespace FvpWebApp.Data.Migrations
                             DatabaseUsername = "sa",
                             Descryption = "Citronex MOP - Symfonia ERP"
                         });
+                });
+
+            modelBuilder.Entity("FvpWebAppModels.Models.TargetDocumentSettings", b =>
+                {
+                    b.Property<int>("TargetDocumentSettingsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DocumentShortcut")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VatRegisterId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TargetDocumentSettingsId");
+
+                    b.ToTable("TargetDocumentsSettings");
                 });
 
             modelBuilder.Entity("FvpWebAppModels.Models.TaskTicket", b =>
@@ -895,6 +952,15 @@ namespace FvpWebApp.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("FvpWebAppModels.Models.AccountingRecord", b =>
+                {
+                    b.HasOne("FvpWebAppModels.Models.Source", null)
+                        .WithMany("AccountingRecords")
+                        .HasForeignKey("SourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FvpWebAppModels.Models.Contractor", b =>

@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Data\Queries\sben - Copy.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\C2FKInterface\C2FKInterface.csproj" />
     <ProjectReference Include="..\FvpWebAppModels\FvpWebAppModels.csproj" />
   </ItemGroup>

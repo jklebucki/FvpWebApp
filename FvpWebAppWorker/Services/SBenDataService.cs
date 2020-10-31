@@ -5,6 +5,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Services
@@ -73,7 +74,8 @@ namespace FvpWebAppWorker.Services
                                     DocContractorFirm = (int)decimal.Parse(row["FIRMA"].ToString()),
                                     CreatedAt = cratedAt,
                                     DocumentVats = ParseDocumentVat(row),
-                                    TaskTicketId = ticket.TaskTicketId
+                                    TaskTicketId = ticket.TaskTicketId,
+                                    JpkV7 = JpkV7DocumentTags(row)
                                 });
                             }
                         }
@@ -91,7 +93,19 @@ namespace FvpWebAppWorker.Services
 
             return await Task.FromResult<List<Document>>(documents).ConfigureAwait(false);
         }
-        private List<DocumentVat> ParseDocumentVat(DataRow row)
+
+        public string JpkV7DocumentTags(DataRow dataRow)
+        {
+            List<string> tags = new List<string>();
+            if (int.Parse(dataRow["CZYZPAR"].ToString()) == 1)
+                tags.Add("FP");
+            if (int.Parse(dataRow["POWIAZANA"].ToString()) == 1)
+                tags.Add("TP");
+            if (int.Parse(dataRow["SPLITPAYMENT"].ToString()) == 1)
+                tags.Add("MPP");
+            return string.Join(',', tags);
+        }
+        public List<DocumentVat> ParseDocumentVat(DataRow row)
         {
             List<DocumentVat> documentVats = new List<DocumentVat>();
             if (decimal.Parse(row["NETTO_A"].ToString()) > 0)
@@ -102,6 +116,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_A"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_A"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_A"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_A"].ToString()),
+                    VatTags = row["GTU_A"].ToString() ?? "",
                 });
             }
             if (decimal.Parse(row["NETTO_B"].ToString()) > 0)
@@ -112,6 +128,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_B"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_B"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_B"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_B"].ToString()),
+                    VatTags = row["GTU_B"].ToString() ?? "",
                 });
             }
             if (decimal.Parse(row["NETTO_C"].ToString()) > 0)
@@ -122,6 +140,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_C"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_C"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_C"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_C"].ToString()),
+                    VatTags = row["GTU_C"].ToString() ?? "",
                 });
             }
             if (decimal.Parse(row["NETTO_D"].ToString()) > 0)
@@ -132,6 +152,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_D"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_D"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_D"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_D"].ToString()),
+                    VatTags = row["GTU_D"].ToString() ?? "",
                 });
             }
             if (decimal.Parse(row["NETTO_E"].ToString()) > 0)
@@ -142,6 +164,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_E"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_E"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_E"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_E"].ToString()),
+                    VatTags = row["GTU_E"].ToString() ?? "",
                 });
             }
             if (decimal.Parse(row["NETTO_F"].ToString()) > 0)
@@ -152,6 +176,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_F"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_F"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_F"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_F"].ToString()),
+                    VatTags = row["GTU_F"].ToString() ?? "",
                 });
             }
             if (decimal.Parse(row["NETTO_Z"].ToString()) > 0)
@@ -162,6 +188,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_Z"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_Z"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_Z"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_Z"].ToString()),
+                    VatTags = row["GTU_Z"].ToString() ?? "",
                 });
             }
             if (decimal.Parse(row["NETTO_NP"].ToString()) > 0)
@@ -172,6 +200,8 @@ namespace FvpWebAppWorker.Services
                     VatAmount = decimal.Parse(row["VAT_NP"].ToString()),
                     NetAmount = decimal.Parse(row["NETTO_NP"].ToString()),
                     GrossAmount = decimal.Parse(row["BRUTTO_NP"].ToString()),
+                    VatValue = decimal.Parse(row["VATPROCENT_NP"].ToString()),
+                    VatTags = row["GTU_NP"].ToString() ?? "",
                 });
             }
             return documentVats;

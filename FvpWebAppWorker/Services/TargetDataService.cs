@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace FvpWebAppWorker.Services
 {
-    class TargetDataService : ITargetDataService
+    public class TargetDataService : ITargetDataService
     {
         private readonly ILogger _logger;
         private readonly WorkerAppDbContext _dbContext;
@@ -91,7 +91,7 @@ namespace FvpWebAppWorker.Services
             {
                 foreach (var document in documentsToSend)
                 {
-                    var documentAggregate = await PrepareDocumentAggregate(document, taskTicket, target);
+                    var documentAggregate = await PrepareDocumentAggregate(c21DocumentService, document, taskTicket, target);
                     if (documentAggregate.IsPrepared)
                         c21DocumentAggregates.Add(documentAggregate);
                     else
@@ -104,12 +104,14 @@ namespace FvpWebAppWorker.Services
             ///TODO - insert documents to C21 tables
         }
 
-        public async Task<C21DocumentAggregate> PrepareDocumentAggregate(Document document, TaskTicket taskTicket, Target target)
+        public async Task<C21DocumentAggregate> PrepareDocumentAggregate(C21DocumentService c21DocumentService, Document document, TaskTicket taskTicket, Target target)
         {
+
             C21DocumentAggregate c21DocumentAggregate = new C21DocumentAggregate();
 
             var documentsVatsToSend = await _dbContext.DocumentVats.Where(d => d.DocumentId == document.DocumentId).ToListAsync();
-            var accountingRecords = await _dbContext.AccountingRecords.FirstOrDefaultAsync(a => a.SourceId == taskTicket.SourceId);
+            var accountingRecords = await _dbContext.AccountingRecords.Where(a => a.SourceId == taskTicket.SourceId).ToListAsync();
+            var documentVats = await _dbContext.DocumentVats.Where(v => v.DocumentId == document.DocumentId).ToListAsync();
             if (accountingRecords == null)
             {
                 c21DocumentAggregate.IsPrepared = false;
@@ -124,17 +126,106 @@ namespace FvpWebAppWorker.Services
                 return c21DocumentAggregate;
             }
 
-            C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target));
             var c21documentId = await c21DocumentService.GetNextDocumentId(1000);
-            c21DocumentAggregate.Document = new C21Document
+            var year = await c21DocumentService.GetYearId(document.SaleDate);
+            var vatRegisterDef = await c21DocumentService.GetVarRegistersDefs(targetDocumentSettings.VatRegisterId);
+            var contractor = await _dbContext.Contractors.FirstOrDefaultAsync(c => c.ContractorId == document.ContractorId);
+            if (year != null && contractor != null && vatRegisterDef != null)
             {
-                id = c21documentId,
-                rokId = (short)(await c21DocumentService.GetYearId(document.SaleDate)),
-                skrot = targetDocumentSettings.DocumentShortcut
+                c21DocumentAggregate.Document = new C21Document
+                {
+                    id = c21documentId,
+                    rokId = year.rokId,
+                    skrot = targetDocumentSettings.DocumentShortcut,
+                    kontrahent = contractor.ContractorErpId,
+                    nazwa = document.DocumentNumber,
+                    tresc = document.DocumentNumber,
+                    datawpr = document.DocumentDate,
+                    datadok = document.DocumentDate,
+                    dataOper = document.SaleDate,
+                    kwota = Convert.ToDouble(document.Gross),
+                    atrJpkV7 = document.JpkV7,
+                };
+                var nextAccountingRecordId = await c21DocumentService.GetNextAccountRecordtId(1000);
+                foreach (var accountingRecord in accountingRecords)
+                {
+                    c21DocumentAggregate.AccountingRecords.Add(new C21AccountingRecord
+                    {
+                        id = nextAccountingRecordId,
+                        dokId = c21documentId,
+                        pozycja = accountingRecord.RecordOrder,
+                        strona = !string.IsNullOrEmpty(accountingRecord.Debit) ? (short)0 : (short)1,
+                        kwota = GetRecordAmmount(document, accountingRecord),
+                        opis = document.DocumentNumber,
+                        synt = GetAccountPart(accountingRecord.Account, 0),
+                        poz1 = GetAccountPart(accountingRecord.Account, 1),
+                        poz2 = GetAccountPart(accountingRecord.Account, 2),
+                        poz3 = GetAccountPart(accountingRecord.Account, 3),
+                        poz4 = GetAccountPart(accountingRecord.Account, 4),
+                        poz5 = GetAccountPart(accountingRecord.Account, 5),
 
-            };
+                    });
+                    nextAccountingRecordId++;
+                }
+                var nextVatRegisterId = await c21DocumentService.GetNextVatRegistertId(1000);
+                foreach (var documentVat in documentVats)
+                {
+                    c21DocumentAggregate.VatRegisters.Add(new C21VatRegister
+                    {
+                        id = nextVatRegisterId,
+                        dokId = c21documentId,
+                        rejId = vatRegisterDef.id,
+                        okres = document.SaleDate,
+                        Oczek = 0,
+                        abc = vatRegisterDef.defAbc,
+                        nienaliczany = 0,
+                        stawka = Convert.ToDouble(documentVat.VatValue)
+                    });
+                    nextVatRegisterId++;
+                }
+            }
 
+            ///TODO - complete aggregate
             return c21DocumentAggregate;
+        }
+
+        public double GetVatValue(DocumentVat documentVat)
+        {
+            return Convert.ToDouble(Math.Round(((documentVat.GrossAmount / documentVat.NetAmount) - 1) * 100));
+        }
+
+        private double GetRecordAmmount(Document document, AccountingRecord accountingRecord)
+        {
+            var ammountType = string.IsNullOrEmpty(accountingRecord.Debit) ? accountingRecord.Debit : accountingRecord.Credit;
+            double ammount = 0;
+            switch (ammountType)
+            {
+                case "netto":
+                    ammount = Convert.ToDouble(document.Net);
+                    break;
+                case "brutto":
+                    ammount = Convert.ToDouble(document.Gross);
+                    break;
+                case "vat":
+                    ammount = Convert.ToDouble(document.Vat);
+                    break;
+            }
+            return ammount;
+        }
+
+        private int GetAccountPart(string account, int accountSection)
+        {
+            var accountParts = account.Split("-");
+            int accountSectionNumber = 0;
+            try
+            {
+                accountSectionNumber = int.Parse(accountParts[accountSection]);
+            }
+            catch
+            {
+                //ignore
+            }
+            return accountSectionNumber;
         }
 
         private DbConnectionSettings GetDbSettings(Target target)

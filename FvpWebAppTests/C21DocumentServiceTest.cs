@@ -30,6 +30,8 @@ namespace FvpWebAppTests
 
             Console.WriteLine($"C21GetVatRegisterDefsTest - Vat register name: {output.rNazwa}");
             Assert.True(output != null);
+            var outputNull = await documentService.GetVarRegistersDefs(9999);
+            Assert.True(outputNull == null);
         }
 
         [Fact]
@@ -40,8 +42,11 @@ namespace FvpWebAppTests
 
             var output = await documentService.GetYearId(new DateTime(2020, 5, 20));
 
-            Console.WriteLine($"C21GetYearsTest - Year id: {output}");
+            Console.WriteLine($"C21GetYearsTest - Year id: {output.rokId}");
             Assert.True(output != null);
+            var outputNull = await documentService.GetYearId(new DateTime(2099, 5, 20));
+            Assert.True(outputNull == null);
         }
+
     }
 }

@@ -31,16 +31,34 @@ namespace C2FKInterface.Services
             return incrementValue;
         }
 
-        public async Task<short?> GetYearId(DateTime documentSaleDate)
+        public async Task<int> GetNextAccountRecordtId(int incrementValue)
         {
-            short? yearId = null;
             using (var db = new SageDb("Db"))
             {
-                var year = await db.C21Years.FirstOrDefaultAsync(y => documentSaleDate >= y.poczatek && documentSaleDate <= y.koniec);
-                if (year != null)
-                    yearId = year.rokId;
+                var maxId = await db.C21AccountingRecords.MaxAsync(d => (int?)d.id);
+                incrementValue += maxId != null ? (int)maxId : 0;
             }
-            return yearId;
+            return incrementValue;
+        }
+
+        public async Task<int> GetNextVatRegistertId(int incrementValue)
+        {
+            using (var db = new SageDb("Db"))
+            {
+                var maxId = await db.C21VatRegisters.MaxAsync(d => (int?)d.id);
+                incrementValue += maxId != null ? (int)maxId : 0;
+            }
+            return incrementValue;
+        }
+
+        public async Task<C21Year> GetYearId(DateTime documentSaleDate)
+        {
+            if (years == null)
+                using (var db = new SageDb("Db"))
+                {
+                    years = await db.C21Years.ToListAsync();
+                }
+            return years.FirstOrDefault(y => documentSaleDate >= y.poczatek && documentSaleDate <= y.koniec);
         }
 
         public async Task<C21VatRegisterDef> GetVarRegistersDefs(int vatRegisterId)
@@ -50,9 +68,9 @@ namespace C2FKInterface.Services
                 {
                     c21VatRegisterDefs = await db.C21VatRegisterDefs.ToListAsync();
                 }
-
             return c21VatRegisterDefs.FirstOrDefault(v => v.id == vatRegisterId);
         }
+
 
         public async Task AddDocumentAggregate(C21DocumentAggregate documentAggregate)
         {

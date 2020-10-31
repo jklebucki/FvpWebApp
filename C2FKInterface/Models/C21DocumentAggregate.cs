@@ -14,6 +14,8 @@ namespace C2FKInterface.Models
         {
             IsPrepared = true;
             Messages = new List<KeyValuePair<string, string>>();
+            AccountingRecords = new List<C21AccountingRecord>();
+            VatRegisters = new List<C21VatRegister>();
         }
     }
 }

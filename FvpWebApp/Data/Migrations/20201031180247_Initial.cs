@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FvpWebApp.Data.Migrations
 {
@@ -35,6 +35,21 @@ namespace FvpWebApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SourceTypes", x => x.SourceTypeId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TargetDocumentsSettings",
+                columns: table => new
+                {
+                    TargetDocumentSettingsId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SourceId = table.Column<int>(nullable: false),
+                    DocumentShortcut = table.Column<string>(nullable: true),
+                    VatRegisterId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TargetDocumentsSettings", x => x.TargetDocumentSettingsId);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,6 +115,30 @@ namespace FvpWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AccountingRecords",
+                columns: table => new
+                {
+                    AccountingRecordId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SourceId = table.Column<int>(nullable: false),
+                    RecordOrder = table.Column<int>(nullable: false),
+                    Account = table.Column<string>(nullable: true),
+                    Debit = table.Column<string>(nullable: true),
+                    Credit = table.Column<string>(nullable: true),
+                    Sign = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountingRecords", x => x.AccountingRecordId);
+                    table.ForeignKey(
+                        name: "FK_AccountingRecords_Sources_SourceId",
+                        column: x => x.SourceId,
+                        principalTable: "Sources",
+                        principalColumn: "SourceId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Contractors",
                 columns: table => new
                 {
@@ -154,6 +193,7 @@ namespace FvpWebApp.Data.Migrations
                     Net = table.Column<decimal>(type: "decimal(12,4)", nullable: false),
                     Gross = table.Column<decimal>(type: "decimal(12,4)", nullable: false),
                     Vat = table.Column<decimal>(type: "decimal(12,4)", nullable: false),
+                    JpkV7 = table.Column<string>(nullable: true),
                     DocumentStatus = table.Column<int>(nullable: false),
                     DocContractorId = table.Column<string>(nullable: true),
                     DocContractorName = table.Column<string>(nullable: true),
@@ -289,6 +329,11 @@ namespace FvpWebApp.Data.Migrations
                 values: new object[] { 3, "I:\\DaneBP\\MOSTKI", "BPMOSTKI", "", "Stacja Paliw BP Mostki", "", 1, "bp_flat_file", "" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccountingRecords_SourceId",
+                table: "AccountingRecords",
+                column: "SourceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Contractors_SourceId",
                 table: "Contractors",
                 column: "SourceId");
@@ -329,6 +374,9 @@ namespace FvpWebApp.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AccountingRecords");
+
+            migrationBuilder.DropTable(
                 name: "Countries");
 
             migrationBuilder.DropTable(
@@ -336,6 +384,9 @@ namespace FvpWebApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "SourceTypes");
+
+            migrationBuilder.DropTable(
+                name: "TargetDocumentsSettings");
 
             migrationBuilder.DropTable(
                 name: "Documents");
