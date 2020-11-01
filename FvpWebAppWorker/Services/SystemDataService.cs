@@ -342,18 +342,24 @@ namespace FvpWebAppWorker.Services
                     {
                         foreach (var document in documents)
                         {
-                            ///Find by name
+                            //Find by name
                             var matchedContractors = contractors.Where(c =>
                                 c.Name == document.DocContractorName &&
                                 c.VatId == FvpWebAppUtils.GetDigitsFromString(document.DocContractorVatId) &&
                                 c.SourceId == document.SourceId).ToList();
+                            //If not found by name - find by DocContractorId
                             if (matchedContractors == null || matchedContractors.Count == 0)
-                                ///If not found by name - find by DocContractorId
                                 matchedContractors = contractors.Where(c => c.ContractorSourceId == document.DocContractorId && c.SourceId == document.SourceId).ToList();
                             if (matchedContractors != null && matchedContractors.Count > 0)
                                 document.ContractorId = matchedContractors[0].ContractorId;
-                            if (matchedContractors.Count > 1)
+                            //Update document status depending on the contractor status
+                            if (matchedContractors != null && matchedContractors.Count == 1 && matchedContractors[0].ContractorStatus == ContractorStatus.Valid)
+                                document.DocumentStatus = DocumentStatus.Valid;
+                            else if (matchedContractors != null && matchedContractors.Count == 1 && matchedContractors[0].ContractorStatus == ContractorStatus.Invalid)
+                                document.DocumentStatus = DocumentStatus.Invalid;
+                            else if (matchedContractors != null && matchedContractors.Count > 1)
                                 document.DocumentStatus = DocumentStatus.ManyContractors;
+
                         }
                         _dbContext.UpdateRange(contractors);
                         await _dbContext.SaveChangesAsync();

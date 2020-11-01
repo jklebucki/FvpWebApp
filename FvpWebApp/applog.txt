@@ -238,3 +238,5 @@ Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot implicitly convert
 [12:30:44 INF] HTTP GET / responded 200 in 228.8230 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3SOSUIHOFE:00000001","SpanId":"|378a6e2e-4cee44d66ae79420.","TraceId":"378a6e2e-4cee44d66ae79420","ParentId":""}
 [12:32:58 INF] Getting the motors running... {}
 [12:33:00 INF] HTTP GET / responded 200 in 223.3040 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3SOU722P63:00000001","SpanId":"|8198f6ab-45feb169ed844114.","TraceId":"8198f6ab-45feb169ed844114","ParentId":""}
+[17:00:30 INF] Getting the motors running... {}
+[17:00:32 INF] HTTP GET / responded 200 in 225.0752 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3UFT19V8SH:00000001","SpanId":"|e66f33d9-4c533037135cd2bf.","TraceId":"e66f33d9-4c533037135cd2bf","ParentId":""}

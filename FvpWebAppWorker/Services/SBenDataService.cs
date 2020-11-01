@@ -105,6 +105,7 @@ namespace FvpWebAppWorker.Services
                 tags.Add("MPP");
             return string.Join(',', tags);
         }
+
         public List<DocumentVat> ParseDocumentVat(DataRow row)
         {
             List<DocumentVat> documentVats = new List<DocumentVat>();

@@ -30,6 +30,8 @@ namespace FvpWebApp.Data
             modelBuilder.ApplyConfiguration(new TaskTicketModelConfiguration());
             modelBuilder.ApplyConfiguration(new TargetModelConfiguration());
             modelBuilder.ApplyConfiguration(new CountryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new TargetDocumentSettingsConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountingRecordConfiguration());
         }
     }
 }

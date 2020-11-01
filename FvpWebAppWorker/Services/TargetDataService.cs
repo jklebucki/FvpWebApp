@@ -84,52 +84,69 @@ namespace FvpWebAppWorker.Services
 
         public async Task InsertDocumentsToTarget(TaskTicket taskTicket, Target target)
         {
+            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Pending).ConfigureAwait(false);
             C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target));
             List<C21DocumentAggregate> c21DocumentAggregates = new List<C21DocumentAggregate>();
             var documentsToSend = await _dbContext.Documents.Where(d => d.DocumentStatus == DocumentStatus.Valid && d.SourceId == taskTicket.SourceId).ToListAsync();
             if (documentsToSend != null)
             {
+                var allDocumentVats = await _dbContext.DocumentVats.Where(v => documentsToSend.Select(i => (int?)i.DocumentId).Contains(v.DocumentId)).ToListAsync();
+                var contractors = await _dbContext.Contractors.Where(c => c.SourceId == taskTicket.SourceId).ToListAsync();
+                var targetDocumentSettings = await _dbContext.TargetDocumentsSettings.FirstOrDefaultAsync(t => t.SourceId == taskTicket.SourceId);
+                var accountingRecords = await _dbContext.AccountingRecords.Where(a => a.SourceId == taskTicket.SourceId).ToListAsync();
+                var source = await _dbContext.Sources.FirstOrDefaultAsync(s => s.SourceId == taskTicket.SourceId);
                 foreach (var document in documentsToSend)
                 {
-                    var documentAggregate = await PrepareDocumentAggregate(c21DocumentService, document, taskTicket, target);
+                    var documentAggregate = await PrepareDocumentAggregate(accountingRecords, targetDocumentSettings, contractors, allDocumentVats, c21DocumentService, document, source);
                     if (documentAggregate.IsPrepared)
+                    {
                         c21DocumentAggregates.Add(documentAggregate);
+                        Console.WriteLine($"Document count: {c21DocumentAggregates.Count}");
+                    }
                     else
                         foreach (var msg in documentAggregate.Messages)
                         {
-                            _logger.LogError($"Błąd w: {msg.Key}\tKomunikat: {msg.Value}");
+                            _logger.LogError($"{msg.Key}: {msg.Value}");
                         }
                 }
+            }
+
+            foreach (var c21DocumentAggr in c21DocumentAggregates)
+            {
+
             }
             ///TODO - insert documents to C21 tables
         }
 
-        public async Task<C21DocumentAggregate> PrepareDocumentAggregate(C21DocumentService c21DocumentService, Document document, TaskTicket taskTicket, Target target)
+        public async Task<C21DocumentAggregate> PrepareDocumentAggregate(
+            List<AccountingRecord> accountingRecords,
+            TargetDocumentSettings targetDocumentSettings,
+            List<Contractor> contractors,
+            List<DocumentVat> allDocumentVats,
+            C21DocumentService c21DocumentService,
+            Document document, Source source)
         {
 
             C21DocumentAggregate c21DocumentAggregate = new C21DocumentAggregate();
 
-            var documentsVatsToSend = await _dbContext.DocumentVats.Where(d => d.DocumentId == document.DocumentId).ToListAsync();
-            var accountingRecords = await _dbContext.AccountingRecords.Where(a => a.SourceId == taskTicket.SourceId).ToListAsync();
-            var documentVats = await _dbContext.DocumentVats.Where(v => v.DocumentId == document.DocumentId).ToListAsync();
+            var documentVats = allDocumentVats.Where(v => v.DocumentId == document.DocumentId).ToList();
             if (accountingRecords == null)
             {
                 c21DocumentAggregate.IsPrepared = false;
                 c21DocumentAggregate.Messages.Add(new KeyValuePair<string, string>("Zapisy księgowe", "Brak konfiguracji zapisów księgowych"));
                 return c21DocumentAggregate;
             }
-            var targetDocumentSettings = await _dbContext.TargetDocumentsSettings.FirstOrDefaultAsync(s => s.SourceId == taskTicket.SourceId);
             if (targetDocumentSettings == null)
             {
                 c21DocumentAggregate.IsPrepared = false;
-                c21DocumentAggregate.Messages.Add(new KeyValuePair<string, string>("Konfiguracja dokumentu", "Brak dokumentów do wysłania"));
+                c21DocumentAggregate.Messages.Add(new KeyValuePair<string, string>("Konfiguracja dokumentu", $"Nie skonfigurowano typu dokumentu dla tego źródła danych: {source.Description}"));
                 return c21DocumentAggregate;
             }
 
-            var c21documentId = await c21DocumentService.GetNextDocumentId(1000);
+            var c21documentId = 1000;//await c21DocumentService.GetNextDocumentId(1000);
             var year = await c21DocumentService.GetYearId(document.SaleDate);
             var vatRegisterDef = await c21DocumentService.GetVarRegistersDefs(targetDocumentSettings.VatRegisterId);
-            var contractor = await _dbContext.Contractors.FirstOrDefaultAsync(c => c.ContractorId == document.ContractorId);
+            var contractor = contractors.FirstOrDefault(c => c.ContractorId == document.ContractorId);
             if (year != null && contractor != null && vatRegisterDef != null)
             {
                 c21DocumentAggregate.Document = new C21Document
@@ -146,7 +163,7 @@ namespace FvpWebAppWorker.Services
                     kwota = Convert.ToDouble(document.Gross),
                     atrJpkV7 = document.JpkV7,
                 };
-                var nextAccountingRecordId = await c21DocumentService.GetNextAccountRecordtId(1000);
+                var nextAccountingRecordId = 1000;//await c21DocumentService.GetNextAccountRecordtId(1000);
                 foreach (var accountingRecord in accountingRecords)
                 {
                     c21DocumentAggregate.AccountingRecords.Add(new C21AccountingRecord
@@ -167,7 +184,7 @@ namespace FvpWebAppWorker.Services
                     });
                     nextAccountingRecordId++;
                 }
-                var nextVatRegisterId = await c21DocumentService.GetNextVatRegistertId(1000);
+                var nextVatRegisterId = 1000;//await c21DocumentService.GetNextVatRegistertId(1000);
                 foreach (var documentVat in documentVats)
                 {
                     c21DocumentAggregate.VatRegisters.Add(new C21VatRegister
@@ -179,19 +196,27 @@ namespace FvpWebAppWorker.Services
                         Oczek = 0,
                         abc = vatRegisterDef.defAbc,
                         nienaliczany = 0,
-                        stawka = Convert.ToDouble(documentVat.VatValue)
+                        stawka = GetVatValue(documentVat),
+                        netto = Convert.ToDouble(documentVat.NetAmount),
+                        brutto = Convert.ToDouble(documentVat.GrossAmount),
+                        vat = Convert.ToDouble(documentVat.VatAmount),
+                        atrJpkV7 = documentVat.VatTags
                     });
                     nextVatRegisterId++;
                 }
             }
-
-            ///TODO - complete aggregate
+            c21DocumentAggregate.IsPrepared = true;
             return c21DocumentAggregate;
         }
 
         public double GetVatValue(DocumentVat documentVat)
         {
-            return Convert.ToDouble(Math.Round(((documentVat.GrossAmount / documentVat.NetAmount) - 1) * 100));
+            if (new string[] { "F", "NP" }.Contains(documentVat.VatCode))
+                //return Convert.ToDouble(Math.Round(((documentVat.GrossAmount / documentVat.NetAmount) - 1) * 100));
+                return -2;
+            if (documentVat.VatCode == "E")
+                return -1;
+            return Convert.ToDouble(documentVat.VatValue);
         }
 
         private double GetRecordAmmount(Document document, AccountingRecord accountingRecord)

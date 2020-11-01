@@ -72,6 +72,7 @@ namespace FvpWebAppWorker
                                     }
                                     break;
                                 case TicketType.ImportContractors:
+                                    await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                     break;
                                 case TicketType.CheckContractors:
                                     try
@@ -101,6 +102,19 @@ namespace FvpWebAppWorker
                                         var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
                                         TargetDataService targetDataService = new TargetDataService(_logger, _dbContext);
                                         await targetDataService.ExportContractorsToErp(taskTicket, target);
+                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                    }
+                                    break;
+                                case TicketType.ExportDocumentsToErp:
+                                    try
+                                    {
+                                        var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
+                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext);
+                                        await targetDataService.InsertDocumentsToTarget(taskTicket, target);
                                         await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                     }
                                     catch (Exception)

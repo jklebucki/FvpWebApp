@@ -15,6 +15,7 @@ namespace C2FKInterface.Services
         private readonly DbConnectionSettings _dbConnectionSettings;
         private List<C21Year> years;
         private List<C21VatRegisterDef> c21VatRegisterDefs;
+        private List<C21DocumentDefinition> c21DocumentDefinitions;
         public C21DocumentService(DbConnectionSettings dbConnectionSettings)
         {
             _dbConnectionSettings = dbConnectionSettings;
@@ -61,6 +62,16 @@ namespace C2FKInterface.Services
             return years.FirstOrDefault(y => documentSaleDate >= y.poczatek && documentSaleDate <= y.koniec);
         }
 
+        public async Task<C21DocumentDefinition> GetDocumentDefinition(string documentShortcut, short yearId)
+        {
+            if (c21DocumentDefinitions == null)
+                using (var db = new SageDb("Db"))
+                {
+                    c21DocumentDefinitions = await db.C21DocumentDefinitions.ToListAsync();
+                }
+            return c21DocumentDefinitions.FirstOrDefault(d => d.rokId == yearId && d.dSkrot == documentShortcut);
+        }
+
         public async Task<C21VatRegisterDef> GetVarRegistersDefs(int vatRegisterId)
         {
             if (c21VatRegisterDefs == null)
@@ -70,7 +81,6 @@ namespace C2FKInterface.Services
                 }
             return c21VatRegisterDefs.FirstOrDefault(v => v.id == vatRegisterId);
         }
-
 
         public async Task AddDocumentAggregate(C21DocumentAggregate documentAggregate)
         {
