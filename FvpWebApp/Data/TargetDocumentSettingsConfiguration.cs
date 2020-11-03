@@ -8,6 +8,7 @@ namespace FvpWebApp.Data
     {
         public void Configure(EntityTypeBuilder<TargetDocumentSettings> builder)
         {
+            builder.HasIndex(p => p.DocumentShortcut).HasName("IX_DocSettingsShortcut").IsUnique();
             builder.HasData(
                 new TargetDocumentSettings
                 {

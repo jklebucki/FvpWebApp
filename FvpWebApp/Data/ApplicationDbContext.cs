@@ -20,6 +20,7 @@ namespace FvpWebApp.Data
         public DbSet<Country> Countries { get; set; }
         public DbSet<AccountingRecord> AccountingRecords { get; set; }
         public DbSet<TargetDocumentSettings> TargetDocumentsSettings { get; set; }
+        public DbSet<VatRegister> VatRegisters { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +33,7 @@ namespace FvpWebApp.Data
             modelBuilder.ApplyConfiguration(new CountryModelConfiguration());
             modelBuilder.ApplyConfiguration(new TargetDocumentSettingsConfiguration());
             modelBuilder.ApplyConfiguration(new AccountingRecordConfiguration());
+            modelBuilder.ApplyConfiguration(new VatRegisterConfiguration());
         }
     }
 }

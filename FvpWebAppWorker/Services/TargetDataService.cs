@@ -18,10 +18,12 @@ namespace FvpWebAppWorker.Services
     {
         private readonly ILogger _logger;
         private readonly WorkerAppDbContext _dbContext;
-        public TargetDataService(ILogger logger, WorkerAppDbContext dbContext)
+        private List<string> _procOutput;
+        public TargetDataService(ILogger logger, WorkerAppDbContext dbContext, List<string> procOutput)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _procOutput = procOutput;
         }
         public async Task ExportContractorsToErp(TaskTicket taskTicket, Target target)
         {
@@ -85,37 +87,57 @@ namespace FvpWebAppWorker.Services
         public async Task InsertDocumentsToTarget(TaskTicket taskTicket, Target target)
         {
             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Pending).ConfigureAwait(false);
-            C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target));
-            List<C21DocumentAggregate> c21DocumentAggregates = new List<C21DocumentAggregate>();
+            C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target), _procOutput);
+            //List<C21DocumentAggregate> c21DocumentAggregates = new List<C21DocumentAggregate>();
             var documentsToSend = await _dbContext.Documents.Where(d => d.DocumentStatus == DocumentStatus.Valid && d.SourceId == taskTicket.SourceId).ToListAsync();
             if (documentsToSend != null)
             {
+                documentsToSend = documentsToSend.OrderBy(d => d.DocumentDate).ToList();
                 var allDocumentVats = await _dbContext.DocumentVats.Where(v => documentsToSend.Select(i => (int?)i.DocumentId).Contains(v.DocumentId)).ToListAsync();
                 var contractors = await _dbContext.Contractors.Where(c => c.SourceId == taskTicket.SourceId).ToListAsync();
                 var targetDocumentSettings = await _dbContext.TargetDocumentsSettings.FirstOrDefaultAsync(t => t.SourceId == taskTicket.SourceId);
                 var accountingRecords = await _dbContext.AccountingRecords.Where(a => a.SourceId == taskTicket.SourceId).ToListAsync();
                 var source = await _dbContext.Sources.FirstOrDefaultAsync(s => s.SourceId == taskTicket.SourceId);
+                Console.WriteLine($"Source: {source.Description} Start prep.: {DateTime.Now}");
+                int docCounter = 0;
+                int insertCounter = 0;
                 foreach (var document in documentsToSend)
                 {
                     var documentAggregate = await PrepareDocumentAggregate(accountingRecords, targetDocumentSettings, contractors, allDocumentVats, c21DocumentService, document, source);
                     if (documentAggregate.IsPrepared)
                     {
-                        c21DocumentAggregates.Add(documentAggregate);
-                        Console.WriteLine($"Document count: {c21DocumentAggregates.Count}");
+                        //c21DocumentAggregates.Add(documentAggregate);
+                        try
+                        {
+                            await c21DocumentService.AddDocumentAggregate(documentAggregate).ConfigureAwait(false);
+                            document.DocumentStatus = DocumentStatus.SentToC2FK;
+                            _dbContext.Update(document);
+                            await _dbContext.SaveChangesAsync();
+                            insertCounter++;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex.Message);
+                        }
                     }
                     else
                         foreach (var msg in documentAggregate.Messages)
                         {
                             _logger.LogError($"{msg.Key}: {msg.Value}");
                         }
+
+                    docCounter++;
+                    if (insertCounter >= 300 || docCounter == documentsToSend.Count)
+                    {
+                        c21DocumentService.ProceedDocumentsAsync(docCounter, taskTicket.TaskTicketId);
+                        Console.WriteLine($"Added documents: {insertCounter} End: {DateTime.Now}");
+                        insertCounter = 0;
+                    }
+
+
                 }
+                Console.WriteLine($"Source: {source.Description} End prep.: {DateTime.Now} Documents: {docCounter}");
             }
-
-            foreach (var c21DocumentAggr in c21DocumentAggregates)
-            {
-
-            }
-            ///TODO - insert documents to C21 tables
         }
 
         public async Task<C21DocumentAggregate> PrepareDocumentAggregate(
@@ -145,7 +167,8 @@ namespace FvpWebAppWorker.Services
 
             var c21documentId = 1000;//await c21DocumentService.GetNextDocumentId(1000);
             var year = await c21DocumentService.GetYearId(document.SaleDate);
-            var vatRegisterDef = await c21DocumentService.GetVarRegistersDefs(targetDocumentSettings.VatRegisterId);
+            var docTypDef = await c21DocumentService.GetDocumentDefinition(targetDocumentSettings.DocumentShortcut, year.rokId);
+            var vatRegisterDef = await c21DocumentService.GetVarRegistersDefs(docTypDef.rejestr);
             var contractor = contractors.FirstOrDefault(c => c.ContractorId == document.ContractorId);
             if (year != null && contractor != null && vatRegisterDef != null)
             {
@@ -154,23 +177,26 @@ namespace FvpWebAppWorker.Services
                     id = c21documentId,
                     rokId = year.rokId,
                     skrot = targetDocumentSettings.DocumentShortcut,
-                    kontrahent = contractor.ContractorErpId,
+                    kontrahent = contractor.ContractorErpPosition,
                     nazwa = document.DocumentNumber,
                     tresc = document.DocumentNumber,
-                    datawpr = document.DocumentDate,
+                    datawpr = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                     datadok = document.DocumentDate,
                     dataOper = document.SaleDate,
                     kwota = Convert.ToDouble(document.Gross),
+                    sygnatura = string.Empty,
+                    kontoplatnosci = string.Empty,
                     atrJpkV7 = document.JpkV7,
                 };
-                var nextAccountingRecordId = 1000;//await c21DocumentService.GetNextAccountRecordtId(1000);
+                var nextAccountingRecordId = 1000;
                 foreach (var accountingRecord in accountingRecords)
                 {
                     c21DocumentAggregate.AccountingRecords.Add(new C21AccountingRecord
                     {
                         id = nextAccountingRecordId,
                         dokId = c21documentId,
-                        pozycja = accountingRecord.RecordOrder,
+                        pozycja = 0,
+                        rozbicie = (short)(accountingRecord.RecordOrder - 1),
                         strona = !string.IsNullOrEmpty(accountingRecord.Debit) ? (short)0 : (short)1,
                         kwota = GetRecordAmmount(document, accountingRecord),
                         opis = document.DocumentNumber,
@@ -184,7 +210,7 @@ namespace FvpWebAppWorker.Services
                     });
                     nextAccountingRecordId++;
                 }
-                var nextVatRegisterId = 1000;//await c21DocumentService.GetNextVatRegistertId(1000);
+                var nextVatRegisterId = 1000;
                 foreach (var documentVat in documentVats)
                 {
                     c21DocumentAggregate.VatRegisters.Add(new C21VatRegister
@@ -221,7 +247,7 @@ namespace FvpWebAppWorker.Services
 
         private double GetRecordAmmount(Document document, AccountingRecord accountingRecord)
         {
-            var ammountType = string.IsNullOrEmpty(accountingRecord.Debit) ? accountingRecord.Debit : accountingRecord.Credit;
+            var ammountType = !string.IsNullOrEmpty(accountingRecord.Debit) ? accountingRecord.Debit : accountingRecord.Credit;
             double ammount = 0;
             switch (ammountType)
             {

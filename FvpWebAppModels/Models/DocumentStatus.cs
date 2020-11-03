@@ -6,7 +6,7 @@
         Valid,
         Invalid,
         ManyContractors,
-        SentToErp,
+        SentToC2FK,
         DoNotSentToErp,
     }
 }

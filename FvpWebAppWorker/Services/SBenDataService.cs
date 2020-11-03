@@ -109,7 +109,7 @@ namespace FvpWebAppWorker.Services
         public List<DocumentVat> ParseDocumentVat(DataRow row)
         {
             List<DocumentVat> documentVats = new List<DocumentVat>();
-            if (decimal.Parse(row["NETTO_A"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_A"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {
@@ -121,7 +121,7 @@ namespace FvpWebAppWorker.Services
                     VatTags = row["GTU_A"].ToString() ?? "",
                 });
             }
-            if (decimal.Parse(row["NETTO_B"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_B"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {
@@ -133,7 +133,7 @@ namespace FvpWebAppWorker.Services
                     VatTags = row["GTU_B"].ToString() ?? "",
                 });
             }
-            if (decimal.Parse(row["NETTO_C"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_C"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {
@@ -145,7 +145,7 @@ namespace FvpWebAppWorker.Services
                     VatTags = row["GTU_C"].ToString() ?? "",
                 });
             }
-            if (decimal.Parse(row["NETTO_D"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_D"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {
@@ -157,7 +157,7 @@ namespace FvpWebAppWorker.Services
                     VatTags = row["GTU_D"].ToString() ?? "",
                 });
             }
-            if (decimal.Parse(row["NETTO_E"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_E"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {
@@ -169,7 +169,7 @@ namespace FvpWebAppWorker.Services
                     VatTags = row["GTU_E"].ToString() ?? "",
                 });
             }
-            if (decimal.Parse(row["NETTO_F"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_F"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {
@@ -181,7 +181,7 @@ namespace FvpWebAppWorker.Services
                     VatTags = row["GTU_F"].ToString() ?? "",
                 });
             }
-            if (decimal.Parse(row["NETTO_Z"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_Z"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {
@@ -193,7 +193,7 @@ namespace FvpWebAppWorker.Services
                     VatTags = row["GTU_Z"].ToString() ?? "",
                 });
             }
-            if (decimal.Parse(row["NETTO_NP"].ToString()) > 0)
+            if (decimal.Parse(row["NETTO_NP"].ToString()) != 0)
             {
                 documentVats.Add(new DocumentVat
                 {

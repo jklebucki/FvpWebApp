@@ -17,10 +17,12 @@ namespace FvpWebAppWorker
     {
         private readonly ILogger<Worker> _logger;
         private readonly IServiceProvider _provider;
+        private List<string> _procOutput;
         public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _provider = serviceProvider;
+            _procOutput = new List<string>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -100,7 +102,7 @@ namespace FvpWebAppWorker
                                     try
                                     {
                                         var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext);
+                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext, _procOutput);
                                         await targetDataService.ExportContractorsToErp(taskTicket, target);
                                         await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                     }
@@ -113,13 +115,14 @@ namespace FvpWebAppWorker
                                     try
                                     {
                                         var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext);
+                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext, _procOutput);
                                         await targetDataService.InsertDocumentsToTarget(taskTicket, target);
                                         await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                     }
-                                    catch (Exception)
+                                    catch (Exception ex)
                                     {
                                         await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                        _logger.LogError(ex.Message);
                                     }
                                     break;
                                 default:

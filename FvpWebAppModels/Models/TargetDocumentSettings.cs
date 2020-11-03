@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FvpWebAppModels.Models
@@ -11,5 +12,6 @@ namespace FvpWebAppModels.Models
         public int SourceId { get; set; }
         public string DocumentShortcut { get; set; }
         public int VatRegisterId { get; set; }
+        public ICollection<VatRegister> VatRegisters { get; set; }
     }
 }

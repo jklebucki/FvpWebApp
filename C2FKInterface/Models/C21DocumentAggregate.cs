@@ -17,5 +17,19 @@ namespace C2FKInterface.Models
             AccountingRecords = new List<C21AccountingRecord>();
             VatRegisters = new List<C21VatRegister>();
         }
+        public void RenumberDocumentId(int documentId, int firstAccountingRecordId, int firstVatRegisterRecordId)
+        {
+            Document.id = documentId;
+            foreach(var accountingRecord in AccountingRecords)
+            {
+                accountingRecord.dokId = documentId;
+                accountingRecord.id = firstAccountingRecordId++;
+            }
+            foreach (var vatRegister in VatRegisters)
+            {
+                vatRegister.dokId = documentId;
+                vatRegister.id = firstVatRegisterRecordId++;
+            }
+        }
     }
 }

@@ -16,10 +16,12 @@ namespace C2FKInterface.Services
         private List<C21Year> years;
         private List<C21VatRegisterDef> c21VatRegisterDefs;
         private List<C21DocumentDefinition> c21DocumentDefinitions;
-        public C21DocumentService(DbConnectionSettings dbConnectionSettings)
+        public List<string> _procOutput { get; protected set; }
+        public C21DocumentService(DbConnectionSettings dbConnectionSettings, List<string> procOutput)
         {
             _dbConnectionSettings = dbConnectionSettings;
             DataConnection.DefaultSettings = new DbSettings(_dbConnectionSettings.ConnStr());
+            _procOutput = procOutput;
         }
 
         public async Task<int> GetNextDocumentId(int incrementValue)
@@ -84,6 +86,8 @@ namespace C2FKInterface.Services
 
         public async Task AddDocumentAggregate(C21DocumentAggregate documentAggregate)
         {
+
+            documentAggregate.RenumberDocumentId(await GetNextDocumentId(50), await GetNextAccountRecordtId(50), await GetNextVatRegistertId(50));
             if (documentAggregate != null)
                 using (var db = new SageDb("Db"))
                 {
@@ -91,32 +95,56 @@ namespace C2FKInterface.Services
                     try
                     {
                         await db.InsertAsync(documentAggregate.Document);
-                        await db.InsertAsync(documentAggregate.AccountingRecords);
-                        await db.InsertAsync(documentAggregate.VatRegisters);
+                        await db.BulkCopyAsync(documentAggregate.VatRegisters);
+                        await db.BulkCopyAsync(documentAggregate.AccountingRecords);
 
                         await db.CommitTransactionAsync();
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
                         await db.RollbackTransactionAsync();
+                        throw ex;
                     }
                 }
         }
 
-
-        public async Task<List<string>> ProceedDocumentsAsync(int debug = 1)
+        public async Task ClearC2FK()
         {
-            List<string> procOutput = new List<string>();
             using (var db = new SageDb("Db"))
             {
+                var docsToClear = await db.C21Documents.Where(x => x.status == -2).ToListAsync();
+                if (docsToClear != null && docsToClear.Count > 0)
+                {
+                    await db.BeginTransactionAsync();
+                    try
+                    {
+                        await db.C21Documents.Where(d => d.status == -2).DeleteAsync();
+                        await db.C21AccountingRecords.Where(r => docsToClear.Select(d => (int?)d.id).ToList().Contains(r.dokId)).DeleteAsync();
+                        await db.C21VatRegisters.Where(v => docsToClear.Select(d => (int?)d.id).ToList().Contains(v.dokId)).DeleteAsync();
+                        await db.CommitTransactionAsync();
+                    }
+                    catch
+                    {
+                        await db.RollbackTransactionAsync();
+                    }
+                }
+            }
+        }
+
+        public async void ProceedDocumentsAsync(int pack, int ticketId, int debug = 1)
+        {
+            //List<string> procOutput = new List<string>();
+            Console.WriteLine($"Task ticket id:{ticketId} Packiet size:{pack} Packiet Log lines: {_procOutput.Count} Start time: {DateTime.Now}");
+            using (var db = new SageDb("Db"))
+            {
+                db.CommandTimeout = 0;
                 var response = await db.QueryProcAsync<string>(
                     "[FK].[sp_C21_importDK]",
                     new DataParameter("Debug", debug, DataType.Int32)
                     ).ConfigureAwait(false);
-                procOutput = response.ToList();
+                _procOutput.AddRange(response.ToList());
             }
-            return procOutput;
+            Console.WriteLine($"Task ticket id:{ticketId} Packiet size:{pack} Packiet Log lines: {_procOutput.Count} End time: {DateTime.Now}");
         }
     }
 }
