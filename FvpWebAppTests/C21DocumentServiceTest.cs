@@ -12,7 +12,7 @@ namespace FvpWebAppTests
         public async void C21GetNextDocumentIdTest()
         {
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
-            C21DocumentService documentService = new C21DocumentService(dbConnectionSettings);
+            C21DocumentService documentService = new C21DocumentService(dbConnectionSettings, null);
 
             var output = await documentService.GetNextDocumentId(10);
 
@@ -24,7 +24,7 @@ namespace FvpWebAppTests
         public async void C21GetVatRegisterDefsTest()
         {
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
-            C21DocumentService documentService = new C21DocumentService(dbConnectionSettings);
+            C21DocumentService documentService = new C21DocumentService(dbConnectionSettings,null);
 
             var output = await documentService.GetVarRegistersDefs(1);
 
@@ -38,7 +38,7 @@ namespace FvpWebAppTests
         public async void C21GetYearsTest()
         {
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
-            C21DocumentService documentService = new C21DocumentService(dbConnectionSettings);
+            C21DocumentService documentService = new C21DocumentService(dbConnectionSettings,null);
 
             var output = await documentService.GetYearId(new DateTime(2020, 5, 20));
 
