@@ -240,3 +240,181 @@ Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot implicitly convert
 [12:33:00 INF] HTTP GET / responded 200 in 223.3040 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3SOU722P63:00000001","SpanId":"|8198f6ab-45feb169ed844114.","TraceId":"8198f6ab-45feb169ed844114","ParentId":""}
 [17:00:30 INF] Getting the motors running... {}
 [17:00:32 INF] HTTP GET / responded 200 in 225.0752 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM3UFT19V8SH:00000001","SpanId":"|e66f33d9-4c533037135cd2bf.","TraceId":"e66f33d9-4c533037135cd2bf","ParentId":""}
+[15:16:55 INF] Getting the motors running... {}
+[15:16:57 INF] HTTP GET / responded 200 in 256.4507 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM434V4B8SGO:00000001","SpanId":"|28e96fa4-4c481603a9dd4988.","TraceId":"28e96fa4-4c481603a9dd4988","ParentId":""}
+[16:30:36 INF] Getting the motors running... {}
+[16:30:38 INF] HTTP GET / responded 200 in 222.3306 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM43689SC6T6:00000001","SpanId":"|5f6a3050-49e6c60eb819fb15.","TraceId":"5f6a3050-49e6c60eb819fb15","ParentId":""}
+[16:30:40 INF] HTTP GET /DocumentViews responded 200 in 12.2213 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM43689SC6T6:00000003","SpanId":"|5f6a3051-49e6c60eb819fb15.","TraceId":"5f6a3051-49e6c60eb819fb15","ParentId":""}
+[16:30:41 INF] HTTP GET /DocumentViews/Documents responded 404 in 0.0898 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM43689SC6T6:00000005","SpanId":"|5f6a3052-49e6c60eb819fb15.","TraceId":"5f6a3052-49e6c60eb819fb15","ParentId":""}
+[16:31:34 INF] Getting the motors running... {}
+[16:31:36 INF] HTTP GET / responded 200 in 220.4106 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4368R4PUGE:00000001","SpanId":"|9cbe627c-402eeecdebad836f.","TraceId":"9cbe627c-402eeecdebad836f","ParentId":""}
+[16:31:37 INF] HTTP GET /DocumentViews responded 200 in 8.8223 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4368R4PUGE:00000003","SpanId":"|9cbe627d-402eeecdebad836f.","TraceId":"9cbe627d-402eeecdebad836f","ParentId":""}
+[16:31:40 ERR] The view 'GetDocuments' was not found. Searched locations: ["/Views/DocumentViews/GetDocuments.cshtml","/Views/Shared/GetDocuments.cshtml","/Pages/Shared/GetDocuments.cshtml"] {"EventId":{"Id":3,"Name":"ViewNotFound"},"SourceContext":"Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor","ActionId":"6d9cefb3-0849-4ce2-8ffc-d67b56c7a820","ActionName":"FvpWebApp.Controllers.DocumentViewsController.GetDocuments (FvpWebApp)","RequestId":"0HM4368R4PUGE:00000005","RequestPath":"/DocumentViews/GetDocuments","SpanId":"|9cbe627e-402eeecdebad836f.","TraceId":"9cbe627e-402eeecdebad836f","ParentId":""}
+[16:31:40 ERR] HTTP GET /DocumentViews/GetDocuments responded 500 in 1520.6701 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"6d9cefb3-0849-4ce2-8ffc-d67b56c7a820","ActionName":"FvpWebApp.Controllers.DocumentViewsController.GetDocuments (FvpWebApp)","RequestId":"0HM4368R4PUGE:00000005","SpanId":"|9cbe627e-402eeecdebad836f.","TraceId":"9cbe627e-402eeecdebad836f","ParentId":""}
+System.InvalidOperationException: The view 'GetDocuments' was not found. The following locations were searched:
+/Views/DocumentViews/GetDocuments.cshtml
+/Views/Shared/GetDocuments.cshtml
+/Pages/Shared/GetDocuments.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+[16:31:40 ERR] An unhandled exception has occurred while executing the request. {"EventId":{"Id":1,"Name":"UnhandledException"},"SourceContext":"Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware","RequestId":"0HM4368R4PUGE:00000005","RequestPath":"/DocumentViews/GetDocuments","SpanId":"|9cbe627e-402eeecdebad836f.","TraceId":"9cbe627e-402eeecdebad836f","ParentId":""}
+System.InvalidOperationException: The view 'GetDocuments' was not found. The following locations were searched:
+/Views/DocumentViews/GetDocuments.cshtml
+/Views/Shared/GetDocuments.cshtml
+/Pages/Shared/GetDocuments.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.MigrationsEndPointMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+[16:32:23 INF] Getting the motors running... {}
+[16:32:25 INF] HTTP GET / responded 200 in 225.2259 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM43699NS05Q:00000001","SpanId":"|29bf9ed6-448680a99e9a8842.","TraceId":"29bf9ed6-448680a99e9a8842","ParentId":""}
+[16:32:26 INF] HTTP GET /DocumentViews responded 200 in 9.0574 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM43699NS05Q:00000003","SpanId":"|29bf9ed7-448680a99e9a8842.","TraceId":"29bf9ed7-448680a99e9a8842","ParentId":""}
+[16:32:52 INF] HTTP GET /DocumentViews/GetDocuments responded 200 in 24571.9089 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"72ec6676-d01b-4a95-944e-267bc565dad6","ActionName":"FvpWebApp.Controllers.DocumentViewsController.GetDocuments (FvpWebApp)","RequestId":"0HM43699NS05Q:00000005","SpanId":"|29bf9ed8-448680a99e9a8842.","TraceId":"29bf9ed8-448680a99e9a8842","ParentId":""}
+[16:39:56 INF] Getting the motors running... {}
+[16:39:59 INF] HTTP GET / responded 200 in 223.0215 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM436DH0CCKP:00000001","SpanId":"|8d26bdac-444aa2a50537c700.","TraceId":"8d26bdac-444aa2a50537c700","ParentId":""}
+[16:40:00 INF] HTTP GET /DocumentViews responded 200 in 13.3768 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM436DH0CCKP:00000003","SpanId":"|8d26bdad-444aa2a50537c700.","TraceId":"8d26bdad-444aa2a50537c700","ParentId":""}
+[16:40:03 ERR] HTTP GET /DocumentViews/GetDocuments responded 500 in 1690.8988 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"6a26907b-6823-4beb-9a5a-edc1888a63c6","ActionName":"FvpWebApp.Controllers.DocumentViewsController.GetDocuments (FvpWebApp)","RequestId":"0HM436DH0CCKP:00000005","SpanId":"|8d26bdae-444aa2a50537c700.","TraceId":"8d26bdae-444aa2a50537c700","ParentId":""}
+System.InvalidOperationException: Templates can be used only with field access, property access, single-dimension array index, or single-parameter custom indexer expressions.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ExpressionMetadataProvider.FromLambdaExpression[TModel,TResult](Expression`1 expression, ViewDataDictionary`1 viewData, IModelMetadataProvider metadataProvider)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExpressionProvider.CreateModelExpression[TModel,TValue](ViewDataDictionary`1 viewData, Expression`1 expression)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelper`1.GetModelExpression[TResult](Expression`1 expression)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelper`1.DisplayFor[TResult](Expression`1 expression, String templateName, String htmlFieldName, Object additionalViewData)
+   at Microsoft.AspNetCore.Mvc.Rendering.HtmlHelperDisplayExtensions.DisplayFor[TModel,TResult](IHtmlHelper`1 htmlHelper, Expression`1 expression)
+   at AspNetCore.Views_DocumentViews_Documents.ExecuteAsync() in C:\VSC\repos\FvpWebApp\FvpWebApp\Views\DocumentViews\Documents.cshtml:line 75
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+[16:40:03 ERR] An unhandled exception has occurred while executing the request. {"EventId":{"Id":1,"Name":"UnhandledException"},"SourceContext":"Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware","RequestId":"0HM436DH0CCKP:00000005","RequestPath":"/DocumentViews/GetDocuments","SpanId":"|8d26bdae-444aa2a50537c700.","TraceId":"8d26bdae-444aa2a50537c700","ParentId":""}
+System.InvalidOperationException: Templates can be used only with field access, property access, single-dimension array index, or single-parameter custom indexer expressions.
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ExpressionMetadataProvider.FromLambdaExpression[TModel,TResult](Expression`1 expression, ViewDataDictionary`1 viewData, IModelMetadataProvider metadataProvider)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ModelExpressionProvider.CreateModelExpression[TModel,TValue](ViewDataDictionary`1 viewData, Expression`1 expression)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelper`1.GetModelExpression[TResult](Expression`1 expression)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelper`1.DisplayFor[TResult](Expression`1 expression, String templateName, String htmlFieldName, Object additionalViewData)
+   at Microsoft.AspNetCore.Mvc.Rendering.HtmlHelperDisplayExtensions.DisplayFor[TModel,TResult](IHtmlHelper`1 htmlHelper, Expression`1 expression)
+   at AspNetCore.Views_DocumentViews_Documents.ExecuteAsync() in C:\VSC\repos\FvpWebApp\FvpWebApp\Views\DocumentViews\Documents.cshtml:line 75
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.MigrationsEndPointMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+[16:43:24 INF] Getting the motors running... {}
+[16:43:26 INF] HTTP GET / responded 200 in 221.2950 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM436FES371G:00000001","SpanId":"|a5cf905f-47c5f7847e6007dd.","TraceId":"a5cf905f-47c5f7847e6007dd","ParentId":""}
+[16:43:29 INF] HTTP GET /DocumentViews responded 200 in 8.7687 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM436FES371G:00000003","SpanId":"|a5cf9060-47c5f7847e6007dd.","TraceId":"a5cf9060-47c5f7847e6007dd","ParentId":""}
+[16:44:03 INF] HTTP GET /DocumentViews/GetDocuments responded 200 in 24488.5202 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"048eb5d0-4994-4111-8cc1-afb9a92e6421","ActionName":"FvpWebApp.Controllers.DocumentViewsController.GetDocuments (FvpWebApp)","RequestId":"0HM436FES371G:00000005","SpanId":"|a5cf9061-47c5f7847e6007dd.","TraceId":"a5cf9061-47c5f7847e6007dd","ParentId":""}
+[16:44:26 ERR] The view 'Details' was not found. Searched locations: ["/Views/DocumentViews/Details.cshtml","/Views/Shared/Details.cshtml","/Pages/Shared/Details.cshtml"] {"EventId":{"Id":3,"Name":"ViewNotFound"},"SourceContext":"Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor","ActionId":"b2479010-83e4-4314-8b52-810db682feda","ActionName":"FvpWebApp.Controllers.DocumentViewsController.Details (FvpWebApp)","RequestId":"0HM436FES371G:00000007","RequestPath":"/DocumentViews/Details/202","SpanId":"|a5cf9062-47c5f7847e6007dd.","TraceId":"a5cf9062-47c5f7847e6007dd","ParentId":""}
+[16:44:26 ERR] HTTP GET /DocumentViews/Details/202 responded 500 in 196.4559 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b2479010-83e4-4314-8b52-810db682feda","ActionName":"FvpWebApp.Controllers.DocumentViewsController.Details (FvpWebApp)","RequestId":"0HM436FES371G:00000007","SpanId":"|a5cf9062-47c5f7847e6007dd.","TraceId":"a5cf9062-47c5f7847e6007dd","ParentId":""}
+System.InvalidOperationException: The view 'Details' was not found. The following locations were searched:
+/Views/DocumentViews/Details.cshtml
+/Views/Shared/Details.cshtml
+/Pages/Shared/Details.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+[16:44:26 ERR] An unhandled exception has occurred while executing the request. {"EventId":{"Id":1,"Name":"UnhandledException"},"SourceContext":"Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware","RequestId":"0HM436FES371G:00000007","RequestPath":"/DocumentViews/Details/202","SpanId":"|a5cf9062-47c5f7847e6007dd.","TraceId":"a5cf9062-47c5f7847e6007dd","ParentId":""}
+System.InvalidOperationException: The view 'Details' was not found. The following locations were searched:
+/Views/DocumentViews/Details.cshtml
+/Views/Shared/Details.cshtml
+/Pages/Shared/Details.cshtml
+   at Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult.EnsureSuccessful(IEnumerable`1 originalLocations)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|29_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|24_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Serilog.AspNetCore.RequestLoggingMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.MigrationsEndPointMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.DatabaseErrorPageMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)

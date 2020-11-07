@@ -98,4 +98,8 @@
     <ProjectReference Include="..\FvpWebAppModels\FvpWebAppModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\DataTables\" />
+  </ItemGroup>
+
 </Project>
