@@ -353,7 +353,9 @@ namespace FvpWebAppWorker.Services
                             if (matchedContractors != null && matchedContractors.Count > 0)
                                 document.ContractorId = matchedContractors[0].ContractorId;
                             //Update document status depending on the contractor status
-                            if (matchedContractors != null && matchedContractors.Count == 1 && matchedContractors[0].ContractorStatus == ContractorStatus.Valid)
+                            if (matchedContractors != null
+                                && matchedContractors.Count == 1
+                                && (matchedContractors[0].ContractorStatus == ContractorStatus.Valid || matchedContractors[0].ContractorStatus == ContractorStatus.Accepted))
                                 document.DocumentStatus = DocumentStatus.Valid;
                             else if (matchedContractors != null && matchedContractors.Count == 1 && matchedContractors[0].ContractorStatus == ContractorStatus.Invalid)
                                 document.DocumentStatus = DocumentStatus.Invalid;

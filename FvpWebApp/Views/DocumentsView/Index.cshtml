@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12 text-center">
+        <h1>Wybierz zakres danych</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-2">
+        Źródło
+    </div>
+    <div class="col-1">
+        Miesiąc
+    </div>
+    <div class="col-1">
+        Rok
+    </div>
+    <div class="col-1">
+    </div>
+</div>
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-2">
+        @Html.DropDownList("Source", ViewBag.Sources, "Wybierz żródło", new { @class = "form-control" })
+    </div>
+    <div class="col-1">
+        @Html.DropDownList("Month", ViewBag.Months, "Miesiąc", new { @class = "form-control" })
+    </div>
+    <div class="col-1">
+        @Html.Editor("Year", new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="col-2">
+        <button onclick="proceed()" class="btn btn-outline-primary btn-block">Pokaż dane</button>
+    </div>
+</div>
+@section scripts{
+    <script>
+        function proceed() {
+            var source = $("#Source").val()
+            var month = $("#Month").val()
+            var year = $("#Year").val()
+            console.log(source, month, year)
+            if (source>0)
+                window.location.replace('/DocumentsView/Documents?id=' + source + '&month=' + month + '&year=' + year)
+            else
+                alert("Wybierz źródło")
+        }
+    </script>
+}
+
+
+

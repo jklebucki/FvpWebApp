@@ -1,0 +1,319 @@
+﻿@model IEnumerable<FvpWebApp.Models.DocumentView>
+
+@{
+    ViewData["Title"] = "Documents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Dokumenty z wybranego zakresu</h3>
+<div class="row mb-2">
+    <div class="col-2">
+        <a href="~/DocumentsView/Index" class="btn btn-outline-primary btn-block">Wróć</a>
+    </div>
+    <div class="col-2">
+        Filtruj dokumenty
+    </div>
+    <div class="col-3">
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="valid-docs" name="status-docs" value="0" class="custom-control-input">
+            <label class="custom-control-label" for="valid-docs">Wszystkie</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="invalid-docs" name="status-docs" value="1" class="custom-control-input">
+            <label class="custom-control-label" for="invalid-docs">Błędne</label>
+        </div>
+    </div>
+</div>
+
+<table id="documents" class="table table-bordered table-responsive-sm table-sm table-hover" style="width:100%">
+    <thead>
+        <tr>
+            <th>Źródło</th>
+            <th>Nr dok.</th>
+            <th>JPK</th>
+            <th>Data sprzed.</th>
+            <th>Data dok.</th>
+            <th>Netto</th>
+            <th>Brutto</th>
+            <th>Vat</th>
+            <th style="width: 25%;">Nazwa kontrah.</th>
+            <th>NIP</th>
+            <th>Kod kraju</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div class="modal fade" id="document-modal" tabindex="-1" role="dialog" aria-labelledby="title-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-full" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title-modal">Edycja dokumentu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="body-modal" class="modal-body">
+                <div id="app">
+                    <div class="row">
+                        <div class="col-6">
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <th>Numer dokumentu</th>
+                                    <td style="text-align: right;">{{ documentData.document.documentNumber }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Data dokumentu</th>
+                                    <td style="text-align: right;">{{ moment(documentData.document.documentDate).format('YYYY-MM-DD') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Data sprzedaży</th>
+                                    <td style="text-align: right;">{{ moment(documentData.document.saleDate).format('YYYY-MM-DD') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Jpk</th>
+                                    <td style="text-align: right;">{{ documentData.document.jpkV7 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Netto</th>
+                                    <td style="text-align: right;">{{ Number(documentData.document.net).toFixed(2) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Vat</th>
+                                    <td style="text-align: right;">{{ Number(documentData.document.vat).toFixed(2) }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Brutto</th>
+                                    <td style="text-align: right;">{{ Number(documentData.document.gross).toFixed(2) }}</td>
+                                </tr>
+                            </table>
+                            <hr />
+                            <span style="font-weight: 800">Kontrahent z dokumentu</span> <br />
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <th>Nazwa</th>
+                                    <td>{{ documentData.document.docContractorName }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Adres</th>
+                                    <td>{{ documentData.document.docContractorStreetAndNumber }}</td>
+                                </tr>
+                                <tr>
+                                    <th>NIP</th>
+                                    <td>{{ documentData.document.docContractorVatId }} </td>
+                                </tr>
+                                <tr>
+                                    <th>Miasto</th>
+                                    <td>{{ documentData.document.docContractorCity }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Kod pocztowy</th>
+                                    <td>{{ documentData.document.docContractorPostCode }}</td>
+                                </tr>
+                            </table>
+                            <hr />
+                            <table class="table table-bordered table-sm" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Stawka</th>
+                                        <th>Netto</th>
+                                        <th>Vat</th>
+                                        <th>Brutto</th>
+                                        <th>Jpk</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="vat in  documentData.document.documentVats">
+                                        <td>{{ vat.vatValue }}</td>
+                                        <td>{{ vat.netAmount }}</td>
+                                        <td>{{ vat.vatAmount }}</td>
+                                        <td>{{ vat.grossAmount }}</td>
+                                        <td> {{ vat.vatTags }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6" id="col-contractors">
+                            <div v-for="contractor in documentData.contractors">
+                                <div class="card mb-2" v-bind:style="documentData.document.contractorId === contractor.contractorId  ? 'background-color: yellowgreen' : ''">
+                                    <div class="card-body">
+                                        <table class="table table-bordered table-sm" style="width: 100%; font-size: small;">
+                                            <tr>
+                                                <th>FK ID</th>
+                                                <td>{{ contractor.contractorErpPosition }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Nazwa</th>
+                                                <td>{{ contractor.name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Ulica</th>
+                                                <td>{{ contractor.street }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Numer posesji</th>
+                                                <td>{{ contractor.estateNumber }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Numer lokalu</th>
+                                                <td>{{ contractor.quartersNumber }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Miasto</th>
+                                                <td>{{ contractor.city }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Kod pocztowy</th>
+                                                <td>{{ contractor.postalCode }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>NIP</th>
+                                                <td>{{ contractor.vatId }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="close-modal" type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                <button id="save-modal" type="button" class="btn btn-primary">Zapisz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var table
+        var app = null
+
+        $("#valid-docs").attr('checked', true);
+        $(document).ready(function () {
+            url = '/DocumentsView/GetDocuments?'
+                + 'id=' + (@ViewBag.DocId)
+                + '&month=' + (@ViewBag.Month)
+                + '&year=' + (@ViewBag.Year)
+            table = $('#documents').DataTable({
+                'dom': 'Blfrtip',
+                'pageLength': 15,
+                'lengthChange': false,
+                'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
+                'language': datatableLanguage,
+                'processing': true,
+                'ajax': url,
+                'fnRowCallback': function (row, data, iDisplayIndex, iDisplayIndexFull) {
+                    if (parseInt(data.contractorStatus) !== 0) {
+                        $(row).css('background-color', '#FFCDD2');
+                    }
+                },
+                'columns': [
+                    { data: 'sourceDescription' },
+                    { data: 'documentNumber' },
+                    { data: 'jpkV7' },
+                    {
+                        data: 'saleDate', render: function (data, type, row) {
+                            return moment(data).format('YYYY-MM-DD')
+                        }
+                    },
+                    {
+                        data: 'documentDate', render: function (data, type, row) {
+                            return moment(data).format('YYYY-MM-DD')
+                        }
+                    },
+                    { data: 'net', }, //render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'gross', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'vat', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'contractorName' },
+                    { data: 'contractorVatId' },
+                    { data: 'contractorCountryCode' },
+                    {
+                        data: 'documentId', render(data, type, row) {
+                            return '<a onclick="documentDetails(' + data + ')"><span class="oi oi-eye icon-button"></span></a>'
+                        }
+                    },
+                    { data: 'contractorStatus' },
+                    { data: 'documentStatus' },
+                ],
+                'columnDefs': [
+                    {
+                        'targets': [12, 13],
+                        'visible': false,
+                        'searchable': true
+                    },
+                    {
+                        'targets': [5, 6, 7],
+                        'className': 'text-right'
+                    },
+                ],
+                buttons: [
+                    { extend: 'pageLength', text: 'Wiersze' },
+                    { extend: 'copy', text: 'Kopiuj' },
+                    { extend: 'csv', text: 'CSV' },
+                    { extend: 'excelHtml5', text: 'Excel' },
+                    { extend: 'csv', text: 'CSV' },
+                    { extend: 'print', text: 'Drukuj' },
+                    { extend: 'colvis', text: 'Kolumny' },
+                ]
+            })
+        })
+
+        function documentDetails(id) {
+            axios.get('/DocumentsView/Details/'.concat(id))
+                .then(function (response) {
+                    if(app === null)
+                        app = new Vue({
+                            el: '#app',
+                            data: {
+                                documentData: response.data
+                            }
+                        })
+                    else
+                        app.documentData = response.data
+                    $("#document-modal").modal('show')
+                })
+                .catch(function (error) {
+                    $("#body-modal").html(error)
+                    $("#document-modal").modal('show')
+                })
+                .then(function () {
+                    $("#col-contractors").scroll()
+                });
+        }
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                var valid = $("#valid-docs").prop('checked')
+                var validValues = parseInt(data[12])
+                if (valid) {
+                    if (validValues >= 0) {
+                        return true
+                    }
+                }
+                else
+                    if (validValues !== 0) {
+                        return true
+                    }
+                return false
+            }
+        );
+
+        function filterTable() {
+            if (table !== null)
+                table.draw();
+        }
+
+        $(window).on('resize', function () {
+            if (table !== null)
+                table.columns.adjust();
+        });
+    </script>
+}

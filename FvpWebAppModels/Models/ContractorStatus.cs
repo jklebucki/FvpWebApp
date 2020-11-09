@@ -5,5 +5,7 @@
         Valid,
         Invalid,
         NotChecked,
+        Accepted,
+        Rejected
     }
 }
