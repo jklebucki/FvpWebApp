@@ -31,106 +31,112 @@ namespace FvpWebAppWorker
             {
                 using (IServiceScope scope = _provider.CreateScope())
                 {
-                    using (var _dbContext = scope.ServiceProvider.GetRequiredService<WorkerAppDbContext>())
+                    try
                     {
-                        var taskTicket = await _dbContext.TaskTickets.FirstOrDefaultAsync(s => s.TicketStatus == TicketStatus.Added).ConfigureAwait(false);
-                        if (taskTicket != null)
+                        using (var _dbContext = scope.ServiceProvider.GetRequiredService<WorkerAppDbContext>())
                         {
-                            SystemDataService systemDataService = new SystemDataService(_logger, _dbContext);
-                            var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
-                            switch (taskTicket.TicketType)
+                            var taskTicket = await _dbContext.TaskTickets.FirstOrDefaultAsync(s => s.TicketStatus == TicketStatus.Added).ConfigureAwait(false);
+                            if (taskTicket != null)
                             {
-                                case TicketType.ImportDocuments:
-                                    List<Document> documents = new List<Document>();
-                                    if (source != null)
+                                SystemDataService systemDataService = new SystemDataService(_logger, _dbContext);
+                                var source = await _dbContext.Sources.FirstOrDefaultAsync(i => i.SourceId == taskTicket.SourceId).ConfigureAwait(false);
+                                switch (taskTicket.TicketType)
+                                {
+                                    case TicketType.ImportDocuments:
+                                        List<Document> documents = new List<Document>();
+                                        if (source != null)
+                                            try
+                                            {
+                                                switch (source.Type)
+                                                {
+                                                    case "oracle_sben_dp":
+                                                        documents = await ProceedSbenOracleDpDocuments(source, taskTicket, systemDataService);
+                                                        break;
+                                                    default:
+                                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                                        break;
+                                                }
+
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                _logger.LogError(ex.Message);
+                                            }
+                                        else
+                                            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                        _logger.LogInformation($"Documents: {documents.Count}");
+
                                         try
                                         {
-                                            switch (source.Type)
-                                            {
-                                                case "oracle_sben_dp":
-                                                    documents = await ProceedSbenOracleDpDocuments(source, taskTicket, systemDataService);
-                                                    break;
-                                                default:
-                                                    await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                                    break;
-                                            }
-
+                                            await ProceedContractors(documents, systemDataService).ConfigureAwait(false);
                                         }
                                         catch (Exception ex)
                                         {
                                             _logger.LogError(ex.Message);
                                         }
-                                    else
-                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                    _logger.LogInformation($"Documents: {documents.Count}");
+                                        break;
+                                    case TicketType.ImportContractors:
+                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                                        break;
+                                    case TicketType.CheckContractors:
+                                        try
+                                        {
+                                            await systemDataService.CheckContractors(taskTicket.TaskTicketId);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _logger.LogError(ex.Message);
+                                        }
+                                        break;
+                                    case TicketType.MatchContractors:
+                                        try
+                                        {
+                                            var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
+                                            await systemDataService.MatchContractors(taskTicket, target);
+                                            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                                        }
+                                        catch (Exception)
+                                        {
+                                            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                        }
+                                        break;
+                                    case TicketType.ExportContractorsToErp:
+                                        try
+                                        {
+                                            var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
+                                            TargetDataService targetDataService = new TargetDataService(_logger, _dbContext, _procOutput);
+                                            await targetDataService.ExportContractorsToErp(taskTicket, target);
+                                            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                                        }
+                                        catch (Exception)
+                                        {
+                                            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                        }
+                                        break;
+                                    case TicketType.ExportDocumentsToErp:
+                                        try
+                                        {
+                                            var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
+                                            TargetDataService targetDataService = new TargetDataService(_logger, _dbContext, _procOutput);
+                                            await targetDataService.InsertDocumentsToTarget(taskTicket, target);
+                                            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                            _logger.LogError(ex.Message);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
 
-                                    try
-                                    {
-                                        await ProceedContractors(documents, systemDataService).ConfigureAwait(false);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logger.LogError(ex.Message);
-                                    }
-                                    break;
-                                case TicketType.ImportContractors:
-                                    await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
-                                    break;
-                                case TicketType.CheckContractors:
-                                    try
-                                    {
-                                        await systemDataService.CheckContractors(taskTicket.TaskTicketId);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logger.LogError(ex.Message);
-                                    }
-                                    break;
-                                case TicketType.MatchContractors:
-                                    try
-                                    {
-                                        var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                        await systemDataService.MatchContractors(taskTicket, target);
-                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
-                                    }
-                                    catch (Exception)
-                                    {
-                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                    }
-                                    break;
-                                case TicketType.ExportContractorsToErp:
-                                    try
-                                    {
-                                        var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext, _procOutput);
-                                        await targetDataService.ExportContractorsToErp(taskTicket, target);
-                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
-                                    }
-                                    catch (Exception)
-                                    {
-                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                    }
-                                    break;
-                                case TicketType.ExportDocumentsToErp:
-                                    try
-                                    {
-                                        var target = await _dbContext.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-                                        TargetDataService targetDataService = new TargetDataService(_logger, _dbContext, _procOutput);
-                                        await targetDataService.InsertDocumentsToTarget(taskTicket, target);
-                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                        _logger.LogError(ex.Message);
-                                    }
-                                    break;
-                                default:
-                                    break;
                             }
-
-                        }
-                    };
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message);                   }
                 }
                 await Task.Delay(5000).ConfigureAwait(false);
             }
