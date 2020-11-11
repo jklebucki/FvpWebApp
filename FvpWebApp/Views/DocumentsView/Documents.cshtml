@@ -194,8 +194,12 @@
 @section scripts{
     <script>
         var table
-        var app = null
-
+        var app = new Vue({
+            el: '#app',
+            data: {
+                documentData
+            }
+        })
         $("#valid-docs").attr('checked', true);
         $(document).ready(function () {
             url = '/DocumentsView/GetDocuments?'
@@ -269,15 +273,7 @@
         function documentDetails(id) {
             axios.get('/DocumentsView/Details/'.concat(id))
                 .then(function (response) {
-                    if(app === null)
-                        app = new Vue({
-                            el: '#app',
-                            data: {
-                                documentData: response.data
-                            }
-                        })
-                    else
-                        app.documentData = response.data
+                    app.documentData = response.data
                     $("#document-modal").modal('show')
                 })
                 .catch(function (error) {
