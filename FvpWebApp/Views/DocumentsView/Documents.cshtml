@@ -140,7 +140,7 @@
                         </div>
                         <div class="col-6" id="col-contractors">
                             <div v-for="contractor in documentData.contractors">
-                                <div class="card mb-2" v-bind:style="documentData.document.contractorId === contractor.contractorId  ? 'background-color: yellowgreen' : ''">
+                                <div class="card mb-2" v-bind:style="documentData.document.contractorId === contractor.contractorId  ? 'background-color: #B9F6CA' : ''">
                                     <div class="card-body">
                                         <table class="table table-bordered table-sm" style="width: 100%; font-size: small;">
                                             <tr>
@@ -194,8 +194,12 @@
 @section scripts{
     <script>
         var table
-        var app = null
-
+        var app = new Vue({
+            el: '#app',
+            data: {
+                documentData
+            }
+        })
         $("#valid-docs").attr('checked', true);
         $(document).ready(function () {
             url = '/DocumentsView/GetDocuments?'
@@ -269,15 +273,7 @@
         function documentDetails(id) {
             axios.get('/DocumentsView/Details/'.concat(id))
                 .then(function (response) {
-                    if(app === null)
-                        app = new Vue({
-                            el: '#app',
-                            data: {
-                                documentData: response.data
-                            }
-                        })
-                    else
-                        app.documentData = response.data
+                    app.documentData = response.data
                     $("#document-modal").modal('show')
                 })
                 .catch(function (error) {
