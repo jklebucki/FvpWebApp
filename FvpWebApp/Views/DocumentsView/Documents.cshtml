@@ -140,7 +140,7 @@
                         </div>
                         <div class="col-6" id="col-contractors">
                             <div v-for="contractor in documentData.contractors">
-                                <div class="card mb-2" v-bind:style="documentData.document.contractorId === contractor.contractorId  ? 'background-color: #B9F6CA' : ''">
+                                <div class="card mb-2" :style="isContractorMatched(contractor) ? 'background-color: #B9F6CA' : '' ">
                                     <div class="card-body">
                                         <table class="table table-bordered table-sm" style="width: 100%; font-size: small;">
                                             <tr>
@@ -176,6 +176,10 @@
                                                 <td>{{ contractor.vatId }}</td>
                                             </tr>
                                         </table>
+                                        <div v-if="!isContractorMatched(contractor)">
+                                            <button v-on:click="setContractor(contractor,false)" class="btn btn btn-outline-primary btn-sm">Wybierz</button>
+                                            <button v-on:click="setContractor(contractor,true)" class="btn btn btn-outline-primary btn-sm">Wybierz na wszystkie</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +189,6 @@
             </div>
             <div class="modal-footer">
                 <button id="close-modal" type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                <button id="save-modal" type="button" class="btn btn-primary">Zapisz</button>
             </div>
         </div>
     </div>
@@ -197,10 +200,46 @@
         var app = new Vue({
             el: '#app',
             data: {
-                documentData
+                documentData: documentInfo,
+                rowId: null,
+                rowData: null,
+            },
+            methods: {
+                isContractorMatched: function (contractor) {
+                    if (contractor.contractorId === this.documentData.document.contractorId)
+                        return true
+                    else
+                        return false
+                },
+                setContractor: function (contractor, changeAllDocuments) {
+                    const headers = {
+                        'Content-Type': 'application/json',
+                    }
+                    var data = {
+                        DocumentId: this.documentData.document.documentId,
+                        ContractorId: contractor.contractorId,
+                        ChangeAllDocuments: changeAllDocuments
+                    }
+                    axios.post(
+                        '/DocumentsView/ChangeContractor',
+                        data,
+                        {
+                            headers: headers,
+                        })
+                        .then(response => {
+                            if (response.status == 200) {
+                                this.documentData.document.contractorId = contractor.contractorId
+                                replaceContractor(contractor, changeAllDocuments)
+                            }
+                        })
+                        .catch(error => {
+                            console.log("AXIOS Error",error)
+                        })
+
+                }
             }
         })
-        $("#valid-docs").attr('checked', true);
+        $("#valid-docs").attr('checked', true)
         $(document).ready(function () {
             url = '/DocumentsView/GetDocuments?'
                 + 'id=' + (@ViewBag.DocId)
@@ -219,6 +258,7 @@
                         $(row).css('background-color', '#FFCDD2');
                     }
                 },
+                'rowId': 'documentId',
                 'columns': [
                     { data: 'sourceDescription' },
                     { data: 'documentNumber' },
@@ -246,10 +286,11 @@
                     },
                     { data: 'contractorStatus' },
                     { data: 'documentStatus' },
+                    { data: 'contractorId' },
                 ],
                 'columnDefs': [
                     {
-                        'targets': [12, 13],
+                        'targets': [12, 13, 14],
                         'visible': false,
                         'searchable': true
                     },
@@ -268,7 +309,25 @@
                     { extend: 'colvis', text: 'Kolumny' },
                 ]
             })
+            $('#documents').on('click', 'tr', function () {
+                app.rowId = table.row(this).index()
+                app.rowData = table.row(this).data()
+            })
         })
+
+        function replaceContractor(contractor, changeAll) {
+            var allRows = table.rows(function (idx, data, node) {
+                return data.contractorId == app.rowData.contractorId ? true : false
+            }).indexes()
+            var newData = app.rowData
+            newData.contractorName = contractor.name
+            if (!changeAll)
+                table.row(app.rowId).data(newData).invalidate();
+            else
+                allRows.toArray().forEach(function (element, index, array) {
+                    table.row(element).data(newData).invalidate();
+                })
+        }
 
         function documentDetails(id) {
             axios.get('/DocumentsView/Details/'.concat(id))

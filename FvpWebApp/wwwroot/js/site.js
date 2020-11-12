@@ -22,10 +22,10 @@ var datatableLanguage = {
     }
 };
 
-var documentData = {
+var documentInfo = {
     document: {
-        documentId,
-        externalId,
+        documentId: 0,
+        externalId: 0,
         sourceId,
         contractorId,
         taskTicketId,

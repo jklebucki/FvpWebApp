@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using FvpWebApp.Data;
+using FvpWebApp.Infrastructure;
 using FvpWebApp.Models;
+using FvpWebAppModels.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
 
 namespace FvpWebApp.Controllers
 {
@@ -40,20 +42,7 @@ namespace FvpWebApp.Controllers
                                              Value = s.SourceId.ToString(),
                                              Text = s.Description
                                          };
-            ViewBag.Months = new List<SelectListItem> {
-                new SelectListItem { Text = "1", Value = "1" },
-                new SelectListItem { Text = "2", Value = "2" },
-                new SelectListItem { Text = "3", Value = "3" },
-                new SelectListItem { Text = "4", Value = "4" },
-                new SelectListItem { Text = "5", Value = "5" },
-                new SelectListItem { Text = "6", Value = "6" },
-                new SelectListItem { Text = "7", Value = "7" },
-                new SelectListItem { Text = "8", Value = "8" },
-                new SelectListItem { Text = "9", Value = "9" },
-                new SelectListItem { Text = "10", Value = "10" },
-                new SelectListItem { Text = "11", Value = "11" },
-                new SelectListItem { Text = "12", Value = "12" }
-            };
+            ViewBag.Months = ConstData.MonthsSelectList();
             ViewBag.Sources = sourcesSelectListItems.ToList();
             return View();
         }
@@ -79,24 +68,7 @@ namespace FvpWebApp.Controllers
                 && sources.Contains((int)d.SourceId) && d.DocumentDate.Month == month
                 && d.DocumentDate.Year == year
                 orderby d.DocumentDate
-                select new DocumentView
-                {
-                    DocumentId = d.DocumentId,
-                    DocumentDate = d.DocumentDate,
-                    SourceDescription = s.Code,
-                    SaleDate = d.SaleDate,
-                    DocumentNumber = d.DocumentNumber,
-                    DocumentStatus = d.DocumentStatus,
-                    DocumentSymbol = d.DocumentSymbol,
-                    JpkV7 = d.JpkV7,
-                    ContractorName = c.Name,
-                    ContractorVatId = c.VatId,
-                    ContractorCountryCode = c.CountryCode,
-                    ContractorStatus = c.ContractorStatus,
-                    Net = d.Net,
-                    Vat = d.Vat,
-                    Gross = d.Gross
-                }).ToListAsync();
+                select new DocumentView(d, s, c)).ToListAsync();
 
             return new JsonResult(new { data = documents });
         }
@@ -114,24 +86,81 @@ namespace FvpWebApp.Controllers
             });
         }
 
-
-        public ActionResult Edit(int id)
+        [HttpPost]
+        [Route("DocumentsView/ChangeContractor")]
+        public async Task<IActionResult> ChangeContractor([FromBody] RequestData data)
         {
-            return View();
+
+            var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == data.DocumentId);
+            if (document == null)
+                return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+            var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == data.ContractorId && c.SourceId == document.SourceId);
+            if (contractor != null)
+            {
+                try
+                {
+                    if (data.ChangeAllDocuments)
+                    {
+                        var documents = await _context.Documents.Where(d => d.ContractorId == document.ContractorId && d.SourceId == document.SourceId).ToListAsync();
+                        documents.ForEach(d => d.ContractorId = data.ContractorId);
+                        _context.UpdateRange(documents);
+                    }
+                    else
+                    {
+                        document.ContractorId = data.ContractorId;
+                        _context.Update(document);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                }
+                return new StatusCodeResult((int)HttpStatusCode.OK);
+            }
+            return new StatusCodeResult((int)HttpStatusCode.NotFound);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> ChangeDocumentStatus([FromBody] int documentId, [FromBody] DocumentStatus documentStatus)
         {
-            try
+            var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
+            if (document != null)
             {
-                return RedirectToAction(nameof(Index));
+                document.DocumentStatus = documentStatus;
+                try
+                {
+                    _context.Update(document);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                }
+                return new StatusCodeResult((int)HttpStatusCode.OK);
             }
-            catch
+            return new StatusCodeResult((int)HttpStatusCode.NotFound);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeContractorStatus([FromBody] int contractorId, [FromBody] ContractorStatus contractorStatus)
+        {
+            var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == contractorId);
+            if (contractor != null)
             {
-                return View();
+                contractor.ContractorId = contractorId;
+                try
+                {
+                    _context.Update(contractor);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                }
+                return new StatusCodeResult((int)HttpStatusCode.OK);
             }
+            return new StatusCodeResult((int)HttpStatusCode.NotFound);
         }
     }
 }
