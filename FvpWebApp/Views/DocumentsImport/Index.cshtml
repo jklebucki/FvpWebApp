@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <h1 class="display-4">FVP Importer - moduł importu</h1>
+    <p></p>
+</div>
+
+
+<div class="row">
+    <div class="offset-6 col-1">
+        Miesiąc
+    </div>
+    <div class="col-1">
+        Rok
+    </div>
+</div>
+<div class="row mb-2">
+    <div class="offset-4 col-2">Wybierz okres do importu</div>
+    <div class="col-1">
+        @Html.DropDownList("Month", ViewBag.Months, "Miesiąc", new { @class = "form-control" })
+    </div>
+    <div class="col-1">
+        @Html.Editor("Year", new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+</div>
+<div>
+    <div class="row mb-2">
+        <div class="offset-2 col-8">
+            <table id="sources" class="table table-bordered table-hover table-sm" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Kod źródła</th>
+                        <th>Szczegóły</th>
+                        <th>Lokalizacja</th>
+                        <th>Akcje</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            url = '/DocumentsImport/GetSources'
+            table = $('#sources').DataTable({
+                'dom': 'lfrtip',
+                'pageLength': 15,
+                'lengthChange': false,
+                'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
+                'language': datatableLanguage,
+                'processing': true,
+                'ajax': url,
+                'rowId': 'sourceId',
+                'columns': [
+                    { data: 'code' },
+                    { data: 'description' },
+                    { data: 'address' },
+                    {
+                        data: 'sourceId', render(data, type, row) {
+                            return '<a onclick="getData(' + data + ')" data-toggle="tooltip" data-placement="top" title="Importuj dane"><span class="oi oi-data-transfer-download icon-button"></span></a>'
+                        }
+                    },
+                    { data: 'sourceId' },
+                ],
+                "createdRow": function (row, data, index) {
+                    $('a', row).tooltip()
+                },
+                'columnDefs': [
+                    {
+                        'targets': [4],
+                        'visible': false,
+                        'searchable': true
+                    }
+                ]
+            })
+        })
+        $(window).on('resize', function () {
+            if (table !== null)
+                table.columns.adjust();
+        });
+        function getData(id) {
+            var month = $("#Month").val()
+            var year = $("#Year").val()
+            const headers = {
+                'Content-Type': 'application/json',
+            }
+            var data = {
+                SourceId: id,
+                Year: Number(year),
+                Month: Number(month),
+            }
+            console.log(data)
+            axios.post(
+                '/DocumentsImport/CreateTicets',
+                data,
+                {
+                    headers: headers,
+                })
+                .then(response => {
+                    if (response.status == 200) {
+                        console.log(response.data)
+                    }
+                })
+                .catch(error => {
+                    console.log("AXIOS Error", error)
+                })
+        }
+    </script>
+}

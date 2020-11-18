@@ -106,6 +106,7 @@
     <Folder Include="wwwroot\DataTables\" />
     <Folder Include="wwwroot\fonts\" />
     <Folder Include="wwwroot\axios\" />
+    <Folder Include="wwwroot\lib\popper\" />
     <Folder Include="wwwroot\moment\" />
     <Folder Include="wwwroot\open-iconic\" />
   </ItemGroup>

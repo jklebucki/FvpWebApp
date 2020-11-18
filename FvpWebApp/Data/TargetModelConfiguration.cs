@@ -13,7 +13,7 @@ namespace FvpWebApp.Data
                 {
                     TargetId = 1,
                     Descryption = "Citronex I - Symfonia ERP",
-                    DatabaseName = "CITRONEX_FK",
+                    DatabaseName = "fkf_test_db",
                     DatabaseAddress = "192.168.21.20",
                     DatabaseUsername = "sa",
                     DatabasePassword = "#sa2015!"
@@ -22,7 +22,7 @@ namespace FvpWebApp.Data
                 {
                     TargetId = 2,
                     Descryption = "Citronex MOP - Symfonia ERP",
-                    DatabaseName = "CITRONEX_MOP",
+                    DatabaseName = "fkf_",
                     DatabaseAddress = "192.168.21.20",
                     DatabaseUsername = "sa",
                     DatabasePassword = "#sa2015!"
