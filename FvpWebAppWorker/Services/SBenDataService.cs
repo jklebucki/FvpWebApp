@@ -31,10 +31,11 @@ namespace FvpWebAppWorker.Services
                 "Data Source=" + source.Address
                 + "/XE;User ID=" + source.Username
                 + ";Password=" + source.Password
-                + ";Connection Timeout=9999;"))
+                + ";"))
             {
                 using (OracleCommand cmd = conn.CreateCommand())
                 {
+                    cmd.CommandTimeout = 90;
                     cmd.CommandText = sqlCommandText;
                     try
                     {
