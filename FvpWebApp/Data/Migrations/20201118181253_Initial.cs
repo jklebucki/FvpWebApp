@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FvpWebApp.Data.Migrations
 {
@@ -86,6 +86,27 @@ namespace FvpWebApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TaskTickets", x => x.TaskTicketId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VatRegisters",
+                columns: table => new
+                {
+                    VatRegisterId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TargetDocumentSettingsId = table.Column<int>(nullable: false),
+                    VatValue = table.Column<decimal>(type: "decimal(12,4)", nullable: false),
+                    ErpVatRegisterId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VatRegisters", x => x.VatRegisterId);
+                    table.ForeignKey(
+                        name: "FK_VatRegisters_TargetDocumentsSettings_TargetDocumentSettingsId",
+                        column: x => x.TargetDocumentSettingsId,
+                        principalTable: "TargetDocumentsSettings",
+                        principalColumn: "TargetDocumentSettingsId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -269,20 +290,20 @@ namespace FvpWebApp.Data.Migrations
                     { 23, null, null, "Polska", "PL", true },
                     { 22, null, null, "Holandia", "NL", true },
                     { 21, null, null, "Malta", "MT", true },
-                    { 20, null, null, "Łotwa", "LV", true },
+                    { 19, null, null, "Luksemburg", "LU", true },
                     { 18, null, null, "Litwa", "LT", true },
                     { 17, null, null, "Włochy", "IT", true },
                     { 16, null, null, "Irlandia", "IE", true },
                     { 15, null, null, "Węgry", "HU", true },
-                    { 19, null, null, "Luksemburg", "LU", true },
+                    { 20, null, null, "Łotwa", "LV", true },
                     { 13, null, null, "Wielka Brytania", "GB", true },
                     { 2, null, null, "Belgia", "BE", true },
-                    { 3, null, null, "Bułgaria", "BG", true },
                     { 14, null, null, "Chorwacja", "HR", true },
+                    { 4, null, null, "Cypr", "CY", true },
                     { 5, null, null, "Czechy", "CZ", true },
                     { 6, null, null, "Niemcy", "DE", true },
                     { 7, null, null, "Dania", "DK", true },
-                    { 4, null, null, "Cypr", "CY", true },
+                    { 3, null, null, "Bułgaria", "BG", true },
                     { 9, null, null, "Grecja", "EL", true },
                     { 10, null, null, "Hiszpania", "ES", true },
                     { 11, null, null, "Finlandia", "FI", true },
@@ -291,12 +312,21 @@ namespace FvpWebApp.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "TargetDocumentsSettings",
+                columns: new[] { "TargetDocumentSettingsId", "DocumentShortcut", "SourceId", "VatRegisterId" },
+                values: new object[,]
+                {
+                    { 1, "FDZG", 1, 1 },
+                    { 2, "FDD2", 2, 1 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Targets",
                 columns: new[] { "TargetId", "DatabaseAddress", "DatabaseName", "DatabasePassword", "DatabaseUsername", "Descryption" },
                 values: new object[,]
                 {
-                    { 1, "192.168.21.20", "CITRONEX_FK", "#sa2015!", "sa", "Citronex I - Symfonia ERP" },
-                    { 2, "192.168.21.20", "CITRONEX_MOP", "#sa2015!", "sa", "Citronex MOP - Symfonia ERP" }
+                    { 1, "192.168.21.20", "fkf_test_db", "#sa2015!", "sa", "Citronex I - Symfonia ERP" },
+                    { 2, "192.168.21.20", "fkf_goldfinch_test", "#sa2015!", "sa", "Citronex MOP - Symfonia ERP" }
                 });
 
             migrationBuilder.InsertData(
@@ -316,17 +346,30 @@ namespace FvpWebApp.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Sources",
                 columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
-                values: new object[] { 1, "192.168.42.70", "DP1", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", 1, "oracle_sben_dp", "sben" });
+                values: new object[] { 1, "192.168.42.70", "DP1", "sben", "Dyskont Paliwowy DP1", "almarwinnet", 1, "oracle_sben_dp", "sben" });
 
             migrationBuilder.InsertData(
                 table: "Sources",
                 columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
-                values: new object[] { 2, "192.168.45.70", "DP2", "sben", "Dyskont Paliwowy Słowiańska", "almarwinnet", 1, "oracle_sben_dp", "sben" });
+                values: new object[] { 2, "192.168.45.70", "DP2", "sben", "Dyskont Paliwowy DP2", "almarwinnet", 1, "oracle_sben_dp", "sben" });
 
             migrationBuilder.InsertData(
                 table: "Sources",
                 columns: new[] { "SourceId", "Address", "Code", "DbName", "Description", "Password", "TargetId", "Type", "Username" },
                 values: new object[] { 3, "I:\\DaneBP\\MOSTKI", "BPMOSTKI", "", "Stacja Paliw BP Mostki", "", 1, "bp_flat_file", "" });
+
+            migrationBuilder.InsertData(
+                table: "AccountingRecords",
+                columns: new[] { "AccountingRecordId", "Account", "Credit", "Debit", "RecordOrder", "Sign", "SourceId" },
+                values: new object[,]
+                {
+                    { 1, "199-9", "", "brutto", 1, "+", 1 },
+                    { 2, "199-9", "netto", "", 2, "+", 1 },
+                    { 3, "199-9", "vat", "", 3, "+", 1 },
+                    { 4, "199-23", "", "brutto", 1, "+", 2 },
+                    { 5, "199-23", "netto", "", 2, "+", 2 },
+                    { 6, "199-23", "vat", "", 3, "+", 2 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountingRecords_SourceId",
@@ -369,6 +412,24 @@ namespace FvpWebApp.Data.Migrations
                 name: "IX_Sources_TargetId",
                 table: "Sources",
                 column: "TargetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocSettingsShortcut",
+                table: "TargetDocumentsSettings",
+                column: "DocumentShortcut",
+                unique: true,
+                filter: "[DocumentShortcut] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VatRegisters_TargetDocumentSettingsId",
+                table: "VatRegisters",
+                column: "TargetDocumentSettingsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VatValue",
+                table: "VatRegisters",
+                column: "VatValue",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -386,10 +447,13 @@ namespace FvpWebApp.Data.Migrations
                 name: "SourceTypes");
 
             migrationBuilder.DropTable(
-                name: "TargetDocumentsSettings");
+                name: "VatRegisters");
 
             migrationBuilder.DropTable(
                 name: "Documents");
+
+            migrationBuilder.DropTable(
+                name: "TargetDocumentsSettings");
 
             migrationBuilder.DropTable(
                 name: "Contractors");

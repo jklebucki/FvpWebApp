@@ -71,12 +71,18 @@
     <Compile Remove="Data\Migrations\20201025172633_AccountingRecords.Designer.cs" />
     <Compile Remove="Data\Migrations\20201029114436_AccountingRecord.cs" />
     <Compile Remove="Data\Migrations\20201029114436_AccountingRecord.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201031180247_Initial.cs" />
+    <Compile Remove="Data\Migrations\20201031180247_Initial.Designer.cs" />
     <Compile Remove="Data\Migrations\20201101155442_SourceDefsData.cs" />
     <Compile Remove="Data\Migrations\20201101155442_SourceDefsData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201101155851_SourceDefsData.cs" />
+    <Compile Remove="Data\Migrations\20201101155851_SourceDefsData.Designer.cs" />
     <Compile Remove="Data\Migrations\20201102155921_VatRegistersToVatCode.cs" />
     <Compile Remove="Data\Migrations\20201102155921_VatRegistersToVatCode.Designer.cs" />
     <Compile Remove="Data\Migrations\20201102160305_VatRegistersToVatCode.cs" />
     <Compile Remove="Data\Migrations\20201102160305_VatRegistersToVatCode.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201102161311_VatRegistersToVatCode.cs" />
+    <Compile Remove="Data\Migrations\20201102161311_VatRegistersToVatCode.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

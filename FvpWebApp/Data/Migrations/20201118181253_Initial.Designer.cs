@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FvpWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201102161311_VatRegistersToVatCode")]
-    partial class VatRegistersToVatCode
+    [Migration("20201118181253_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -589,7 +589,7 @@ namespace FvpWebApp.Data.Migrations
                             Address = "192.168.42.70",
                             Code = "DP1",
                             DbName = "sben",
-                            Description = "Dyskont Paliwowy Słowiańska",
+                            Description = "Dyskont Paliwowy DP1",
                             Password = "almarwinnet",
                             TargetId = 1,
                             Type = "oracle_sben_dp",
@@ -601,7 +601,7 @@ namespace FvpWebApp.Data.Migrations
                             Address = "192.168.45.70",
                             Code = "DP2",
                             DbName = "sben",
-                            Description = "Dyskont Paliwowy Słowiańska",
+                            Description = "Dyskont Paliwowy DP2",
                             Password = "almarwinnet",
                             TargetId = 1,
                             Type = "oracle_sben_dp",
@@ -667,7 +667,7 @@ namespace FvpWebApp.Data.Migrations
                         {
                             TargetId = 1,
                             DatabaseAddress = "192.168.21.20",
-                            DatabaseName = "CITRONEX_FK",
+                            DatabaseName = "fkf_test_db",
                             DatabasePassword = "#sa2015!",
                             DatabaseUsername = "sa",
                             Descryption = "Citronex I - Symfonia ERP"
@@ -676,7 +676,7 @@ namespace FvpWebApp.Data.Migrations
                         {
                             TargetId = 2,
                             DatabaseAddress = "192.168.21.20",
-                            DatabaseName = "CITRONEX_MOP",
+                            DatabaseName = "fkf_goldfinch_test",
                             DatabasePassword = "#sa2015!",
                             DatabaseUsername = "sa",
                             Descryption = "Citronex MOP - Symfonia ERP"
