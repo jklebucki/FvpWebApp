@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace C2FKInterface.Models
 {
@@ -20,7 +19,7 @@ namespace C2FKInterface.Models
         public void RenumberDocumentId(int documentId, int firstAccountingRecordId, int firstVatRegisterRecordId)
         {
             Document.id = documentId;
-            foreach(var accountingRecord in AccountingRecords)
+            foreach (var accountingRecord in AccountingRecords)
             {
                 accountingRecord.dokId = documentId;
                 accountingRecord.id = firstAccountingRecordId++;

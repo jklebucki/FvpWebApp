@@ -1,16 +1,15 @@
-﻿using System;
+﻿using FvpWebApp.Data;
+using FvpWebApp.Infrastructure;
+using FvpWebApp.Models;
+using FvpWebAppModels.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using FvpWebApp.Data;
-using FvpWebApp.Infrastructure;
-using FvpWebApp.Models;
-using FvpWebAppModels.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace FvpWebApp.Controllers
 {

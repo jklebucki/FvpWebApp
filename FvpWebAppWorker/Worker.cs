@@ -136,7 +136,8 @@ namespace FvpWebAppWorker
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex.Message);                   }
+                        _logger.LogError(ex.Message);
+                    }
                 }
                 await Task.Delay(5000).ConfigureAwait(false);
             }

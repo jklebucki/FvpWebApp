@@ -1,8 +1,5 @@
 ﻿using LinqToDB.Mapping;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace C2FKInterface.Models
 {

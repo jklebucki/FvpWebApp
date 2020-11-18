@@ -4,10 +4,8 @@ using FvpWebApp.Models;
 using FvpWebAppModels.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -64,7 +62,7 @@ namespace FvpWebApp.Controllers
             {
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    _context.TaskTickets.AddRange(TicetsGenerator.ImportTickets(requestData)); 
+                    _context.TaskTickets.AddRange(TicetsGenerator.ImportTickets(requestData));
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
@@ -77,7 +75,7 @@ namespace FvpWebApp.Controllers
             return new JsonResult(response);
         }
 
-        
+
 
         public async Task<bool> CheckDataAlreadyTaken(CreateTicketRequest createTicketRequest)
         {

@@ -1,5 +1,4 @@
 ﻿using C2FKInterface.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace C2FKInterface.Services.Interfaces

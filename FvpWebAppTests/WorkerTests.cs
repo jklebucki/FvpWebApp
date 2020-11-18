@@ -1,8 +1,6 @@
 using FvpWebAppModels.Models;
-using FvpWebAppWorker.Data;
 using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Services;
-using Serilog.Core;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -28,7 +26,7 @@ namespace FvpWebAppTests
         [Fact]
         public void GetVatValueTest()
         {
-            TargetDataService targetDataService = new TargetDataService(null, null,null);
+            TargetDataService targetDataService = new TargetDataService(null, null, null);
             var vatValue23 = targetDataService.GetVatValue(new DocumentVat { VatCode = "A", VatValue = 23 });
             Assert.True(23 == vatValue23);
             var vatValue8 = targetDataService.GetVatValue(new DocumentVat { VatCode = "B", VatValue = 8 });

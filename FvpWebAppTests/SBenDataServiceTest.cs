@@ -1,17 +1,12 @@
-using FvpWebAppWorker.Data;
-using FvpWebAppWorker.Infrastructure;
 using FvpWebAppWorker.Services;
-using Serilog.Core;
 using System;
 using System.Data;
-using System.IO;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace FvpWebAppTests
 {
     public class SBenDataServiceTest
-    { 
+    {
         private DataRow _dataRow { get; set; }
         public SBenDataServiceTest()
         {

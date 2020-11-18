@@ -22,7 +22,7 @@ namespace FvpWebApp.Data
                 {
                     TargetId = 2,
                     Descryption = "Citronex MOP - Symfonia ERP",
-                    DatabaseName = "fkf_",
+                    DatabaseName = "fkf_goldfinch_test",
                     DatabaseAddress = "192.168.21.20",
                     DatabaseUsername = "sa",
                     DatabasePassword = "#sa2015!"

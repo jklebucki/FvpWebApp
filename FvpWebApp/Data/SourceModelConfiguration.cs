@@ -12,7 +12,7 @@ namespace FvpWebApp.Data
                 new Source
                 {
                     SourceId = 1,
-                    Description = "Dyskont Paliwowy S³owiañska",
+                    Description = "Dyskont Paliwowy DP1",
                     Code = "DP1",
                     Type = "oracle_sben_dp",
                     Address = "192.168.42.70",
@@ -25,7 +25,7 @@ namespace FvpWebApp.Data
                 new Source
                 {
                     SourceId = 2,
-                    Description = "Dyskont Paliwowy S³owiañska",
+                    Description = "Dyskont Paliwowy DP2",
                     Code = "DP2",
                     Type = "oracle_sben_dp",
                     Address = "192.168.45.70",

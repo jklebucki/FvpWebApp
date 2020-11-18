@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace FvpWebApp.Models
+﻿namespace FvpWebApp.Models
 {
     public class CreateTicetsResponse
     {
