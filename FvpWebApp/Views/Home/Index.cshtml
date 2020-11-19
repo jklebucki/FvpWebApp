@@ -8,7 +8,7 @@
 </div>
 
 
-<div class="row">
+<div class="row mb-4">
     <div class="col-2"></div>
     <div class="col-2">
         <a asp-controller="DocumentsImport" asp-action="Index" class="btn btn-outline-secondary btn-block">Import dokumentów</a>
@@ -18,3 +18,95 @@
     </div>
     <div class="col-2"></div>
 </div>
+<div class="row mb-2">
+    <div class="offset-2 col-2">
+        Filtruj procesy
+    </div>
+    <div class="col-3">
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="all-proc" name="ticket-status" value="0" class="custom-control-input">
+            <label class="custom-control-label" for="all-proc">Wszystkie</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="pending-proc" name="ticket-status" value="1" class="custom-control-input">
+            <label class="custom-control-label" for="pending-proc">Uruchomione</label>
+        </div>
+    </div>
+</div>
+<div class="row mb-2">
+    <div class="offset-2 col-8">
+        <table id="tickets" class="table table-bordered table-hover table-sm" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Źródło danych</th>
+                    <th>Rok</th>
+                    <th>Miesiąc</th>
+                    <th>Rodzaj procesu</th>
+                    <th>Status procesu</th>
+                    <th>Uruchomienie</th>
+                    <th>Zakończenie</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#pending-proc').attr('checked', true)
+            url = '/DocumentsImport/GetPendingTasks/0'
+            table = $('#tickets').DataTable({
+                'dom': 'lfrtip',
+                'ordering': false,
+                'pageLength': 12,
+                'lengthChange': false,
+                'language': datatableLanguage,
+                'processing': true,
+                'ajax': url,
+                'rowId': 'ticketId',
+                'fnRowCallback': function (row, data, iDisplayIndex, iDisplayIndexFull) {
+                    if (parseInt(data.ticketStatus) === 3) {
+                        $(row).css('background-color', '#FFCDD2');
+                    }
+                },
+                'columns': [
+                    { data: 'source' },
+                    { data: 'year' },
+                    { data: 'month' },
+                    {
+                        data: 'ticketType', render(data, type, row) {
+                            return decodeTicketType(data)
+                        }
+                    },
+                    {
+                        data: 'ticketStatus', render(data, type, row) {
+                            return decodeTicketStatus(data)
+                        }
+                    },
+                    {
+                        data: 'startDate', render(data, type, row) {
+                            return moment(data).format('YYYY-MM-DD, HH:mm:ss')
+                        }
+                    },
+                    {
+                        data: 'endDate', render(data, type, row) {
+                            return moment(data).format('YYYY-MM-DD, HH:mm:ss')
+                        }
+                    },
+                ]
+            })
+        })
+        $(window).on('resize', function () {
+            if (table !== null)
+                table.columns.adjust();
+        });
+        function filterTable() {
+            var valid = $("#all-proc").prop('checked')
+            if (valid)
+                table.ajax.url('/DocumentsImport/GetPendingTasks/1').load();
+            else
+                table.ajax.url('/DocumentsImport/GetPendingTasks/0').load();
+        }
+    </script>
+}

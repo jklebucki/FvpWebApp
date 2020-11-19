@@ -2,10 +2,10 @@
 using FvpWebApp.Infrastructure;
 using FvpWebApp.Models;
 using FvpWebAppModels.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -52,6 +52,12 @@ namespace FvpWebApp.Controllers
         public async Task<IActionResult> CreateTicets([FromBody] CreateTicketRequest requestData)
         {
             var response = new CreateTicetsResponse { TicketsCreated = false };
+            var dateTo = DatesFromMonth.DateTo(requestData);
+            if (dateTo >= DateTime.Now)
+            {
+                response.Message = "Jeszcze nie można importować danych z tego zakresu - miesiąc musi być zakończony.";
+                return new JsonResult(response);
+            }
             if (requestData == null)
             {
                 response.Message = "Błędne dane zapytania";
@@ -75,8 +81,6 @@ namespace FvpWebApp.Controllers
             return new JsonResult(response);
         }
 
-
-
         public async Task<bool> CheckDataAlreadyTaken(CreateTicketRequest createTicketRequest)
         {
             var dateFrom = DatesFromMonth.DateFrom(createTicketRequest);
@@ -89,46 +93,30 @@ namespace FvpWebApp.Controllers
             return tickets.Count > 0 ? true : false;
         }
 
-        // GET: DocumentsImport/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> GetPendingTasks(int id)
         {
-            return View();
-        }
-
-        // POST: DocumentsImport/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: DocumentsImport/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: DocumentsImport/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            List<TaskTicket> pendingTasks;
+            if (id == 0)
+                pendingTasks = await _context.TaskTickets.Where(t => t.TicketStatus == TicketStatus.Added || t.TicketStatus == TicketStatus.Pending).ToListAsync();
+            else
+                pendingTasks = await _context.TaskTickets.ToListAsync();
+            var sources = await _context.Sources.ToListAsync();
+            var pendingTasksView = from t in pendingTasks
+                                   from s in sources
+                                   where t.SourceId == s.SourceId
+                                   orderby t.TaskTicketId descending
+                                   select new
+                                   {
+                                       TicketId = t.TaskTicketId,
+                                       Source = s.Description,
+                                       Year = t.DateFrom.Year,
+                                       Month = t.DateFrom.Month,
+                                       TicketStatus = t.TicketStatus,
+                                       TicketType = t.TicketType,
+                                       StartDate = t.CreatedAt,
+                                       EndDate = t.StatusChangedAt,
+                                   };
+            return new JsonResult(new { Data = pendingTasksView });
         }
     }
 }

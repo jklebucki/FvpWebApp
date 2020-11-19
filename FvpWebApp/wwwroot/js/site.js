@@ -22,6 +22,42 @@ var datatableLanguage = {
     }
 };
 
+function decodeTicketType(type) {
+    type = Number(type)
+    switch (type) {
+        case 0:
+            return 'Import dokumentów'
+        case 1:
+            return 'Import kontrahentów'
+        case 2:
+            return 'Sprawdzanie kontrahentów'
+        case 3:
+            return 'Łączenie sprawdzonych kontrahentów z dokumentami'
+        case 4:
+            return 'Zakładanie nowych kontrahentów w FK'
+        case 5:
+            return 'Eksport dokumentów do FK'
+        default:
+            return 'typ procesu nieznany'
+    }
+}
+
+function decodeTicketStatus(status) {
+    status = Number(status)
+    switch (status) {
+        case 0:
+            return 'Oczekujący na wykonanie'
+        case 1:
+            return 'Procesowany...'
+        case 2:
+            return 'Wykonany'
+        case 3:
+            return 'Zakończony błędem'
+        default:
+            return 'typ procesu nieznany'
+    }
+}
+
 var documentInfo = {
     document: {
         documentId: 0,
