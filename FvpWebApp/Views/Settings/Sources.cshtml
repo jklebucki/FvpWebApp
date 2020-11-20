@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <h1 class="display-4">FVP Importer - konfiguracja źródeł danych</h1>
+    <p></p>
+</div>
+
+<div>
+    <div class="row mb-2">
+        <div class="offset-2 col-8">
+            <table id="sources" class="table table-bordered table-hover table-sm" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Kod źródła</th>
+                        <th>Szczegóły</th>
+                        <th>Lokalizacja</th>
+                        <th>Akcje</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Szczegóły źródła danych</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="infoBody">
+                <div id="app">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-inline">
+                                        <div class="form-group col-12 mt-2 mb-1">
+                                            <label class="col-5" for="source-code">Kod</label>
+                                            <input v-model="sourceData.source.code" type="text" class="form-control form-control-sm col-7" id="source-code" placeholder="Kod">
+                                        </div>
+                                    </div>
+                                    <div class="form-inline">
+                                        <div class="form-group col-12 mb-1">
+                                            <label class="col-5" for="source-descryption">Opis</label>
+                                            <input v-model="sourceData.source.description" type="text" class="form-control form-control-sm col-7" id="source-descryption" placeholder="Opis">
+                                        </div>
+                                    </div>
+                                    <div class="form-inline">
+                                        <div class="form-group col-12 mb-1">
+                                            <label class="col-5" for="source-type">Typ danych</label>
+                                            <input v-model="sourceData.source.type" type="text" class="form-control form-control-sm col-7" id="source-type" placeholder="Typ danych">
+                                        </div>
+                                    </div>
+                                    <div class="form-inline">
+                                        <div class="form-group col-12 mb-1">
+                                            <label class="col-5" for="source-address">Lokalizacja</label>
+                                            <input v-model="sourceData.source.address" type="text" class="form-control form-control-sm col-7" id="source-address" placeholder="Lokalizacja">
+                                        </div>
+                                    </div>
+                                    <div class="form-inline">
+                                        <div class="form-group col-12 mb-1">
+                                            <label class="col-5" for="source-dbName">Baza danych</label>
+                                            <input v-model="sourceData.source.dbName" type="text" class="form-control form-control-sm col-7" id="source-dbName" placeholder="Baza danych">
+                                        </div>
+                                    </div>
+                                    <div class="form-inline">
+                                        <div class="form-group col-12 mb-1">
+                                            <label class="col-5" for="source-username">Użytkownik</label>
+                                            <input v-model="sourceData.source.username" type="text" class="form-control form-control-sm col-7" id="source-username" placeholder="Użytkownik">
+                                        </div>
+                                    </div>
+                                    <div class="form-inline">
+                                        <div class="form-group col-12 mb-2">
+                                            <label class="col-5" for="source-username">Hasło</label>
+                                            <input v-model="sourceData.source.password" type="text" class="form-control form-control-sm col-7" id="source-password" placeholder="Hasło">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6" style="height: 300px !important">
+
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var table
+        var app = new Vue({
+            el: '#app',
+            data: {
+                sourceData: null,
+                rowId: null,
+                rowData: null,
+            },
+            methods: {
+                isContractorMatched: function (contractor) {
+                    if (contractor.contractorId === this.documentData.document.contractorId)
+                        return true
+                    else
+                        return false
+                },
+                setContractor: function (contractor, changeAllDocuments) {
+                    const headers = {
+                        'Content-Type': 'application/json',
+                    }
+                    var data = {
+                        DocumentId: this.documentData.document.documentId,
+                        ContractorId: contractor.contractorId,
+                        ChangeAllDocuments: changeAllDocuments
+                    }
+                    axios.post(
+                        '/DocumentsView/ChangeContractor',
+                        data,
+                        {
+                            headers: headers,
+                        })
+                        .then(response => {
+                            if (response.status == 200) {
+                                this.documentData.document.contractorId = contractor.contractorId
+                                replaceContractor(contractor, changeAllDocuments)
+                            }
+                        })
+                        .catch(error => {
+                            console.log("AXIOS Error", error)
+                        })
+
+                }
+            }
+        })
+        $(document).ready(function () {
+            url = '/DocumentsImportExport/GetSources'
+            table = $('#sources').DataTable({
+                'dom': 'lfrtip',
+                'pageLength': 15,
+                'lengthChange': false,
+                'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
+                'language': datatableLanguage,
+                'processing': true,
+                'ajax': url,
+                'rowId': 'sourceId',
+                'columns': [
+                    { data: 'code' },
+                    { data: 'description' },
+                    { data: 'address' },
+                    {
+                        data: 'sourceId', render(data, type, row) {
+                            return '<a onclick="getData(' + data + ')" data-toggle="tooltip" data-placement="top" title="Pokaż szczegóły"><span class="oi oi-eye icon-button"></span></a>'
+                        }
+                    },
+                    { data: 'sourceId' },
+                ],
+                "createdRow": function (row, data, index) {
+                    $('a', row).tooltip()
+                },
+                'columnDefs': [
+                    {
+                        'targets': [4],
+                        'visible': false,
+                        'searchable': true
+                    }
+                ]
+            })
+        })
+        $(window).on('resize', function () {
+            if (table !== null)
+                table.columns.adjust();
+        });
+        function getData(id) {
+            //debugger
+            $('#modalBody').html()
+            axios.get('/Settings/GetSource/' + id)
+                .then(response => {
+                    if (response.status == 200) {
+                        console.log(response.data);
+                        app.sourceData = response.data
+                        //$('#infoBody').html(response.data.source.description)
+                    }
+                })
+                .catch(error => {
+                    $('#infoBody').html(error)
+                    console.log("AXIOS Error", error)
+                })
+                .then(function () {
+                    $('#infoModal').modal('show')
+                })
+        }
+    </script>
+}

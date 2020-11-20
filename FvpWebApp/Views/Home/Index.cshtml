@@ -10,10 +10,10 @@
 
 <div class="row mb-4">
     <div class="col-2"></div>
-    <div class="col-2">
-        <a asp-controller="DocumentsImport" asp-action="Index" class="btn btn-outline-secondary btn-block">Import dokumentów</a>
+    <div class="col-4">
+        <a asp-controller="DocumentsImportExport" asp-action="Index" class="btn btn-outline-secondary btn-block">Import/Eksport dokumentów</a>
     </div>
-    <div class="col-2">
+    <div class="col-4">
         <a asp-controller="DocumentsView" asp-action="Index" class="btn btn-outline-secondary btn-block">Zaimportowane dokumenty</a>
     </div>
     <div class="col-2"></div>
@@ -55,7 +55,7 @@
     <script>
         $(document).ready(function () {
             $('#pending-proc').attr('checked', true)
-            url = '/DocumentsImport/GetPendingTasks/0'
+            url = '/DocumentsImportExport/GetPendingTasks/0'
             table = $('#tickets').DataTable({
                 'dom': 'lfrtip',
                 'ordering': false,
@@ -104,9 +104,9 @@
         function filterTable() {
             var valid = $("#all-proc").prop('checked')
             if (valid)
-                table.ajax.url('/DocumentsImport/GetPendingTasks/1').load();
+                table.ajax.url('/DocumentsImportExport/GetPendingTasks/1').load();
             else
-                table.ajax.url('/DocumentsImport/GetPendingTasks/0').load();
+                table.ajax.url('/DocumentsImportExport/GetPendingTasks/0').load();
         }
     </script>
 }

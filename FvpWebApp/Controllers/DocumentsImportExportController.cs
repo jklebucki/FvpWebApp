@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace FvpWebApp.Controllers
 {
-    public class DocumentsImportController : Controller
+    public class DocumentsImportExportController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public DocumentsImportController(ApplicationDbContext context)
+        public DocumentsImportExportController(ApplicationDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -68,7 +68,15 @@ namespace FvpWebApp.Controllers
             {
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    _context.TaskTickets.AddRange(TicetsGenerator.ImportTickets(requestData));
+                    if (requestData.TicketsGroup == "import")
+                    {
+                        _context.TaskTickets.AddRange(TicetsGenerator.ImportTickets(requestData));
+                    }
+                    else if (requestData.TicketsGroup == "export")
+                    {
+                        _context.TaskTickets.AddRange(TicetsGenerator.ExportTickets(requestData));
+                    }
+
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
@@ -77,7 +85,7 @@ namespace FvpWebApp.Controllers
                 response.Message = "Proces importu rozpoczęty!";
             }
             else
-                response.Message = "Import danych z tego okresu już się odbył lub trwa.";
+                response.Message = "Dane z tego okresu były już przetwarzane lub trwa ich przetarzanie";
             return new JsonResult(response);
         }
 
@@ -85,11 +93,19 @@ namespace FvpWebApp.Controllers
         {
             var dateFrom = DatesFromMonth.DateFrom(createTicketRequest);
             var dateTo = DatesFromMonth.DateTo(createTicketRequest);
-            var tickets = await _context.TaskTickets.Where(
-                t => t.SourceId == createTicketRequest.SourceId
-                && t.TicketType == TicketType.ImportDocuments
-                && t.TicketStatus != TicketStatus.Failed
-                && ((t.DateFrom <= dateFrom && t.DateTo >= dateFrom) || (t.DateFrom <= dateTo && t.DateTo >= dateTo))).ToListAsync();
+            List<TaskTicket> tickets = new List<TaskTicket>();
+            if (createTicketRequest.TicketsGroup == "import")
+                tickets = await _context.TaskTickets.Where(
+                    t => t.SourceId == createTicketRequest.SourceId
+                    && t.TicketType == TicketType.ImportDocuments
+                    && t.TicketStatus != TicketStatus.Failed
+                    && ((t.DateFrom <= dateFrom && t.DateTo >= dateFrom) || (t.DateFrom <= dateTo && t.DateTo >= dateTo))).ToListAsync();
+            else
+                tickets = await _context.TaskTickets.Where(
+                    t => t.SourceId == createTicketRequest.SourceId
+                    && t.TicketType == TicketType.ExportDocumentsToErp
+                    && t.TicketStatus != TicketStatus.Failed
+                    && ((t.DateFrom <= dateFrom && t.DateTo >= dateFrom) || (t.DateFrom <= dateTo && t.DateTo >= dateTo))).ToListAsync();
             return tickets.Count > 0 ? true : false;
         }
 

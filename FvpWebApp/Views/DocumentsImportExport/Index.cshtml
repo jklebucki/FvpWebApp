@@ -67,7 +67,7 @@
 @section scripts{
     <script>
         $(document).ready(function () {
-            url = '/DocumentsImport/GetSources'
+            url = '/DocumentsImportExport/GetSources'
             table = $('#sources').DataTable({
                 'dom': 'lfrtip',
                 'pageLength': 15,
@@ -83,7 +83,8 @@
                     { data: 'address' },
                     {
                         data: 'sourceId', render(data, type, row) {
-                            return '<a onclick="getData(' + data + ')" data-toggle="tooltip" data-placement="top" title="Importuj dane"><span class="oi oi-data-transfer-download icon-button"></span></a>'
+                            return '<a onclick="proceedData(' + data + ',\'import\')" class="btn btn-outline-dark btn-sm ml-1 mr-1" data-toggle="tooltip" data-placement="top" title="Importuj dane"><span class="oi oi-data-transfer-download icon-button"></span></a>' +
+                                '<a onclick="proceedData(' + data + ',\'export\')" class="btn btn-outline-dark btn-sm ml-1 mr-1" data-toggle="tooltip" data-placement="top" title="Exportuj dane"><span class="oi oi-data-transfer-upload icon-button"></span></a>'
                         }
                     },
                     { data: 'sourceId' },
@@ -104,20 +105,21 @@
             if (table !== null)
                 table.columns.adjust();
         });
-        function getData(id) {
+        function proceedData(id, ticketsGropup) {
             var month = $("#Month").val()
             var year = $("#Year").val()
             const headers = {
                 'Content-Type': 'application/json',
             }
             var data = {
+                TicketsGroup: ticketsGropup,
                 SourceId: id,
                 Year: Number(year),
                 Month: Number(month),
             }
             $('#modalBody').html()
             axios.post(
-                '/DocumentsImport/CreateTicets',
+                '/DocumentsImportExport/CreateTicets',
                 data,
                 {
                     headers: headers,
@@ -135,5 +137,6 @@
                     $('#infoModal').modal('show')
                 })
         }
+      
     </script>
 }
