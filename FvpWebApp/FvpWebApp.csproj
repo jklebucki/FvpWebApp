@@ -83,6 +83,8 @@
     <Compile Remove="Data\Migrations\20201102160305_VatRegistersToVatCode.Designer.cs" />
     <Compile Remove="Data\Migrations\20201102161311_VatRegistersToVatCode.cs" />
     <Compile Remove="Data\Migrations\20201102161311_VatRegistersToVatCode.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201118181253_Initial.cs" />
+    <Compile Remove="Data\Migrations\20201118181253_Initial.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -105,6 +107,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\C2FKInterface\C2FKInterface.csproj" />
     <ProjectReference Include="..\FvpWebAppModels\FvpWebAppModels.csproj" />
   </ItemGroup>
 

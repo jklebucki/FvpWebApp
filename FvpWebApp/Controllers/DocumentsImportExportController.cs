@@ -52,10 +52,9 @@ namespace FvpWebApp.Controllers
         public async Task<IActionResult> CreateTicets([FromBody] CreateTicketRequest requestData)
         {
             var response = new CreateTicetsResponse { TicketsCreated = false };
-            var dateTo = DatesFromMonth.DateTo(requestData);
-            if (dateTo >= DateTime.Now)
+            if (DatesFromMonth.DateTo(requestData) >= DateTime.Now)
             {
-                response.Message = "Jeszcze nie można importować danych z tego zakresu - miesiąc musi być zakończony.";
+                response.Message = "Jeszcze nie można przetwarzać danych z tego zakresu - miesiąc musi być zakończony.";
                 return new JsonResult(response);
             }
             if (requestData == null)

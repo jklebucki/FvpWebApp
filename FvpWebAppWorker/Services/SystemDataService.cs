@@ -166,6 +166,7 @@ namespace FvpWebAppWorker.Services
             {
                 var token = await _apiService.ApiLogin().ConfigureAwait(false);
                 var ueCountries = (await _dbContext.Countries.ToListAsync().ConfigureAwait(false)).Where(u => u.UE).Select(c => c.Symbol).ToList();
+                var allCountries = (await _apiService.GetCountriesAsync(token)).Select(c => c.Symbol);
 
                 ContractorService contractorService = new ContractorService(_dbContext);
                 var documentsContractors = await _dbContext.Contractors.Where(s => s.ContractorStatus == ContractorStatus.NotChecked).ToListAsync().ConfigureAwait(false);
@@ -183,7 +184,7 @@ namespace FvpWebAppWorker.Services
                         var response = await CheckContractorByViesApi(documentContractor);
                         await ClassificateContractor(documentContractor, response);
                     }
-                    else
+                    else if (allCountries.Contains(documentContractor.CountryCode))
                     {
                         var response = new ApiResponseContractor
                         {
@@ -192,7 +193,15 @@ namespace FvpWebAppWorker.Services
                         };
                         await ClassificateContractor(documentContractor, response);
                     }
-
+                    else
+                    {
+                        var response = new ApiResponseContractor
+                        {
+                            ApiStatus = ApiStatus.NotValid,
+                            Contractors = new List<Contractor>()
+                        };
+                        await ClassificateContractor(documentContractor, response);
+                    }
                 }
                 await UpdateContractorsOnDocuments();
                 await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicketId, TicketStatus.Done).ConfigureAwait(false);

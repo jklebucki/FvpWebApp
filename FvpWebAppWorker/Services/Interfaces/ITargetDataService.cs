@@ -14,6 +14,7 @@ namespace FvpWebAppWorker.Services.Interfaces
             TargetDocumentSettings targetDocumentSettings,
             List<Contractor> contractors,
             List<DocumentVat> documentVats,
+            List<VatRegister> vatRegisters,
             C21DocumentService c21DocumentService,
             Document document, Source source);
         Task ExportContractorsToErp(TaskTicket taskTicket, Target target);

@@ -125,3 +125,41 @@ var documentInfo = {
         },
     ],
 }
+
+var sourceConfig = {
+    source: {
+        sourceId: 0,
+        targetId: null,
+        description: null,
+        code: null,
+        type: null,
+        address: null,
+        dbName: null,
+        username: null,
+        password: null
+    },
+    target: {
+        sourceId: 0,
+        targetId: null,
+        description: null,
+        code: null,
+        type: null,
+        address: null,
+        dbName: null,
+        username: null,
+        password: null
+    },
+    targetDocumentSettings: {
+        targetDocumentSettingsId: 0,
+        sourceId: 0,
+        documentShortcut: null,
+        vatRegisterId: 0
+    },
+    vatRegisters: [{
+        targetDocumentSettingsId: 0,
+        sourceId: 0,
+        documentShortcut: null,
+        vatRegisterId: 0
+    }]
+
+}

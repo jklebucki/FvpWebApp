@@ -45,43 +45,43 @@
                                     <div class="form-inline">
                                         <div class="form-group col-12 mt-2 mb-1">
                                             <label class="col-5" for="source-code">Kod</label>
-                                            <input v-model="sourceData.source.code" type="text" class="form-control form-control-sm col-7" id="source-code" placeholder="Kod">
+                                            <input v-model="sourceConfig.source.code" type="text" class="form-control form-control-sm col-7" id="source-code" placeholder="Kod">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-descryption">Opis</label>
-                                            <input v-model="sourceData.source.description" type="text" class="form-control form-control-sm col-7" id="source-descryption" placeholder="Opis">
+                                            <input v-model="sourceConfig.source.description" type="text" class="form-control form-control-sm col-7" id="source-descryption" placeholder="Opis">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-type">Typ danych</label>
-                                            <input v-model="sourceData.source.type" type="text" class="form-control form-control-sm col-7" id="source-type" placeholder="Typ danych">
+                                            <input v-model="sourceConfig.source.type" type="text" class="form-control form-control-sm col-7" id="source-type" placeholder="Typ danych">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-address">Lokalizacja</label>
-                                            <input v-model="sourceData.source.address" type="text" class="form-control form-control-sm col-7" id="source-address" placeholder="Lokalizacja">
+                                            <input v-model="sourceConfig.source.address" type="text" class="form-control form-control-sm col-7" id="source-address" placeholder="Lokalizacja">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-dbName">Baza danych</label>
-                                            <input v-model="sourceData.source.dbName" type="text" class="form-control form-control-sm col-7" id="source-dbName" placeholder="Baza danych">
+                                            <input v-model="sourceConfig.source.dbName" type="text" class="form-control form-control-sm col-7" id="source-dbName" placeholder="Baza danych">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-username">Użytkownik</label>
-                                            <input v-model="sourceData.source.username" type="text" class="form-control form-control-sm col-7" id="source-username" placeholder="Użytkownik">
+                                            <input v-model="sourceConfig.source.username" type="text" class="form-control form-control-sm col-7" id="source-username" placeholder="Użytkownik">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-2">
                                             <label class="col-5" for="source-username">Hasło</label>
-                                            <input v-model="sourceData.source.password" type="text" class="form-control form-control-sm col-7" id="source-password" placeholder="Hasło">
+                                            <input v-model="sourceConfig.source.password" type="text" class="form-control form-control-sm col-7" id="source-password" placeholder="Hasło">
                                         </div>
                                     </div>
                                 </div>
@@ -114,43 +114,15 @@
         var app = new Vue({
             el: '#app',
             data: {
-                sourceData: null,
+                sourceConfig,
                 rowId: null,
                 rowData: null,
+                vat: null,
             },
-            methods: {
-                isContractorMatched: function (contractor) {
-                    if (contractor.contractorId === this.documentData.document.contractorId)
-                        return true
-                    else
-                        return false
-                },
-                setContractor: function (contractor, changeAllDocuments) {
-                    const headers = {
-                        'Content-Type': 'application/json',
-                    }
-                    var data = {
-                        DocumentId: this.documentData.document.documentId,
-                        ContractorId: contractor.contractorId,
-                        ChangeAllDocuments: changeAllDocuments
-                    }
-                    axios.post(
-                        '/DocumentsView/ChangeContractor',
-                        data,
-                        {
-                            headers: headers,
-                        })
-                        .then(response => {
-                            if (response.status == 200) {
-                                this.documentData.document.contractorId = contractor.contractorId
-                                replaceContractor(contractor, changeAllDocuments)
-                            }
-                        })
-                        .catch(error => {
-                            console.log("AXIOS Error", error)
-                        })
-
-                }
+            mounted() {
+                axios
+                    .get('/settings/getvatregisters/1')
+                    .then(response => (this.vats = response.data))
             }
         })
         $(document).ready(function () {
@@ -198,7 +170,7 @@
                 .then(response => {
                     if (response.status == 200) {
                         console.log(response.data);
-                        app.sourceData = response.data
+                        app.sourceConfig = response.data
                         //$('#infoBody').html(response.data.source.description)
                     }
                 })

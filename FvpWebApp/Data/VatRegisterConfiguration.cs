@@ -9,8 +9,8 @@ namespace FvpWebApp.Data
         public void Configure(EntityTypeBuilder<VatRegister> modelBuilder)
         {
             modelBuilder.Property(p => p.VatValue).HasColumnType("decimal(12,4)");
-            modelBuilder.HasIndex(p => p.VatValue)
-                        .HasName("IX_VatValue")
+            modelBuilder.HasIndex(p => new { p.TargetDocumentSettingsId, p.VatValue })
+                        .HasName("IX_VatValueOnTargetDocument")
                         .IsUnique();
         }
 

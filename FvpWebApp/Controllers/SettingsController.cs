@@ -1,4 +1,6 @@
-﻿using FvpWebApp.Data;
+﻿using C2FKInterface.Data;
+using C2FKInterface.Services;
+using FvpWebApp.Data;
 using FvpWebAppModels.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FvpWebApp.Controllers
@@ -53,8 +56,32 @@ namespace FvpWebApp.Controllers
                 Source = source,
                 Target = target,
                 TargetDocumentSettings = targetDocumentSettings,
-                VarRegisters = vatRegisters
+                VatRegisters = vatRegisters
             });
+        }
+
+        private DbConnectionSettings GetDbSettings(Target target)
+        {
+            return new DbConnectionSettings(
+                    target.DatabaseAddress,
+                    target.DatabaseUsername,
+                    target.DatabasePassword,
+                    target.DatabaseName);
+        }
+
+        [Route("[controller]/getvatregisters/{id}")]
+        public async Task<IActionResult> GetVatRegisters(int id)
+        {
+            var target = await _context.Targets.FirstOrDefaultAsync(t => t.TargetId == id);
+            C21DocumentService documentService = new C21DocumentService(GetDbSettings(target), null);
+            var vatDefs = await documentService.GetAllVatRegistersDefs();
+            var defList = from v in vatDefs
+                          select new
+                          {
+                              VatRegisterId = v.id,
+                              Name = v.rNazwa
+                          };
+            return new JsonResult(defList);
         }
 
         [HttpPost]

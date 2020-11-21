@@ -98,12 +98,13 @@ namespace FvpWebAppWorker.Services
                 var targetDocumentSettings = await _dbContext.TargetDocumentsSettings.FirstOrDefaultAsync(t => t.SourceId == taskTicket.SourceId);
                 var accountingRecords = await _dbContext.AccountingRecords.Where(a => a.SourceId == taskTicket.SourceId).ToListAsync();
                 var source = await _dbContext.Sources.FirstOrDefaultAsync(s => s.SourceId == taskTicket.SourceId);
+                var vatRegisters = await _dbContext.VatRegisters.Where(v => v.TargetDocumentSettingsId == targetDocumentSettings.TargetDocumentSettingsId).ToListAsync();
                 Console.WriteLine($"Source: {source.Description} Start prep.: {DateTime.Now}");
                 int docCounter = 0;
                 int insertCounter = 0;
                 foreach (var document in documentsToSend)
                 {
-                    var documentAggregate = await PrepareDocumentAggregate(accountingRecords, targetDocumentSettings, contractors, allDocumentVats, c21DocumentService, document, source);
+                    var documentAggregate = await PrepareDocumentAggregate(accountingRecords, targetDocumentSettings, contractors, allDocumentVats, vatRegisters, c21DocumentService, document, source);
                     if (documentAggregate.IsPrepared)
                     {
                         //c21DocumentAggregates.Add(documentAggregate);
@@ -145,6 +146,7 @@ namespace FvpWebAppWorker.Services
             TargetDocumentSettings targetDocumentSettings,
             List<Contractor> contractors,
             List<DocumentVat> allDocumentVats,
+            List<VatRegister> vatRegisters,
             C21DocumentService c21DocumentService,
             Document document, Source source)
         {
@@ -168,7 +170,7 @@ namespace FvpWebAppWorker.Services
             var c21documentId = 1000;//await c21DocumentService.GetNextDocumentId(1000);
             var year = await c21DocumentService.GetYearId(document.SaleDate);
             var docTypDef = await c21DocumentService.GetDocumentDefinition(targetDocumentSettings.DocumentShortcut, year.rokId);
-            var vatRegisterDef = await c21DocumentService.GetVarRegistersDefs(docTypDef.rejestr);
+            var vatRegisterDef = await c21DocumentService.GetVatRegistersDefs(docTypDef.rejestr);
             var contractor = contractors.FirstOrDefault(c => c.ContractorId == document.ContractorId);
             if (year != null && contractor != null && vatRegisterDef != null)
             {
@@ -177,7 +179,7 @@ namespace FvpWebAppWorker.Services
                     id = c21documentId,
                     rokId = year.rokId,
                     skrot = targetDocumentSettings.DocumentShortcut,
-                    kontrahent = contractor.ContractorErpPosition,
+                    kontrahent = null,//contractor.ContractorErpPosition != null ? contractor.ContractorErpPosition : null,
                     nazwa = document.DocumentNumber,
                     tresc = document.DocumentNumber,
                     datawpr = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
@@ -187,6 +189,15 @@ namespace FvpWebAppWorker.Services
                     sygnatura = string.Empty,
                     kontoplatnosci = string.Empty,
                     atrJpkV7 = document.JpkV7,
+                    DaneKh = 1, //contractor.ContractorErpPosition == null ? 1 : 0,
+                    kh_nazwa = contractor.Name,
+                    kh_ulica = contractor.Street.Replace("UL. ", "").Replace("ul. ", ""),
+                    kh_dom = contractor.EstateNumber,
+                    kh_lokal = contractor.QuartersNumber,
+                    kh_nip = contractor.VatId,
+                    kh_kodPocztowy = contractor.PostalCode,
+                    kh_miejscowosc = contractor.City,
+                    kh_kraj = contractor.CountryCode
                 };
                 var nextAccountingRecordId = 1000;
                 foreach (var accountingRecord in accountingRecords)
@@ -213,11 +224,12 @@ namespace FvpWebAppWorker.Services
                 var nextVatRegisterId = 1000;
                 foreach (var documentVat in documentVats)
                 {
+                    var vatRegister = GetVatRegisterIdForVat(GetVatValue(documentVat), vatRegisters);
                     c21DocumentAggregate.VatRegisters.Add(new C21VatRegister
                     {
                         id = nextVatRegisterId,
                         dokId = c21documentId,
-                        rejId = vatRegisterDef.id,
+                        rejId = vatRegister > 0 ? vatRegister : vatRegisterDef.id,
                         okres = document.SaleDate,
                         Oczek = 0,
                         abc = vatRegisterDef.defAbc,
@@ -234,6 +246,18 @@ namespace FvpWebAppWorker.Services
             c21DocumentAggregate.IsPrepared = true;
             return c21DocumentAggregate;
         }
+
+        public int GetVatRegisterIdForVat(double vatValue, List<VatRegister> vatRegisters)
+        {
+            if (vatRegisters == null)
+                return -1;
+            var vatId = vatRegisters.FirstOrDefault(v => Convert.ToDouble(v.VatValue) == vatValue);
+            if (vatId != null)
+                return vatId.ErpVatRegisterId;
+            else
+                return -1;
+        }
+
 
         public double GetVatValue(DocumentVat documentVat)
         {

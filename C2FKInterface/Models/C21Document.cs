@@ -64,5 +64,27 @@ namespace C2FKInterface.Models
         public string kontoplatnosci { get; set; }
         [Column(Name = "atrJpkV7")]
         public string atrJpkV7 { get; set; }
+        [Column(Name = "DaneKh")]
+        public int DaneKh { get; set; }
+        [Column(Name = "kh_nazwa")]
+        public string kh_nazwa { get; set; }
+        [Column(Name = "kh_nip")]
+        public string kh_nip { get; set; }
+        [Column(Name = "kh_kraj")]
+        public string kh_kraj { get; set; }
+        [Column(Name = "kh_miejscowosc")]
+        public string kh_miejscowosc { get; set; }
+        [Column(Name = "kh_ulica")]
+        public string kh_ulica { get; set; }
+        [Column(Name = "kh_dom")]
+        public string kh_dom { get; set; }
+        [Column(Name = "kh_lokal")]
+        public string kh_lokal { get; set; }
+        [Column(Name = "kh_kodPocztowy")]
+        public string kh_kodPocztowy { get; set; }
+        [Column(Name = "kh_poczta")]
+        public string kh_poczta { get; set; }
+        [Column(Name = "znacznik")]
+        public int znacznik { get; set; }
     }
 }

@@ -74,7 +74,7 @@ namespace C2FKInterface.Services
             return c21DocumentDefinitions.FirstOrDefault(d => d.rokId == yearId && d.dSkrot == documentShortcut);
         }
 
-        public async Task<C21VatRegisterDef> GetVarRegistersDefs(int vatRegisterId)
+        public async Task<C21VatRegisterDef> GetVatRegistersDefs(int vatRegisterId)
         {
             if (c21VatRegisterDefs == null)
                 using (var db = new SageDb("Db"))
@@ -82,6 +82,16 @@ namespace C2FKInterface.Services
                     c21VatRegisterDefs = await db.C21VatRegisterDefs.ToListAsync();
                 }
             return c21VatRegisterDefs.FirstOrDefault(v => v.id == vatRegisterId);
+        }
+
+        public async Task<List<C21VatRegisterDef>> GetAllVatRegistersDefs()
+        {
+            if (c21VatRegisterDefs == null)
+                using (var db = new SageDb("Db"))
+                {
+                    c21VatRegisterDefs = await db.C21VatRegisterDefs.ToListAsync();
+                }
+            return c21VatRegisterDefs;
         }
 
         public async Task AddDocumentAggregate(C21DocumentAggregate documentAggregate)

@@ -368,6 +368,11 @@
                 table.draw();
         }
 
+        function getFilteredRows() {
+            var filtered = table.rows({ search: 'applied' }).data()
+            console.log(filtered)
+        }
+
         $(window).on('resize', function () {
             if (table !== null)
                 table.columns.adjust();

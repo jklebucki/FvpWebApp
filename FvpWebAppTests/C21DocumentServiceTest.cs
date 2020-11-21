@@ -26,11 +26,11 @@ namespace FvpWebAppTests
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
             C21DocumentService documentService = new C21DocumentService(dbConnectionSettings, null);
 
-            var output = await documentService.GetVarRegistersDefs(1);
+            var output = await documentService.GetVatRegistersDefs(1);
 
             Console.WriteLine($"C21GetVatRegisterDefsTest - Vat register name: {output.rNazwa}");
             Assert.True(output != null);
-            var outputNull = await documentService.GetVarRegistersDefs(9999);
+            var outputNull = await documentService.GetVatRegistersDefs(9999);
             Assert.True(outputNull == null);
         }
 
