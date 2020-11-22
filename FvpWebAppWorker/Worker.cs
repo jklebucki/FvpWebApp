@@ -60,6 +60,7 @@ namespace FvpWebAppWorker
                                             }
                                             catch (Exception ex)
                                             {
+                                                await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
                                                 _logger.LogError(ex.Message);
                                             }
                                         else
@@ -152,6 +153,7 @@ namespace FvpWebAppWorker
                 await systemDataService.TransferDocuments(documentsResponse, taskTicket);
             }
             return documentsResponse;
+
         }
 
         private async Task ProceedContractors(List<Document> documents, SystemDataService systemDataService)
