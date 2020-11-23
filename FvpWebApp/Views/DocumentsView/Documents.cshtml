@@ -13,14 +13,30 @@
     <div class="col-2">
         Filtruj dokumenty
     </div>
-    <div class="col-3">
+    <div class="col-8">
         <div class="custom-control custom-radio custom-control-inline">
-            <input onclick="filterTable()" type="radio" id="valid-docs" name="status-docs" value="0" class="custom-control-input">
-            <label class="custom-control-label" for="valid-docs">Wszystkie</label>
+            <input onclick="filterTable()" type="radio" id="all-docs" name="status-docs" value="0" class="custom-control-input">
+            <label class="custom-control-label" for="all-docs">Wszystkie</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
             <input onclick="filterTable()" type="radio" id="invalid-docs" name="status-docs" value="1" class="custom-control-input">
             <label class="custom-control-label" for="invalid-docs">Błędne</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="many-contractors-docs" name="status-docs" value="2" class="custom-control-input">
+            <label class="custom-control-label" for="many-contractors-docs">Wielu kontrahentów</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="sent-docs" name="status-docs" value="3" class="custom-control-input">
+            <label class="custom-control-label" for="sent-docs">Wysłane</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="not-sent-docs" name="status-docs" value="4" class="custom-control-input">
+            <label class="custom-control-label" for="not-sent-docs">Nie wysłane</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input onclick="filterTable()" type="radio" id="accepted-docs" name="status-docs" value="5" class="custom-control-input">
+            <label class="custom-control-label" for="accepted-docs">Zaakceptowane</label>
         </div>
     </div>
 </div>
@@ -38,7 +54,7 @@
             <th>Vat</th>
             <th style="width: 25%;">Nazwa kontrah.</th>
             <th>NIP</th>
-            <th>Kod kraju</th>
+            <th>Kraj</th>
             <th></th>
             <th></th>
             <th></th>
@@ -240,7 +256,7 @@
             }
         })
 
-        $("#valid-docs").attr('checked', true)
+        $("#all-docs").attr('checked', true)
 
         $(document).ready(function () {
             url = '/DocumentsView/GetDocuments?'
@@ -256,8 +272,11 @@
                 'processing': true,
                 'ajax': url,
                 'fnRowCallback': function (row, data, iDisplayIndex, iDisplayIndexFull) {
-                    if (parseInt(data.contractorStatus) !== 0) {
-                        $(row).css('background-color', '#FFCDD2');
+                    if (parseInt(data.contractorStatus) === 1 || parseInt(data.documentStatus) === 2) {
+                        $(row).addClass('contractor-invalid')
+                    }
+                    if (parseInt(data.contractorStatus) === 3 && parseInt(data.documentStatus) === 6) {
+                        $(row).addClass('contractor-accepted')
                     }
                 },
                 'rowId': 'documentId',
@@ -283,13 +302,16 @@
                     { data: 'contractorCountryCode' },
                     {
                         data: 'documentId', render(data, type, row) {
-                            return '<a onclick="documentDetails(' + data + ')"><span class="oi oi-eye icon-button"></span></a>'
+                            return '<div id="btn-' + row.documentId + '">' + renderButtons(row) + '</div>'
                         }
                     },
                     { data: 'contractorStatus' },
                     { data: 'documentStatus' },
                     { data: 'contractorId' },
                 ],
+                "createdRow": function (row, data, index) {
+                    $('[name="btn-details"]', row).tooltip({ trigger: 'hover' })
+                },
                 'columnDefs': [
                     {
                         'targets': [12, 13, 14],
@@ -324,10 +346,10 @@
             var newData = app.rowData
             newData.contractorName = contractor.name
             if (!changeAll)
-                table.row(app.rowId).data(newData).invalidate();
+                table.row(app.rowId).data(newData).invalidate()
             else
                 allRows.toArray().forEach(function (element, index, array) {
-                    table.row(element).data(newData).invalidate();
+                    table.row(element).data(newData).invalidate()
                 })
         }
 
@@ -346,19 +368,86 @@
                 });
         }
 
+        function renderButtons(row) {
+            var btnDetails = '<button name="btn-details" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Pokaż szczegóły" onclick="documentDetails(' + row.documentId + ')"><span class="oi oi-eye icon-button"></span></button>'
+            var btnValidate = '<button onclick="' + (((Number(row.contractorStatus) === 1 || Number(row.contractorStatus) === 3)) ? 'setValidAsPerson(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako osoba"><span class="oi oi-check icon-button"></span></button>'
+            var btnInvalid = '<button onclick="' + (((Number(row.documentStatus) === 6)) ? 'setAsInvalid(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako nieprawidłowy"><span class="oi oi-x icon-button"></span></button>'
+            return  btnDetails + btnValidate + btnInvalid 
+        }
+
+        function setValidAsPerson(documentId) {
+            const headers = {
+                'Content-Type': 'application/json',
+            }
+            axios.patch('/DocumentsView/setValidAsPerson', documentId , { headers: headers })
+                .then(function (response) {
+                    console.dir(response.data)
+                    if (response.data.status) {
+                        var newData = app.rowData
+                        newData.contractorVatId = 'BRAK'
+                        newData.documentStatus = 6
+                        newData.contractorStatus = 3
+                        table.row(app.rowId).data(newData).invalidate()
+                        $('#btn-' + newData.documentId).html(renderButtons(newData))
+                        $('#' + app.rowData.documentId).removeClass('contractor-invalid')
+                        $('#' + app.rowData.documentId).addClass('contractor-accepted')
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+
+        function setAsInvalid(documentId) {
+            const headers = {
+                'Content-Type': 'application/json',
+            }
+            axios.patch('/DocumentsView/setInvalid', documentId, { headers: headers })
+                .then(function (response) {
+                    console.dir(response.data)
+                    if (response.data.status) {
+                        var newData = app.rowData
+                        newData.documentStatus = 2
+                        newData.contractorStatus = 1
+                        table.row(app.rowId).data(newData).invalidate()
+                        $('#btn-' + newData.documentId).html(renderButtons(newData))
+                        $('#' + app.rowData.documentId).removeClass('contractor-accepted')
+                        $('#' + app.rowData.documentId).addClass('contractor-invalid')
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
-                var valid = $("#valid-docs").prop('checked')
-                var validValues = parseInt(data[12])
-                if (valid) {
-                    if (validValues >= 0) {
-                        return true
-                    }
+                var allDocuments = $("#all-docs").prop('checked')
+                var invalid = $("#invalid-docs").prop('checked')
+                var manyContractors = $("#many-contractors-docs").prop('checked')
+                var sent = $("#sent-docs").prop('checked')
+                var notSent = $("#not-sent-docs").prop('checked')
+                var accepted = $("#accepted-docs").prop('checked')
+                var validValues = parseInt(data[13])
+                if (allDocuments) {
+                    if (validValues >= 0) return true
+                }
+                else if (invalid) {
+                    if (validValues === 2) return true
+                }
+                else if (manyContractors) {
+                    if (validValues === 3) return true
+                }
+                else if (sent) {
+                    if (validValues === 4) return true
+                }
+                else if (notSent) {
+                    if (validValues !== 4) return true
+                }
+                else if (accepted) {
+                    if (validValues === 6) return true
                 }
                 else
-                    if (validValues !== 0) {
-                        return true
-                    }
                 return false
             }
         );

@@ -1,13 +1,17 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+.contractor-invalid {
+    background-color: #FFCDD2;
+}
+
+.contractor-accepted {
+    background-color: #B9F6CA;
+}
+
 .icon-button {
     color: blue;
 }
-
-    .icon-button:hover {
-        background-color: gold;
-    }
 
 .modal-full {
     min-width: 90%;

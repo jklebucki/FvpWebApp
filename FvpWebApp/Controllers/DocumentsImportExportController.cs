@@ -2,11 +2,14 @@
 using FvpWebApp.Infrastructure;
 using FvpWebApp.Models;
 using FvpWebAppModels.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FvpWebApp.Controllers
@@ -99,12 +102,12 @@ namespace FvpWebApp.Controllers
                     && t.TicketType == TicketType.ImportDocuments
                     && t.TicketStatus != TicketStatus.Failed
                     && ((t.DateFrom <= dateFrom && t.DateTo >= dateFrom) || (t.DateFrom <= dateTo && t.DateTo >= dateTo))).ToListAsync();
-            else
-                tickets = await _context.TaskTickets.Where(
-                    t => t.SourceId == createTicketRequest.SourceId
-                    && t.TicketType == TicketType.ExportDocumentsToErp
-                    && t.TicketStatus != TicketStatus.Failed
-                    && ((t.DateFrom <= dateFrom && t.DateTo >= dateFrom) || (t.DateFrom <= dateTo && t.DateTo >= dateTo))).ToListAsync();
+            //else
+            //    tickets = await _context.TaskTickets.Where(
+            //        t => t.SourceId == createTicketRequest.SourceId
+            //        && t.TicketType == TicketType.ExportDocumentsToErp
+            //        && t.TicketStatus != TicketStatus.Failed
+            //        && ((t.DateFrom <= dateFrom && t.DateTo >= dateFrom) || (t.DateFrom <= dateTo && t.DateTo >= dateTo))).ToListAsync();
             return tickets.Count > 0 ? true : false;
         }
 
@@ -132,6 +135,26 @@ namespace FvpWebApp.Controllers
                                        EndDate = t.StatusChangedAt,
                                    };
             return new JsonResult(new { Data = pendingTasksView });
+        }
+
+        public async Task<IActionResult> BpFileUploadAsync(List<IFormFile> files)
+        {
+            long size = files.Sum(f => f.Length);
+            var result = new StringBuilder();
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+                    using (var reader = new StreamReader(formFile.OpenReadStream(), true))
+                    {
+                        while (reader.Peek() >= 0)
+                            result.AppendLine(await reader.ReadLineAsync());
+                    }
+                }
+            }
+            var fileContent = result.ToString();
+
+            return Ok(new { count = files.Count, size });
         }
     }
 }

@@ -54,6 +54,49 @@ namespace FvpWebApp.Controllers
             return View();
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> SetValidAsPerson([FromBody]int documentId)
+        {
+            try
+            {
+                var transaction = await _context.Database.BeginTransactionAsync();
+                var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
+                document.DocumentStatus = DocumentStatus.Accepted;
+                await _context.SaveChangesAsync();
+                var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == document.ContractorId);
+                contractor.ContractorStatus = ContractorStatus.Accepted;
+                contractor.VatId = "BRAK";
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync().ConfigureAwait(false);
+                return new JsonResult(new { Status = true, Message = "OK"});
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Status = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> SetInvalid([FromBody] int documentId)
+        {
+            try
+            {
+                var transaction = await _context.Database.BeginTransactionAsync();
+                var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
+                document.DocumentStatus = DocumentStatus.Invalid;
+                await _context.SaveChangesAsync();
+                var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == document.ContractorId);
+                contractor.ContractorStatus = ContractorStatus.Invalid;
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync().ConfigureAwait(false);
+                return new JsonResult(new { Status = true, Message = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Status = false, Message = ex.Message });
+            }
+        }
+
         public async Task<IActionResult> GetDocuments(int id, int month, int year)
         {
             var sources = await _context.Sources.Select(s => s.SourceId).ToListAsync();

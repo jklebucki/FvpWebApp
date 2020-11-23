@@ -90,7 +90,9 @@ namespace FvpWebAppWorker.Services
             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Pending).ConfigureAwait(false);
             C21DocumentService c21DocumentService = new C21DocumentService(GetDbSettings(target), _procOutput);
             //List<C21DocumentAggregate> c21DocumentAggregates = new List<C21DocumentAggregate>();
-            var documentsToSend = await _dbContext.Documents.Where(d => d.DocumentStatus == DocumentStatus.Valid && d.SourceId == taskTicket.SourceId).ToListAsync();
+            var documentsToSend = await _dbContext.Documents.Where(d =>
+                (d.DocumentStatus == DocumentStatus.Valid || d.DocumentStatus == DocumentStatus.ManyContractors || d.DocumentStatus == DocumentStatus.Accepted) &&
+                d.SourceId == taskTicket.SourceId).ToListAsync();
             if (documentsToSend != null)
             {
                 documentsToSend = documentsToSend.OrderBy(d => d.DocumentDate).ToList();

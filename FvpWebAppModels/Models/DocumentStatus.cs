@@ -8,5 +8,6 @@
         ManyContractors,
         SentToC2FK,
         DoNotSentToErp,
+        Accepted,
     }
 }
