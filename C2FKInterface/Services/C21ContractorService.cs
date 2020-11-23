@@ -62,6 +62,7 @@ namespace C2FKInterface.Services
             List<string> procOutput = new List<string>();
             using (var db = new SageDb("Db"))
             {
+                db.CommandTimeout = 0;
                 var response = await db.QueryProcAsync<string>(
                     "[FK].[sp_C21_importKH]",
                     new DataParameter("Debug", debug, DataType.Int32)
