@@ -34,11 +34,12 @@ namespace FvpWebAppWorker.Services
                 c => c.ContractorErpId == null &&
                 c.GusContractorEntriesCount == 1 &&
                 c.ContractorStatus == ContractorStatus.Valid &&
-                allSourcesFromTarget.Contains((int)c.SourceId) &&
+                c.SourceId == taskTicket.SourceId && // allSourcesFromTarget.Contains((int)c.SourceId) &&
                 c.ContractorErpPosition == null).ToListAsync().ConfigureAwait(false);
             var c21Contractors = notMatchedContractors.GroupBy(c =>
                 new
                 {
+                    ContractorId = c.ContractorId,
                     VatId = string.IsNullOrEmpty(c.VatId) ? "" : c.VatId,
                     Regon = string.IsNullOrEmpty(c.Regon) ? "" : c.Regon,
                     Name = string.IsNullOrEmpty(c.Name) ? "" : c.Name,
@@ -67,7 +68,7 @@ namespace FvpWebAppWorker.Services
                     Telefon1 = c.Key.Phone,
                     email = c.Key.Email,
                     aktywny = true,
-                    skrot = $"FVP-1-{c.Key.VatId}",
+                    skrot = $"FVP-{taskTicket.SourceId}-{c.Key.ContractorId}",
                     statusUE = FvpWebAppUtils.CheckUeCountry(countries, c.Key.CountryCode),
                 }).ToList();
 
@@ -179,7 +180,7 @@ namespace FvpWebAppWorker.Services
                     id = c21documentId,
                     rokId = year.rokId,
                     skrot = targetDocumentSettings.DocumentShortcut,
-                    kontrahent = null,//contractor.ContractorErpPosition != null ? contractor.ContractorErpPosition : null,
+                    kontrahent = contractor.ContractorErpPosition,
                     nazwa = document.DocumentNumber,
                     tresc = document.DocumentNumber,
                     datawpr = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
@@ -189,7 +190,7 @@ namespace FvpWebAppWorker.Services
                     sygnatura = string.Empty,
                     kontoplatnosci = string.Empty,
                     atrJpkV7 = document.JpkV7,
-                    DaneKh = 1, //contractor.ContractorErpPosition == null ? 1 : 0,
+                    DaneKh = 0, //contractor.ContractorErpPosition == null ? 1 : 0,
                     kh_nazwa = contractor.Name,
                     kh_ulica = contractor.Street.Replace("UL. ", "").Replace("ul. ", ""),
                     kh_dom = contractor.EstateNumber,

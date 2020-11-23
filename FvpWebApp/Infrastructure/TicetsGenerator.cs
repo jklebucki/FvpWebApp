@@ -57,16 +57,16 @@ namespace FvpWebApp.Infrastructure
         {
             var createdAt = DateTime.Now;
             return new List<TaskTicket> {
-                //new TaskTicket
-                //{
-                //    SourceId = request.SourceId,
-                //    DateFrom = DatesFromMonth.DateFrom(request),
-                //    DateTo = DatesFromMonth.DateTo(request),
-                //    TicketStatus = TicketStatus.Added,
-                //    TicketType = TicketType.ExportContractorsToErp,
-                //    CreatedAt = createdAt,
-                //    StatusChangedAt = createdAt
-                //},
+                new TaskTicket
+                {
+                    SourceId = request.SourceId,
+                    DateFrom = DatesFromMonth.DateFrom(request),
+                    DateTo = DatesFromMonth.DateTo(request),
+                    TicketStatus = TicketStatus.Added,
+                    TicketType = TicketType.ExportContractorsToErp,
+                    CreatedAt = createdAt,
+                    StatusChangedAt = createdAt
+                },
                 new TaskTicket
                 {
                     SourceId = request.SourceId,
