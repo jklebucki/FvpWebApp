@@ -203,23 +203,24 @@ namespace FvpWebAppWorker.Services
                 var nextAccountingRecordId = 1000;
                 foreach (var accountingRecord in accountingRecords)
                 {
-                    c21DocumentAggregate.AccountingRecords.Add(new C21AccountingRecord
-                    {
-                        id = nextAccountingRecordId,
-                        dokId = c21documentId,
-                        pozycja = 0,
-                        rozbicie = (short)(accountingRecord.RecordOrder - 1),
-                        strona = !string.IsNullOrEmpty(accountingRecord.Debit) ? (short)0 : (short)1,
-                        kwota = GetRecordAmmount(document, accountingRecord),
-                        opis = document.DocumentNumber,
-                        synt = GetAccountPart(accountingRecord.Account, 0),
-                        poz1 = GetAccountPart(accountingRecord.Account, 1),
-                        poz2 = GetAccountPart(accountingRecord.Account, 2),
-                        poz3 = GetAccountPart(accountingRecord.Account, 3),
-                        poz4 = GetAccountPart(accountingRecord.Account, 4),
-                        poz5 = GetAccountPart(accountingRecord.Account, 5),
+                    if (GetRecordAmmount(document, accountingRecord) != 0)
+                        c21DocumentAggregate.AccountingRecords.Add(new C21AccountingRecord
+                        {
+                            id = nextAccountingRecordId,
+                            dokId = c21documentId,
+                            pozycja = 0,
+                            rozbicie = (short)(accountingRecord.RecordOrder - 1),
+                            strona = !string.IsNullOrEmpty(accountingRecord.Debit) ? (short)0 : (short)1,
+                            kwota = GetRecordAmmount(document, accountingRecord),
+                            opis = document.DocumentNumber,
+                            synt = GetAccountPart(accountingRecord.Account, 0),
+                            poz1 = GetAccountPart(accountingRecord.Account, 1),
+                            poz2 = GetAccountPart(accountingRecord.Account, 2),
+                            poz3 = GetAccountPart(accountingRecord.Account, 3),
+                            poz4 = GetAccountPart(accountingRecord.Account, 4),
+                            poz5 = GetAccountPart(accountingRecord.Account, 5),
 
-                    });
+                        });
                     nextAccountingRecordId++;
                 }
                 var nextVatRegisterId = 1000;
