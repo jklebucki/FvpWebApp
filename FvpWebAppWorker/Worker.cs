@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,6 +52,11 @@ namespace FvpWebAppWorker
                                                 {
                                                     case "oracle_sben_dp":
                                                         documents = await ProceedSbenOracleDpDocuments(source, taskTicket, systemDataService);
+                                                        break;
+                                                    case "bp_flat_file":
+                                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Pending).ConfigureAwait(false);
+                                                        documents = await _dbContext.Documents.Where(d => d.TaskTicketId == taskTicket.TaskTicketId).ToListAsync().ConfigureAwait(false);
+                                                        await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                                         break;
                                                     default:
                                                         await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
