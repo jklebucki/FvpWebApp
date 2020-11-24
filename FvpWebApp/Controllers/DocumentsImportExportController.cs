@@ -85,7 +85,7 @@ namespace FvpWebApp.Controllers
                 }
 
                 response.TicketsCreated = true;
-                response.Message = "Proces importu rozpoczęty!";
+                response.Message = "Proces rozpoczęty!";
             }
             else
                 response.Message = "Dane z tego okresu były już przetwarzane lub trwa ich przetarzanie";
