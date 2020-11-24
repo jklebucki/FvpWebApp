@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using System.Text;
 
 namespace FvpWebApp
 {
@@ -15,6 +16,7 @@ namespace FvpWebApp
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         public IConfiguration Configuration { get; }

@@ -83,8 +83,8 @@
                     { data: 'address' },
                     {
                         data: 'sourceId', render(data, type, row) {
-                            return '<a onclick="proceedData(' + data + ',\'import\')" class="btn btn-outline-dark btn-sm ml-1 mr-1" data-toggle="tooltip" data-placement="top" title="Importuj dane"><span class="oi oi-data-transfer-download icon-button"></span></a>' +
-                                '<a onclick="proceedData(' + data + ',\'export\')" class="btn btn-outline-dark btn-sm ml-1 mr-1" data-toggle="tooltip" data-placement="top" title="Exportuj dane"><span class="oi oi-data-transfer-upload icon-button"></span></a>'
+                            return '<a onclick="proceedData(' + row.sourceId + ',\'import\',\'' + row.type + '\')" class="btn btn-outline-dark btn-sm ml-1 mr-1" data-toggle="tooltip" data-placement="top" title="Importuj dane"><span class="oi oi-data-transfer-download icon-button"></span></a>' +
+                                '<a onclick="proceedData(' + row.sourceId + ',\'export\',\'' + row.type + '\')" class="btn btn-outline-dark btn-sm ml-1 mr-1" data-toggle="tooltip" data-placement="top" title="Exportuj dane"><span class="oi oi-data-transfer-upload icon-button"></span></a>'
                         }
                     },
                     { data: 'sourceId' },
@@ -101,11 +101,56 @@
                 ]
             })
         })
+
         $(window).on('resize', function () {
             if (table !== null)
                 table.columns.adjust();
         });
-        function proceedData(id, ticketsGropup) {
+
+        function uploadFile(id, ticketsGroup) {
+            var formData = new FormData()
+            var dataFile = $('#file').prop('files')
+            //debugger
+            formData.append("files", dataFile[0])
+            formData.append("files", dataFile[1])
+            formData.append("sourceId", id)
+            formData.append("year", Number($("#Year").val()))
+            formData.append("month", Number($("#Month").val()))
+            formData.append("ticketsGroup", ticketsGroup)
+            $('#infoBody').html('<div class="display-4 text-center mb-4">Czekaj...</div></br><div class="d-flex justify-content-center"><div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"><span class="sr-only">Loading...</span></div></div>')
+            axios.post('/DocumentsImportExport/BpFileUploadAsync', formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                }).then(response => {
+                    if (response.status == 200) {
+                        $('#infoBody').html(response.data.message)
+                    }
+                }).catch(error => {
+                    $('#infoBody').html(error)
+                    console.log("AXIOS Error", error)
+                }).then(function () {
+                    $('#infoModal').modal('show')
+                })
+        }
+
+        function proceedData(id, ticketsGropup, importType) {
+            if (importType === 'bp_flat_file') {
+                getBpFiles(id, ticketsGropup)
+            }
+            else if (importType === 'oracle_sben_dp') {
+                createTicets(id, ticketsGropup)
+            }
+        }
+
+        function getBpFiles(id, ticketsGropup) {
+            var info = '<div class="text-center font-weight-lighter"><p>Wybierz 2 pliki z tego samego zakresu dat pobrane z platformy iBard.</p><p>Pierwszy plik zawiera w nazwie "_JPK_VDEK_SprzedazWiersz_"'
+                + ' a drugi "_JPK_VAT_SprzedazWiersz_".</p><p>Następnie kliknij przycisk wykonaj.</p></div></br>'
+            var fileButton = '<input type="file" id="file" multiple="multiple"/><button class="btn btn-outline-secondary btn-sm" type="button" onclick="uploadFile(' + id + ',\'' + ticketsGropup + '\')">Wykonaj</button>'
+            $('#infoBody').html(info + fileButton)
+            $('#infoModal').modal('show')
+        }
+
+        function createTicets(id, ticketsGropup) {
             var month = $("#Month").val()
             var year = $("#Year").val()
             const headers = {
@@ -137,6 +182,6 @@
                     $('#infoModal').modal('show')
                 })
         }
-      
+
     </script>
 }

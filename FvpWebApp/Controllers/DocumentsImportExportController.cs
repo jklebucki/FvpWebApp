@@ -1,10 +1,12 @@
 ﻿using FvpWebApp.Data;
 using FvpWebApp.Infrastructure;
 using FvpWebApp.Models;
+using FvpWebApp.Services;
 using FvpWebAppModels.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +19,6 @@ namespace FvpWebApp.Controllers
     public class DocumentsImportExportController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public DocumentsImportExportController(ApplicationDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -72,11 +73,11 @@ namespace FvpWebApp.Controllers
                 {
                     if (requestData.TicketsGroup == "import")
                     {
-                        _context.TaskTickets.AddRange(TicetsGenerator.ImportTickets(requestData));
+                        _context.TaskTickets.AddRange(TicketsGenerator.ImportTickets(requestData));
                     }
                     else if (requestData.TicketsGroup == "export")
                     {
-                        _context.TaskTickets.AddRange(TicetsGenerator.ExportTickets(requestData));
+                        _context.TaskTickets.AddRange(TicketsGenerator.ExportTickets(requestData));
                     }
 
                     await _context.SaveChangesAsync();
@@ -137,24 +138,95 @@ namespace FvpWebApp.Controllers
             return new JsonResult(new { Data = pendingTasksView });
         }
 
-        public async Task<IActionResult> BpFileUploadAsync(List<IFormFile> files)
+        [HttpPost]
+        [Route("[controller]/BpFileUploadAsync")]
+        public async Task<IActionResult> BpFileUploadAsync(List<IFormFile> files, int sourceId, int year, int month, string ticketsGroup)
         {
-            long size = files.Sum(f => f.Length);
-            var result = new StringBuilder();
-            foreach (var formFile in files)
+
+            List<string[]> jpkVdek = new List<string[]>();
+            List<string[]> jpkVat = new List<string[]>();
+            List<string[]> jpk = new List<string[]>();
+            string errorsJpkVdek = "";
+            string errorsJpkVat = "";
+            int lineNo = 1;
+
+            foreach (var file in files)
             {
-                if (formFile.Length > 0)
+                if (file.Length > 0)
                 {
-                    using (var reader = new StreamReader(formFile.OpenReadStream(), true))
+                    using (var reader = new StreamReader(file.OpenReadStream(), Encoding.GetEncoding(1250)))
                     {
                         while (reader.Peek() >= 0)
-                            result.AppendLine(await reader.ReadLineAsync());
+                        {
+                            var line = await reader.ReadLineAsync();
+                            if (line.Length > 0)
+                            {
+                                var fields = line.Split("|");
+                                if (fields[2] == "JPK_VDEK")
+                                {
+                                    if (fields.Length != 69)
+                                        errorsJpkVdek += $"{lineNo},";
+                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA")
+                                        jpkVdek.Add(fields);
+                                }
+                                if (fields[2] == "JPK_VAT")
+                                {
+                                    if (fields.Length != 43)
+                                        errorsJpkVat += $"{lineNo},";
+                                    else if (fields[9] != "brak")
+                                        jpkVat.Add(fields);
+                                }
+
+                            }
+                        }
                     }
                 }
             }
-            var fileContent = result.ToString();
 
-            return Ok(new { count = files.Count, size });
+            var status = true;
+            var message = (errorsJpkVdek.Length > 0 ? $"Błędy w JPK_VDEK: {errorsJpkVdek}\t" : "")
+                + (errorsJpkVat.Length > 0 ? $"Błędy w JPK_VAT: {errorsJpkVat}\t" : "");
+            if (jpkVdek.Count == jpkVat.Count)
+            {
+                try
+                {
+                    foreach (var jpkVdekRow in jpkVdek)
+                    {
+                        var jpkVatRow = jpkVat.FirstOrDefault(r => r[10] == jpkVdekRow[10]);
+                        var concatedJpkRow = new string[jpkVdekRow.Length + jpkVatRow.Length];
+                        jpkVdekRow.CopyTo(concatedJpkRow, 0);
+                        jpkVatRow.CopyTo(concatedJpkRow, jpkVdekRow.Length);
+                        jpk.Add(concatedJpkRow);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    status = false;
+                    message += ex.Message;
+                }
+            }
+            else
+            {
+                status = false;
+                message += "Pliki nie są poprawne.";
+            }
+            var docs = ConvertFileToDb.Documents(jpk, sourceId);
+
+            DocumentsImportService documentsImportService = new DocumentsImportService(_context);
+            var serviceResponse = await documentsImportService
+                .InsertDocumentsAsync(
+                    docs,
+                    new CreateTicketRequest
+                    {
+                        TicketsGroup = ticketsGroup,
+                        Year = year,
+                        Month = month,
+                        SourceId = sourceId
+                    });
+            if (!serviceResponse.Valid)
+                message = serviceResponse.Message;
+            message = string.IsNullOrEmpty(message) ? "Pliki poprawnie przesłane. Proces importu rozpoczęty." : message;
+            return new JsonResult(new { Status = status, Message = message });
         }
     }
 }

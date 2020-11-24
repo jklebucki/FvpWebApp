@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FvpWebApp.Infrastructure
 {
-    public class TicetsGenerator
+    public class TicketsGenerator
     {
         public static List<TaskTicket> ImportTickets(CreateTicketRequest request)
         {
