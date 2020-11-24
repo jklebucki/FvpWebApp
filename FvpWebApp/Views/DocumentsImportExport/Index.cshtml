@@ -134,10 +134,10 @@
         }
 
         function proceedData(id, ticketsGropup, importType) {
-            if (importType === 'bp_flat_file') {
+            if (ticketsGropup === 'import' && importType === 'bp_flat_file') {
                 getBpFiles(id, ticketsGropup)
             }
-            else if (importType === 'oracle_sben_dp') {
+            else if (ticketsGropup === 'export') {
                 createTicets(id, ticketsGropup)
             }
         }
