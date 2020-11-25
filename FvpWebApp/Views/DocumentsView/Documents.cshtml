@@ -129,6 +129,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button onclick="updateContractor()" type="button" class="btn btn-secondary">Aktualizuj</button>
                     <button onclick="closeContractorModal()" type="button" class="btn btn-secondary">Zamknij</button>
                 </div>
             </div>
@@ -344,6 +345,33 @@
 
         function updateContractor() {
             closeContractorModal()
+            replaceContractor(contractor.contractorData, true)
+        }
+
+        function updateContractorInDatabase(contractor, changeAllDocuments) {
+            const headers = {
+                'Content-Type': 'application/json',
+            }
+            var data = {
+                DocumentId: this.documentData.document.documentId,
+                ContractorId: contractor.contractorId,
+                ChangeAllDocuments: changeAllDocuments
+            }
+            axios.post(
+                '/DocumentsView/ChangeContractorData',
+                data,
+                {
+                    headers: headers,
+                })
+                .then(response => {
+                    if (response.status == 200) {
+                        this.documentData.document.contractorId = contractor.contractorId
+                        replaceContractor(contractor, changeAllDocuments)
+                    }
+                })
+                .catch(error => {
+                    console.log("AXIOS Error", error)
+                })
         }
 
         function closeContractorModal() {
@@ -440,6 +468,8 @@
             }).indexes()
             var newData = app.rowData
             newData.contractorName = contractor.name
+            newData.contractorCountryCode = contractor.countryCode
+            newData.contractorVatId = contractor.vatId
             if (!changeAll)
                 table.row(app.rowId).data(newData).invalidate()
             else

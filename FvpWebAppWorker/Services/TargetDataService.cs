@@ -177,6 +177,7 @@ namespace FvpWebAppWorker.Services
             var contractor = contractors.FirstOrDefault(c => c.ContractorId == document.ContractorId);
             if (year != null && contractor != null && vatRegisterDef != null)
             {
+                var street = contractor.Street.Replace("UL. ", "").Replace("ul. ", "");
                 c21DocumentAggregate.Document = new C21Document
                 {
                     id = c21documentId,
@@ -193,13 +194,13 @@ namespace FvpWebAppWorker.Services
                     kontoplatnosci = string.Empty,
                     atrJpkV7 = document.JpkV7,
                     DaneKh = 0, //contractor.ContractorErpPosition == null ? 1 : 0,
-                    kh_nazwa = contractor.Name,
-                    kh_ulica = contractor.Street.Replace("UL. ", "").Replace("ul. ", ""),
+                    kh_nazwa = contractor.Name.Length <= 150 ? contractor.Name : contractor.Name.Substring(0, 150),
+                    kh_ulica = street.Length <= 50 ? street : street.Substring(0, 50),
                     kh_dom = contractor.EstateNumber,
                     kh_lokal = contractor.QuartersNumber,
                     kh_nip = contractor.VatId,
                     kh_kodPocztowy = contractor.PostalCode,
-                    kh_miejscowosc = contractor.City,
+                    kh_miejscowosc = contractor.City.Length <= 50 ? contractor.City : contractor.City.Substring(0, 50),
                     kh_kraj = contractor.CountryCode
                 };
                 var nextAccountingRecordId = 1000;
