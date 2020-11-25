@@ -52,8 +52,8 @@ namespace FvpWebApp.Infrastructure
             var documentVats = new List<DocumentVat>();
             if (decimal.Parse(row[50].ToString()) != 0)
             {
-                var vatAmount = decimal.Parse(row[51].ToString());
-                var netAmount = decimal.Parse(row[50].ToString());
+                var vatAmount = decimal.Parse(row[51].Replace(',','.'));
+                var netAmount = decimal.Parse(row[50].Replace(',', '.'));
                 documentVats.Add(new DocumentVat
                 {
                     VatCode = "A",
@@ -66,8 +66,8 @@ namespace FvpWebApp.Infrastructure
             }
             if (decimal.Parse(row[48].ToString()) != 0)
             {
-                var vatAmount = decimal.Parse(row[49].ToString());
-                var netAmount = decimal.Parse(row[48].ToString());
+                var vatAmount = decimal.Parse(row[49].Replace(',', '.'));
+                var netAmount = decimal.Parse(row[48].Replace(',', '.'));
                 documentVats.Add(new DocumentVat
                 {
                     VatCode = "B",
@@ -80,8 +80,8 @@ namespace FvpWebApp.Infrastructure
             }
             if (decimal.Parse(row[46].ToString()) != 0)
             {
-                var vatAmount = decimal.Parse(row[47].ToString());
-                var netAmount = decimal.Parse(row[46].ToString());
+                var vatAmount = decimal.Parse(row[47].Replace(',', '.'));
+                var netAmount = decimal.Parse(row[46].Replace(',', '.'));
                 documentVats.Add(new DocumentVat
                 {
                     VatCode = "C",
@@ -94,7 +94,7 @@ namespace FvpWebApp.Infrastructure
             }
             if (decimal.Parse(row[44].ToString()) != 0)
             {
-                var netAmount = decimal.Parse(row[44].ToString());
+                var netAmount = decimal.Parse(row[44].Replace(',', '.'));
                 documentVats.Add(new DocumentVat
                 {
                     VatCode = "D",
@@ -107,7 +107,7 @@ namespace FvpWebApp.Infrastructure
             }
             if (decimal.Parse(row[41].ToString()) != 0)
             {
-                var netAmount = decimal.Parse(row[44].ToString());
+                var netAmount = decimal.Parse(row[44].Replace(',', '.'));
                 documentVats.Add(new DocumentVat
                 {
                     VatCode = "E",
@@ -120,7 +120,7 @@ namespace FvpWebApp.Infrastructure
             }
             if (decimal.Parse(row[42].ToString()) != 0)
             {
-                var netAmount = decimal.Parse(row[42].ToString());
+                var netAmount = decimal.Parse(row[42].Replace(',', '.'));
                 documentVats.Add(new DocumentVat
                 {
                     VatCode = "F",
