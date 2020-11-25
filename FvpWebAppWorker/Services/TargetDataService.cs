@@ -194,13 +194,13 @@ namespace FvpWebAppWorker.Services
                     kontoplatnosci = string.Empty,
                     atrJpkV7 = document.JpkV7,
                     DaneKh = 0, //contractor.ContractorErpPosition == null ? 1 : 0,
-                    kh_nazwa = contractor.Name.Length <= 150 ? contractor.Name : contractor.Name.Substring(0, 150),
-                    kh_ulica = street.Length <= 50 ? street : street.Substring(0, 50),
+                    kh_nazwa = string.IsNullOrEmpty(contractor.Name) ? "" : contractor.Name.Length <= 150 ? contractor.Name : contractor.Name.Substring(0, 150),
+                    kh_ulica = string.IsNullOrEmpty(street) ? "" : street.Length <= 50 ? street : street.Substring(0, 50),
                     kh_dom = contractor.EstateNumber,
                     kh_lokal = contractor.QuartersNumber,
                     kh_nip = contractor.VatId,
                     kh_kodPocztowy = contractor.PostalCode,
-                    kh_miejscowosc = contractor.City.Length <= 50 ? contractor.City : contractor.City.Substring(0, 50),
+                    kh_miejscowosc = string.IsNullOrEmpty(contractor.City) ? "" : contractor.City.Length <= 50 ? contractor.City : contractor.City.Substring(0, 50),
                     kh_kraj = contractor.CountryCode
                 };
                 var nextAccountingRecordId = 1000;
