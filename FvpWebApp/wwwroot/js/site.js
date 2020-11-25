@@ -58,6 +58,31 @@ function decodeTicketStatus(status) {
     }
 }
 
+var contractorData = {
+    contractorId: 0,
+    contractorErpId: 0,
+    contractorErpPosition: 0,
+    sourceId: 0,
+    gusContractorEntriesCount: 0,
+    contractorSourceId: 0,
+    name: 0,
+    street: 0,
+    estateNumber: 0,
+    quartersNumber: 0,
+    city: 0,
+    postalCode: 0,
+    province: 0,
+    vatId: 0,
+    regon: 0,
+    phone: 0,
+    email: 0,
+    countryCode: 0,
+    firm: 0,
+    contractorStatus: 0,
+    checkDate: 0,
+    documents: 0,
+}
+
 var documentInfo = {
     document: {
         documentId: 0,
@@ -98,32 +123,7 @@ var documentInfo = {
             },
         ],
     },
-    contractors: [
-        {
-            contractorId: 0,
-            contractorErpId: 0,
-            contractorErpPosition: 0,
-            sourceId: 0,
-            gusContractorEntriesCount: 0,
-            contractorSourceId: 0,
-            name: 0,
-            street: 0,
-            estateNumber: 0,
-            quartersNumber: 0,
-            city: 0,
-            postalCode: 0,
-            province: 0,
-            vatId: 0,
-            regon: 0,
-            phone: 0,
-            email: 0,
-            countryCode: 0,
-            firm: 0,
-            contractorStatus: 0,
-            checkDate: 0,
-            documents: 0,
-        },
-    ],
+    contractors: [contractorData],
 }
 
 var sourceConfig = {

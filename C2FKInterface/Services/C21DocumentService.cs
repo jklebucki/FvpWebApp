@@ -21,6 +21,7 @@ namespace C2FKInterface.Services
         {
             _dbConnectionSettings = dbConnectionSettings;
             DataConnection.DefaultSettings = new DbSettings(_dbConnectionSettings.ConnStr());
+            DataConnection.SetConnectionString("Db", _dbConnectionSettings.ConnStr());
             _procOutput = procOutput;
         }
 

@@ -64,6 +64,78 @@
     </tbody>
 </table>
 
+<div class="modal fade" id="contractor-modal" tabindex="-1" role="dialog" aria-labelledby="contrator-title-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contrator-title-modal">Edycja kontrahenta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="contractor-body-modal" class="modal-body">
+                <div id="contractor">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-1">
+                                    <label class="col-5" for="contractorData-name">Nazwa</label>
+                                    <input v-model="contractorData.name" type="text" class="form-control form-control-sm col-7" id="contractorData-name" placeholder="Nazwa">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-1">
+                                    <label class="col-5" for="contractorData-street">Ulica</label>
+                                    <input v-model="contractorData.street" type="text" class="form-control form-control-sm col-7" id="contractorData-street" placeholder="Ulica">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-1">
+                                    <label class="col-5" for="contractorData-estateNumber">Nr posesji</label>
+                                    <input v-model="contractorData.estateNumber" type="text" class="form-control form-control-sm col-7" id="contractorData-estateNumber" placeholder="Nr posesji">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-1">
+                                    <label class="col-5" for="contractorData-quartersNumber">Nr lokalu</label>
+                                    <input v-model="contractorData.quartersNumber" type="text" class="form-control form-control-sm col-7" id="contractorData-quartersNumber" placeholder="Nr lokalu">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-1">
+                                    <label class="col-5" for="contractorData-city">Miasto</label>
+                                    <input v-model="contractorData.city" type="text" class="form-control form-control-sm col-7" id="contractorData-city" placeholder="Miasto">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-2">
+                                    <label class="col-5" for="contractorData-postalCode">Kod pocztowy</label>
+                                    <input v-model="contractorData.postalCode" type="text" class="form-control form-control-sm col-7" id="contractorData-postalCode" placeholder="Kod pocztowy">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-2">
+                                    <label class="col-5" for="contractorData-vatId">Nip</label>
+                                    <input v-model="contractorData.vatId" type="text" class="form-control form-control-sm col-7" id="contractorData-vatId" placeholder="Nip">
+                                </div>
+                            </div>
+                            <div class="form-inline">
+                                <div class="form-group col-12 mb-2">
+                                    <label class="col-5" for="contractorData-countryCode">Kod kraju</label>
+                                    <input v-model="contractorData.countryCode" type="text" class="form-control form-control-sm col-7" id="contractorData-countryCode" placeholder="Kod kraju">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="closeContractorModal()" type="button" class="btn btn-secondary">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="document-modal" tabindex="-1" role="dialog" aria-labelledby="title-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-full" role="document">
         <div class="modal-content">
@@ -204,6 +276,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button onclick="changeContractorData()" type="button" class="btn btn-secondary">Zmień dane kontrahenta</button>
                 <button id="close-modal" type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
             </div>
         </div>
@@ -212,6 +285,13 @@
 
 @section scripts{
     <script>
+        var contractor = new Vue({
+            el: '#contractor',
+            data: {
+                contractorData,
+            },
+        })
+
         var table
         var app = new Vue({
             el: '#app',
@@ -255,6 +335,21 @@
                 }
             }
         })
+
+        function changeContractorData() {
+            contractor.contractorData = app.documentData.contractors[0]
+            $("#document-modal").modal('hide')
+            $("#contractor-modal").modal('show')
+        }
+
+        function updateContractor() {
+            closeContractorModal()
+        }
+
+        function closeContractorModal() {
+            $("#contractor-modal").modal('hide')
+            $("#document-modal").modal('show')
+        }
 
         $("#all-docs").attr('checked', true)
 
@@ -372,7 +467,7 @@
             var btnDetails = '<button name="btn-details" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Pokaż szczegóły" onclick="documentDetails(' + row.documentId + ')"><span class="oi oi-eye icon-button"></span></button>'
             var btnValidate = '<button onclick="' + (((Number(row.contractorStatus) === 1 || Number(row.contractorStatus) === 3)) ? 'setValidAsPerson(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako osoba"><span class="oi oi-check icon-button"></span></button>'
             var btnInvalid = '<button onclick="' + (((Number(row.documentStatus) === 6)) ? 'setAsInvalid(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako nieprawidłowy"><span class="oi oi-x icon-button"></span></button>'
-            return  btnDetails + btnValidate + btnInvalid 
+            return  btnDetails + btnValidate + btnInvalid
         }
 
         function setValidAsPerson(documentId) {
