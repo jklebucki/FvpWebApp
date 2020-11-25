@@ -1,7 +1,9 @@
 ﻿using FvpWebApp.Data;
 using FvpWebApp.Infrastructure;
 using FvpWebApp.Models;
+using FvpWebApp.Services;
 using FvpWebAppModels.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +57,7 @@ namespace FvpWebApp.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> SetValidAsPerson([FromBody]int documentId)
+        public async Task<IActionResult> SetValidAsPerson([FromBody] int documentId)
         {
             try
             {
@@ -68,7 +70,7 @@ namespace FvpWebApp.Controllers
                 contractor.VatId = "BRAK";
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync().ConfigureAwait(false);
-                return new JsonResult(new { Status = true, Message = "OK"});
+                return new JsonResult(new { Status = true, Message = "OK" });
             }
             catch (Exception ex)
             {
@@ -126,6 +128,92 @@ namespace FvpWebApp.Controllers
                 Document = document,
                 Contractors = contractors,
             });
+        }
+
+
+        [HttpPost]
+        [Route("DocumentsView/CheckContractorByApi")]
+        public async Task<IActionResult> CheckContractorByApi([FromBody] Contractor contractor)
+        {
+            ApiService apiService = new ApiService();
+            var token = await apiService.ApiLogin();
+            var countries = await apiService.GetCountriesAsync(token);
+            var ueCountries = await _context.Countries.ToArrayAsync();
+
+            if (contractor.CountryCode.ToUpper() == "PL")
+            {
+                var response = await apiService.GetGusDataAsync(contractor.VatId, token);
+                if (response.Count > 0)
+                {
+                    contractor.Name = response[0].Name;
+                    contractor.VatId = response[0].VatNumber;
+                    contractor.Street = response[0].Street;
+                    contractor.EstateNumber = response[0].EstateNumber;
+                    contractor.Firm = Firm.FirmaPolska;
+                    contractor.QuartersNumber = response[0].QuartersNumber;
+                    contractor.City = response[0].City;
+                    contractor.Province = response[0].Province;
+                    contractor.Email = response[0].Email;
+                    contractor.PostalCode = response[0].PostalCode;
+                    contractor.Regon = response[0].Regon;
+                    return new JsonResult(new { Origin = "GUS", Valid = true, Data = contractor });
+                }
+
+            }
+            else if (ueCountries.Select(c => c.Symbol).Contains(contractor.CountryCode.ToUpper()))
+            {
+                var viesRequest = new ViesSimpleRequest
+                {
+                    ContractorPrefix = contractor.CountryCode.ToUpper(),
+                    ContractorSuffix = new string(contractor.VatId.Where(char.IsDigit).ToArray())
+                };
+                var response = await apiService.GetViesDataAsync(viesRequest, token);
+                var viesContractor = new Contractor { Name = string.IsNullOrEmpty(response.Name) ? "" : response.Name };
+                return new JsonResult(new { Origin = "VIES", Valid = response.Status, Data = viesContractor });
+            }
+            else if (countries.Select(c => c.Symbol).Contains(contractor.CountryCode.ToUpper()))
+            {
+                return new JsonResult(new { Origin = "WORLD", Valid = true, Data = contractor });
+            }
+
+            return new JsonResult(new { Origin = "NONE", Valid = false, Data = new Contractor() });
+        }
+
+        [HttpPost]
+        [Route("DocumentsView/ChangeContractorData")]
+        public async Task<IActionResult> ChangeContractorData([FromBody] Contractor contractor)
+        {
+            var contractorToChange = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == contractor.ContractorId);
+            if (contractorToChange != null)
+            {
+                try
+                {
+                    contractorToChange.ContractorStatus = contractor.ContractorStatus;
+                    contractorToChange.Name = contractor.Name;
+                    contractorToChange.Street = contractor.Street;
+                    contractorToChange.EstateNumber = contractor.EstateNumber;
+                    contractorToChange.QuartersNumber = contractor.QuartersNumber;
+                    contractorToChange.City = contractor.City;
+                    contractorToChange.PostalCode = contractor.PostalCode;
+                    contractorToChange.Province = contractor.Province;
+                    contractorToChange.VatId = contractor.VatId;
+                    contractorToChange.Regon = contractor.Regon;
+                    contractorToChange.GusContractorEntriesCount = 1;
+                    contractorToChange.Firm = contractor.Firm;
+                    contractorToChange.CountryCode = contractor.CountryCode;
+                    contractorToChange.CheckDate = DateTime.Now;
+
+                    var documents = await _context.Documents.Where(d => d.ContractorId == contractor.ContractorId).ToListAsync();
+                    documents.ForEach(d => d.DocumentStatus = DocumentStatus.Valid);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                }
+                return new StatusCodeResult((int)HttpStatusCode.OK);
+            }
+            return new StatusCodeResult((int)HttpStatusCode.NotFound);
         }
 
         [HttpPost]

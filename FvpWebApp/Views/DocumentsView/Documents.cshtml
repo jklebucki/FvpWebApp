@@ -129,6 +129,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <div id="footer-info"></div>
+                    <button onclick="checkContractorByApi()" type="button" class="btn btn-primary">Sprawdź kontrahenta</button>
                     <button onclick="updateContractor()" type="button" class="btn btn-secondary">Aktualizuj</button>
                     <button onclick="closeContractorModal()" type="button" class="btn btn-secondary">Zamknij</button>
                 </div>
@@ -264,6 +266,10 @@
                                                 <th>NIP</th>
                                                 <td>{{ contractor.vatId }}</td>
                                             </tr>
+                                            <tr>
+                                                <th>Kraj</th>
+                                                <td>{{ contractor.countryCode }}</td>
+                                            </tr>
                                         </table>
                                         <div v-if="!isContractorMatched(contractor)">
                                             <button v-on:click="setContractor(contractor,false)" class="btn btn btn-outline-primary btn-sm">Wybierz</button>
@@ -339,40 +345,69 @@
 
         function changeContractorData() {
             contractor.contractorData = app.documentData.contractors[0]
+            $('#footer-info').html("")
             $("#document-modal").modal('hide')
             $("#contractor-modal").modal('show')
         }
 
         function updateContractor() {
             closeContractorModal()
-            replaceContractor(contractor.contractorData, true)
+            updateContractorInDatabase(contractor.contractorData)
         }
 
-        function updateContractorInDatabase(contractor, changeAllDocuments) {
-            const headers = {
-                'Content-Type': 'application/json',
-            }
-            var data = {
-                DocumentId: this.documentData.document.documentId,
-                ContractorId: contractor.contractorId,
-                ChangeAllDocuments: changeAllDocuments
-            }
+        function updateContractorInDatabase() {
+            $('#footer-info').html("Wykonuję, czekaj...")
+            const headers = { 'Content-Type': 'application/json' }
             axios.post(
                 '/DocumentsView/ChangeContractorData',
-                data,
+                JSON.stringify(contractor.contractorData),
                 {
                     headers: headers,
                 })
                 .then(response => {
                     if (response.status == 200) {
-                        this.documentData.document.contractorId = contractor.contractorId
-                        replaceContractor(contractor, changeAllDocuments)
+                        replaceContractor(contractor.contractorData, true)
                     }
                 })
                 .catch(error => {
+                    alert("AXIOS Error", error)
                     console.log("AXIOS Error", error)
                 })
         }
+
+        function checkContractorByApi() {
+            $('#footer-info').html("Sprawdzam, czekaj...")
+            const headers = { 'Content-Type': 'application/json' }
+            axios.post(
+                '/DocumentsView/CheckContractorByApi',
+                JSON.stringify(contractor.contractorData),
+                {
+                    headers: headers,
+                })
+                .then(response => {
+                    if (response.status == 200) {
+                        console.dir(response.data)
+                        parsResponse(response.data)
+                    }
+                })
+                .catch(error => {
+                    $('#footer-info').html("Błąd sprawdzania!")
+                    console.log("AXIOS Error", error)
+                })
+        }
+
+        function parsResponse(response) {
+            if (response.valid) {
+                $('#footer-info').html("Dane prawidłowe!")
+                contractor.contractorData.contractorStatus = 0
+            } else {
+                $('#footer-info').html("Dane nieprawidłowe!")
+            }
+            if (response.origin === 'GUS' && response.valid) {
+                contractor.contractorData = response.data
+            }
+        }
+
 
         function closeContractorModal() {
             $("#contractor-modal").modal('hide')
