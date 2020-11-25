@@ -86,9 +86,11 @@ namespace FvpWebApp.Controllers
                 var transaction = await _context.Database.BeginTransactionAsync();
                 var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
                 document.DocumentStatus = DocumentStatus.Invalid;
+                _context.Update(document);
                 await _context.SaveChangesAsync();
                 var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == document.ContractorId);
                 contractor.ContractorStatus = ContractorStatus.Invalid;
+                _context.Update(contractor);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync().ConfigureAwait(false);
                 return new JsonResult(new { Status = true, Message = "OK" });
@@ -205,6 +207,8 @@ namespace FvpWebApp.Controllers
 
                     var documents = await _context.Documents.Where(d => d.ContractorId == contractor.ContractorId).ToListAsync();
                     documents.ForEach(d => d.DocumentStatus = DocumentStatus.Valid);
+                    _context.Update(contractorToChange);
+                    _context.UpdateRange(documents);
                     await _context.SaveChangesAsync();
                 }
                 catch
@@ -240,6 +244,35 @@ namespace FvpWebApp.Controllers
                         document.ContractorId = data.ContractorId;
                         _context.Update(document);
                     }
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                }
+                return new StatusCodeResult((int)HttpStatusCode.OK);
+            }
+            return new StatusCodeResult((int)HttpStatusCode.NotFound);
+        }
+
+        [HttpPost]
+        [Route("DocumentsView/SetValid")]
+        public async Task<IActionResult> SetValid([FromBody] int documentId)
+        {
+
+            var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
+            if (document == null)
+                return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+            var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == document.ContractorId && c.SourceId == document.SourceId);
+            if (contractor != null)
+            {
+                try
+                {
+                    contractor.ContractorStatus = ContractorStatus.Valid;
+                    var documents = await _context.Documents.Where(d => d.ContractorId == document.ContractorId && d.SourceId == document.SourceId).ToListAsync();
+                    documents.ForEach(d => d.DocumentStatus = DocumentStatus.Valid);
+                    _context.Update(contractor);
+                    _context.UpdateRange(documents);
                     await _context.SaveChangesAsync();
                 }
                 catch

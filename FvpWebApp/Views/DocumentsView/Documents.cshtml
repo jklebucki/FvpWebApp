@@ -532,7 +532,8 @@
             var btnDetails = '<button name="btn-details" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Pokaż szczegóły" onclick="documentDetails(' + row.documentId + ')"><span class="oi oi-eye icon-button"></span></button>'
             var btnValidate = '<button onclick="' + (((Number(row.contractorStatus) === 1 || Number(row.contractorStatus) === 3)) ? 'setValidAsPerson(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako osoba"><span class="oi oi-check icon-button"></span></button>'
             var btnInvalid = '<button onclick="' + (((Number(row.documentStatus) === 6)) ? 'setAsInvalid(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako nieprawidłowy"><span class="oi oi-x icon-button"></span></button>'
-            return  btnDetails + btnValidate + btnInvalid
+            var btnValid = '<button class="btn btn-outline-primary btn-sm ml-1" title="Ustaw jako poprawny" onclick="setValidDocument(' + row.documentId + ')"><span class="oi oi-plus icon-button"></span></button>'
+            return btnDetails + btnValidate + btnInvalid + btnValid
         }
 
         function setValidAsPerson(documentId) {
@@ -551,6 +552,23 @@
                         $('#btn-' + newData.documentId).html(renderButtons(newData))
                         $('#' + app.rowData.documentId).removeClass('contractor-invalid')
                         $('#' + app.rowData.documentId).addClass('contractor-accepted')
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+
+        function setValidDocument(documentId) {
+            const headers = {
+                'Content-Type': 'application/json',
+            }
+            axios.post('/DocumentsView/setValid', documentId, { headers: headers })
+                .then(function (response) {
+                    if (response.status == 200) {
+                        table.rows(function (idx, data, node) {
+                            return data.contractorId == app.rowData.contractorId ? true : false
+                        }).ids().toArray().forEach(function (e, i, a) { $('#' + e).removeClass('contractor-invalid') })
                     }
                 })
                 .catch(function (error) {
