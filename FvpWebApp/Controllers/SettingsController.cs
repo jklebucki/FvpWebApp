@@ -36,7 +36,17 @@ namespace FvpWebApp.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> GetTargets()
+        {
+            var data = await _context.Targets.ToListAsync();
+            return new JsonResult(new { data = data });
+        }
 
+        public async Task<IActionResult> GetTarget(int id)
+        {
+            var data = await _context.Targets.FirstOrDefaultAsync(t => t.TargetId == id);
+            return new JsonResult(new { target = data });
+        }
         public async Task<IActionResult> GetSource(int id)
         {
             var source = await _context.Sources.FirstOrDefaultAsync(s => s.SourceId == id);

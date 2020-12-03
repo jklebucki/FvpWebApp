@@ -125,6 +125,16 @@ var documentInfo = {
     },
     contractors: [contractorData],
 }
+var targetConfig = {
+    target: {
+        targetId: 0,
+        description: null,
+        databaseAddress: null,
+        databaseName: null,
+        databaseUsername: null,
+        databasePassword: null
+    },
+}
 
 var sourceConfig = {
     source: {
