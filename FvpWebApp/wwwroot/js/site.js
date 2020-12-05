@@ -149,15 +149,12 @@ var sourceConfig = {
         password: null
     },
     target: {
-        sourceId: 0,
-        targetId: null,
+        targetId: 0,
         description: null,
-        code: null,
-        type: null,
-        address: null,
-        dbName: null,
-        username: null,
-        password: null
+        databaseAddress: null,
+        databaseName: null,
+        databaseUsername: null,
+        databasePassword: null
     },
     targetDocumentSettings: {
         targetDocumentSettingsId: 0,

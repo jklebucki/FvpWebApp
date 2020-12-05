@@ -1,6 +1,7 @@
 ﻿using C2FKInterface.Data;
 using C2FKInterface.Services;
 using FvpWebApp.Data;
+using FvpWebApp.Models;
 using FvpWebAppModels.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -94,55 +95,56 @@ namespace FvpWebApp.Controllers
             return new JsonResult(defList);
         }
 
-        [HttpPost]
-        public ActionResult CreateTarget(IFormCollection collection)
+        [HttpPut]
+        public async Task<IActionResult> PutTarget([FromBody] Target target)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var targetToChange = await _context.Targets.FirstOrDefaultAsync(t => t.TargetId == target.TargetId);
+                targetToChange.Descryption = target.Descryption;
+                targetToChange.DatabaseName = target.DatabaseName;
+                targetToChange.DatabaseAddress = target.DatabaseAddress;
+                targetToChange.DatabaseUsername = target.DatabaseUsername;
+                targetToChange.DatabasePassword = target.DatabasePassword;
+                _context.Update(targetToChange);
+                await _context.SaveChangesAsync();
+                return Ok(new { Status = true, Message = "OK" });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return BadRequest(new { Status = true, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message });
             }
         }
 
         [HttpPost]
-        public ActionResult CreateSource(IFormCollection collection)
+        public async Task<IActionResult> PostTarget([FromBody] Target target)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                await _context.AddAsync(target);
+                await _context.SaveChangesAsync();
+                return Ok(new { Status = true, Message = "OK" });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return BadRequest(new { Status = true, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message });
             }
         }
 
-        [HttpPost]
-        public ActionResult UpdateTarget(IFormCollection collection)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTarget([FromBody] SimpleRequest payload)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        [HttpPost]
-        public ActionResult UpdateSource(IFormCollection collection)
-        {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var targetToRemove = await _context.Targets.FirstOrDefaultAsync(t => t.TargetId == payload.Id);
+                _context.Targets.Remove(targetToRemove);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "OK" });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return BadRequest(new { Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message });
             }
         }
     }
