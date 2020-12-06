@@ -167,7 +167,7 @@ namespace FvpWebApp.Controllers
                 var viesRequest = new ViesSimpleRequest
                 {
                     ContractorPrefix = contractor.CountryCode.ToUpper(),
-                    ContractorSuffix = new string(contractor.VatId.Where(char.IsDigit).ToArray())
+                    ContractorSuffix = contractor.VatId.Substring(2, contractor.VatId.Length - 2),
                 };
                 var response = await apiService.GetViesDataAsync(viesRequest, token);
                 var viesContractor = new Contractor { Name = string.IsNullOrEmpty(response.Name) ? "" : response.Name };
@@ -175,7 +175,12 @@ namespace FvpWebApp.Controllers
             }
             else if (countries.Select(c => c.Symbol).Contains(contractor.CountryCode.ToUpper()))
             {
-                return new JsonResult(new { Origin = "WORLD", Valid = true, Data = contractor });
+                return new JsonResult(new
+                {
+                    Origin = "WORLD",
+                    Valid = true,
+                    Data = contractor
+                });
             }
 
             return new JsonResult(new { Origin = "NONE", Valid = false, Data = new Contractor() });

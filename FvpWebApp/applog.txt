@@ -4574,3 +4574,434 @@ Error Number:547,State:0,Class:16
 [22:18:16 INF] HTTP GET /DocumentsView/GetDocuments?id=1&month=10&year=2020&_=1607203094558 responded 200 in 1300.6025 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"4fa1eacb-eceb-4972-87fd-d9f84fc2072d","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PCD0SL89F:00000005","SpanId":"|a2188e7e-47cb43d8ba2d42fc.","TraceId":"a2188e7e-47cb43d8ba2d42fc","ParentId":"","ConnectionId":"0HM4PCD0SL89F"}
 [22:18:22 INF] HTTP GET /DocumentsView/Details/1 responded 200 in 71.9129 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"563c7464-fde6-4a62-a3a9-908ad9d4ca0e","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PCD0SL89F:00000006","SpanId":"|a2188e7f-47cb43d8ba2d42fc.","TraceId":"a2188e7f-47cb43d8ba2d42fc","ParentId":"","ConnectionId":"0HM4PCD0SL89F"}
 [22:18:37 INF] HTTP GET /DocumentsView/Details/67 responded 200 in 39.3143 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"563c7464-fde6-4a62-a3a9-908ad9d4ca0e","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PCD0SL89F:00000007","SpanId":"|a2188e80-47cb43d8ba2d42fc.","TraceId":"a2188e80-47cb43d8ba2d42fc","ParentId":"","ConnectionId":"0HM4PCD0SL89F"}
+[23:39:02 INF] Getting the motors running... {}
+[23:39:07 INF] HTTP GET /DocumentsView/Documents?id=1&month=10&year=2020 responded 200 in 660.1543 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH401:00000001","SpanId":"|1c5497f8-4e7811f5a94278d8.","TraceId":"1c5497f8-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:10 INF] HTTP GET /DocumentsView/GetDocuments?id=1&month=10&year=2020&_=1607207947887 responded 200 in 2418.6596 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"caccbc38-ba07-4d39-b289-a2cc6927db42","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000003","SpanId":"|1c5497fa-4e7811f5a94278d8.","TraceId":"1c5497fa-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:12 INF] HTTP GET /Settings responded 200 in 16.3524 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH401:00000004","SpanId":"|1c5497fc-4e7811f5a94278d8.","TraceId":"1c5497fc-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:12 INF] HTTP GET /Settings responded 200 in 9.6336 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH401:00000005","SpanId":"|1c5497fd-4e7811f5a94278d8.","TraceId":"1c5497fd-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:14 INF] HTTP GET /Settings/Targets responded 200 in 18.0046 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH401:00000006","SpanId":"|1c5497fe-4e7811f5a94278d8.","TraceId":"1c5497fe-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:14 INF] HTTP GET /Settings/GetTargets?_=1607207954092 responded 200 in 57.4646 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"329bfb18-9cf0-4cf4-91fc-7f0221f63493","ActionName":"FvpWebApp.Controllers.SettingsController.GetTargets (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000007","SpanId":"|1c5497ff-4e7811f5a94278d8.","TraceId":"1c5497ff-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:21 ERR] Failed executing DbCommand (7ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Targets]
+WHERE [TargetId] = @p0;
+SELECT @@ROWCOUNT; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000008","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549800-4e7811f5a94278d8.","TraceId":"1c549800-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:21 ERR] An exception occurred in the database while saving changes for context type 'FvpWebApp.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:41f1efe6-a470-451a-9723-9808590d65d0
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken) {"EventId":{"Id":10000,"Name":"Microsoft.EntityFrameworkCore.Update.SaveChangesFailed"},"SourceContext":"Microsoft.EntityFrameworkCore.Update","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000008","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549800-4e7811f5a94278d8.","TraceId":"1c549800-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:41f1efe6-a470-451a-9723-9808590d65d0
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[23:39:21 INF] HTTP DELETE /Settings/DeleteTarget responded 400 in 555.7068 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000008","SpanId":"|1c549800-4e7811f5a94278d8.","TraceId":"1c549800-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:25 ERR] Failed executing DbCommand (4ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Targets]
+WHERE [TargetId] = @p0;
+SELECT @@ROWCOUNT; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000009","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549801-4e7811f5a94278d8.","TraceId":"1c549801-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[23:39:25 ERR] An exception occurred in the database while saving changes for context type 'FvpWebApp.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:41f1efe6-a470-451a-9723-9808590d65d0
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken) {"EventId":{"Id":10000,"Name":"Microsoft.EntityFrameworkCore.Update.SaveChangesFailed"},"SourceContext":"Microsoft.EntityFrameworkCore.Update","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000009","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549801-4e7811f5a94278d8.","TraceId":"1c549801-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:41f1efe6-a470-451a-9723-9808590d65d0
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[23:39:25 INF] HTTP DELETE /Settings/DeleteTarget responded 400 in 176.2606 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH401:00000009","SpanId":"|1c549801-4e7811f5a94278d8.","TraceId":"1c549801-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH401"}
+[00:12:49 INF] HTTP GET /Settings/Targets responded 200 in 4.5825 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH403:00000001","SpanId":"|1c549802-4e7811f5a94278d8.","TraceId":"1c549802-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:12:50 INF] HTTP GET /Settings/GetTargets?_=1607209970094 responded 200 in 140.7452 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"329bfb18-9cf0-4cf4-91fc-7f0221f63493","ActionName":"FvpWebApp.Controllers.SettingsController.GetTargets (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000002","SpanId":"|1c549803-4e7811f5a94278d8.","TraceId":"1c549803-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:12:59 ERR] Failed executing DbCommand (4ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Targets]
+WHERE [TargetId] = @p0;
+SELECT @@ROWCOUNT; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000003","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549805-4e7811f5a94278d8.","TraceId":"1c549805-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:12:59 ERR] An exception occurred in the database while saving changes for context type 'FvpWebApp.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken) {"EventId":{"Id":10000,"Name":"Microsoft.EntityFrameworkCore.Update.SaveChangesFailed"},"SourceContext":"Microsoft.EntityFrameworkCore.Update","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000003","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549805-4e7811f5a94278d8.","TraceId":"1c549805-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[00:12:59 INF] HTTP DELETE /Settings/DeleteTarget responded 400 in 171.8654 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000003","SpanId":"|1c549805-4e7811f5a94278d8.","TraceId":"1c549805-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:13:04 ERR] Failed executing DbCommand (3ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Targets]
+WHERE [TargetId] = @p0;
+SELECT @@ROWCOUNT; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000004","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549806-4e7811f5a94278d8.","TraceId":"1c549806-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:13:04 ERR] An exception occurred in the database while saving changes for context type 'FvpWebApp.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken) {"EventId":{"Id":10000,"Name":"Microsoft.EntityFrameworkCore.Update.SaveChangesFailed"},"SourceContext":"Microsoft.EntityFrameworkCore.Update","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000004","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549806-4e7811f5a94278d8.","TraceId":"1c549806-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[00:13:04 INF] HTTP DELETE /Settings/DeleteTarget responded 400 in 188.1994 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000004","SpanId":"|1c549806-4e7811f5a94278d8.","TraceId":"1c549806-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:13:13 ERR] Failed executing DbCommand (3ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Targets]
+WHERE [TargetId] = @p0;
+SELECT @@ROWCOUNT; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000005","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549807-4e7811f5a94278d8.","TraceId":"1c549807-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:13:13 ERR] An exception occurred in the database while saving changes for context type 'FvpWebApp.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken) {"EventId":{"Id":10000,"Name":"Microsoft.EntityFrameworkCore.Update.SaveChangesFailed"},"SourceContext":"Microsoft.EntityFrameworkCore.Update","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000005","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549807-4e7811f5a94278d8.","TraceId":"1c549807-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[00:13:14 INF] HTTP DELETE /Settings/DeleteTarget responded 400 in 201.0507 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000005","SpanId":"|1c549807-4e7811f5a94278d8.","TraceId":"1c549807-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:15:55 ERR] Failed executing DbCommand (3ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Targets]
+WHERE [TargetId] = @p0;
+SELECT @@ROWCOUNT; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000006","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549808-4e7811f5a94278d8.","TraceId":"1c549808-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:15:55 ERR] An exception occurred in the database while saving changes for context type 'FvpWebApp.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken) {"EventId":{"Id":10000,"Name":"Microsoft.EntityFrameworkCore.Update.SaveChangesFailed"},"SourceContext":"Microsoft.EntityFrameworkCore.Update","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000006","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549808-4e7811f5a94278d8.","TraceId":"1c549808-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[00:15:55 INF] HTTP DELETE /Settings/DeleteTarget responded 400 in 207.8630 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000006","SpanId":"|1c549808-4e7811f5a94278d8.","TraceId":"1c549808-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:15:59 ERR] Failed executing DbCommand (2ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Targets]
+WHERE [TargetId] = @p0;
+SELECT @@ROWCOUNT; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000007","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549809-4e7811f5a94278d8.","TraceId":"1c549809-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[00:15:59 ERR] An exception occurred in the database while saving changes for context type 'FvpWebApp.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken) {"EventId":{"Id":10000,"Name":"Microsoft.EntityFrameworkCore.Update.SaveChangesFailed"},"SourceContext":"Microsoft.EntityFrameworkCore.Update","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000007","RequestPath":"/Settings/DeleteTarget","SpanId":"|1c549809-4e7811f5a94278d8.","TraceId":"1c549809-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The DELETE statement conflicted with the REFERENCE constraint "FK_Sources_Targets_TargetId". The conflict occurred in database "AJKFVPWebApp", table "dbo.Sources", column 'TargetId'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__164_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:a839b54f-7663-436c-8955-ddba1d8be76d
+Error Number:547,State:0,Class:16
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(DbContext _, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+[00:16:00 INF] HTTP DELETE /Settings/DeleteTarget responded 400 in 162.2385 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"c46b36bf-9d40-47ab-b2d7-38c575c5dd10","ActionName":"FvpWebApp.Controllers.SettingsController.DeleteTarget (FvpWebApp)","RequestId":"0HM4PDQ9KH403:00000007","SpanId":"|1c549809-4e7811f5a94278d8.","TraceId":"1c549809-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH403"}
+[14:43:02 INF] HTTP GET / responded 200 in 22.9915 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH405:00000001","SpanId":"|1c54980a-4e7811f5a94278d8.","TraceId":"1c54980a-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:02 INF] HTTP GET /DocumentsImportExport/GetPendingTasks/0?_=1607262182419 responded 200 in 134.2710 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"63852aa6-8161-484f-a39e-cd9908cb6752","ActionName":"FvpWebApp.Controllers.DocumentsImportExportController.GetPendingTasks (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000003","SpanId":"|1c54980c-4e7811f5a94278d8.","TraceId":"1c54980c-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:04 INF] HTTP GET /DocumentsView responded 200 in 52.7367 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"45e7da5d-05c0-466d-b96c-ca4b49a2ca72","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Index (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000004","SpanId":"|1c54980d-4e7811f5a94278d8.","TraceId":"1c54980d-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:08 INF] HTTP GET /DocumentsView/Documents?id=1&month=11&year=2020 responded 200 in 4.4005 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH405:00000005","SpanId":"|1c54980e-4e7811f5a94278d8.","TraceId":"1c54980e-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:08 INF] HTTP GET /DocumentsView/GetDocuments?id=1&month=11&year=2020&_=1607262188316 responded 200 in 25.1601 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"caccbc38-ba07-4d39-b289-a2cc6927db42","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000006","SpanId":"|1c54980f-4e7811f5a94278d8.","TraceId":"1c54980f-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:19 INF] HTTP GET /DocumentsView/Index responded 200 in 9.1405 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"45e7da5d-05c0-466d-b96c-ca4b49a2ca72","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Index (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000007","SpanId":"|1c549810-4e7811f5a94278d8.","TraceId":"1c549810-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:22 INF] HTTP GET /DocumentsView/Documents?id=2&month=11&year=2020 responded 200 in 2.6554 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH405:00000008","SpanId":"|1c549811-4e7811f5a94278d8.","TraceId":"1c549811-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:23 INF] HTTP GET /DocumentsView/GetDocuments?id=2&month=11&year=2020&_=1607262202787 responded 200 in 65.4663 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"caccbc38-ba07-4d39-b289-a2cc6927db42","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000009","SpanId":"|1c549812-4e7811f5a94278d8.","TraceId":"1c549812-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:24 INF] HTTP GET /DocumentsView/Index responded 200 in 7.4740 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"45e7da5d-05c0-466d-b96c-ca4b49a2ca72","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Index (FvpWebApp)","RequestId":"0HM4PDQ9KH405:0000000A","SpanId":"|1c549813-4e7811f5a94278d8.","TraceId":"1c549813-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:29 INF] HTTP GET /DocumentsView/Documents?id=2&month=12&year=2020 responded 200 in 2.0017 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH405:0000000B","SpanId":"|1c549814-4e7811f5a94278d8.","TraceId":"1c549814-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:29 INF] HTTP GET /DocumentsView/GetDocuments?id=2&month=12&year=2020&_=1607262209418 responded 200 in 23.9697 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"caccbc38-ba07-4d39-b289-a2cc6927db42","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PDQ9KH405:0000000C","SpanId":"|1c549815-4e7811f5a94278d8.","TraceId":"1c549815-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:34 INF] HTTP GET /DocumentsView/Index responded 200 in 6.9396 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"45e7da5d-05c0-466d-b96c-ca4b49a2ca72","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Index (FvpWebApp)","RequestId":"0HM4PDQ9KH405:0000000D","SpanId":"|1c549816-4e7811f5a94278d8.","TraceId":"1c549816-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:38 INF] HTTP GET /DocumentsView/Documents?id=2&month=10&year=2020 responded 200 in 2.1131 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PDQ9KH405:0000000E","SpanId":"|1c549817-4e7811f5a94278d8.","TraceId":"1c549817-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:40 INF] HTTP GET /DocumentsView/GetDocuments?id=2&month=10&year=2020&_=1607262218241 responded 200 in 1561.7657 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"caccbc38-ba07-4d39-b289-a2cc6927db42","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PDQ9KH405:0000000F","SpanId":"|1c549818-4e7811f5a94278d8.","TraceId":"1c549818-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:50 INF] HTTP GET /DocumentsView/Details/3165 responded 200 in 65.8266 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"83de60b9-b554-4af7-9597-6c58bde6395c","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000010","SpanId":"|1c549819-4e7811f5a94278d8.","TraceId":"1c549819-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:43:59 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 3470.4144 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"a1049186-09a8-44b7-8bba-a162ed006208","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000011","SpanId":"|1c54981a-4e7811f5a94278d8.","TraceId":"1c54981a-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:44:21 INF] HTTP GET /DocumentsView/Details/7094 responded 200 in 46.7887 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"83de60b9-b554-4af7-9597-6c58bde6395c","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000012","SpanId":"|1c54981b-4e7811f5a94278d8.","TraceId":"1c54981b-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:44:27 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 2135.2347 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"a1049186-09a8-44b7-8bba-a162ed006208","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000013","SpanId":"|1c54981c-4e7811f5a94278d8.","TraceId":"1c54981c-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:44:58 INF] HTTP GET /DocumentsView/Details/4859 responded 200 in 77.1198 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"83de60b9-b554-4af7-9597-6c58bde6395c","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000014","SpanId":"|1c54981d-4e7811f5a94278d8.","TraceId":"1c54981d-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[14:45:08 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 2195.9013 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"a1049186-09a8-44b7-8bba-a162ed006208","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PDQ9KH405:00000015","SpanId":"|1c54981e-4e7811f5a94278d8.","TraceId":"1c54981e-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH405"}
+[15:09:34 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 2242.6740 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"a1049186-09a8-44b7-8bba-a162ed006208","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PDQ9KH409:00000001","SpanId":"|1c54981f-4e7811f5a94278d8.","TraceId":"1c54981f-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH409"}
+[15:10:05 INF] HTTP GET /DocumentsView/Details/8386 responded 200 in 50.2910 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"83de60b9-b554-4af7-9597-6c58bde6395c","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PDQ9KH409:00000002","SpanId":"|1c549820-4e7811f5a94278d8.","TraceId":"1c549820-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH409"}
+[15:10:16 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 1624.4102 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"a1049186-09a8-44b7-8bba-a162ed006208","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PDQ9KH409:00000003","SpanId":"|1c549821-4e7811f5a94278d8.","TraceId":"1c549821-4e7811f5a94278d8","ParentId":"","ConnectionId":"0HM4PDQ9KH409"}
+[15:34:01 INF] Getting the motors running... {}
+[15:34:05 INF] HTTP GET /DocumentsView/Details/5931 responded 200 in 1466.4126 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLB:00000001","SpanId":"|bbb3d168-4497fde266d756e6.","TraceId":"bbb3d168-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLB"}
+[15:34:09 INF] HTTP GET /DocumentsView/Details/5931 responded 200 in 37.4325 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLB:00000002","SpanId":"|bbb3d169-4497fde266d756e6.","TraceId":"bbb3d169-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLB"}
+[15:34:13 INF] HTTP GET /DocumentsView/Documents?id=2&month=10&year=2020 responded 200 in 394.0700 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PUFTBPDLB:00000003","SpanId":"|bbb3d16a-4497fde266d756e6.","TraceId":"bbb3d16a-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLB"}
+[15:34:15 INF] HTTP GET /DocumentsView/GetDocuments?id=2&month=10&year=2020&_=1607265253354 responded 200 in 1836.8928 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"da1a9252-67d9-45a1-8d4d-c65b3c1f78de","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PUFTBPDLB:00000004","SpanId":"|bbb3d16b-4497fde266d756e6.","TraceId":"bbb3d16b-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLB"}
+[15:34:47 INF] HTTP GET /DocumentsView/Details/3645 responded 200 in 139.8196 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLB:00000005","SpanId":"|bbb3d16d-4497fde266d756e6.","TraceId":"bbb3d16d-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLB"}
+[15:35:55 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 63379.9533 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLB:00000006","SpanId":"|bbb3d16e-4497fde266d756e6.","TraceId":"bbb3d16e-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLB"}
+[15:36:01 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 7036.2970 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000002","SpanId":"|bbb3d16f-4497fde266d756e6.","TraceId":"bbb3d16f-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:36:41 INF] HTTP GET /DocumentsView/Details/3422 responded 200 in 39.8215 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000003","SpanId":"|bbb3d170-4497fde266d756e6.","TraceId":"bbb3d170-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:37:03 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 13175.3435 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000004","SpanId":"|bbb3d171-4497fde266d756e6.","TraceId":"bbb3d171-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:37:11 INF] HTTP POST /DocumentsView/ChangeContractorData responded 200 in 335.8663 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"021eb372-91e2-437b-9053-50b3dfef1e07","ActionName":"FvpWebApp.Controllers.DocumentsViewController.ChangeContractorData (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000005","SpanId":"|bbb3d172-4497fde266d756e6.","TraceId":"bbb3d172-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:37:23 INF] HTTP GET /DocumentsView/Details/3751 responded 200 in 15.4990 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000006","SpanId":"|bbb3d173-4497fde266d756e6.","TraceId":"bbb3d173-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:37:41 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 10954.9791 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000007","SpanId":"|bbb3d174-4497fde266d756e6.","TraceId":"bbb3d174-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:37:46 INF] HTTP POST /DocumentsView/ChangeContractorData responded 200 in 45.0826 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"021eb372-91e2-437b-9053-50b3dfef1e07","ActionName":"FvpWebApp.Controllers.DocumentsViewController.ChangeContractorData (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000008","SpanId":"|bbb3d175-4497fde266d756e6.","TraceId":"bbb3d175-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:38:11 INF] HTTP GET /DocumentsView/Details/7774 responded 200 in 65.1723 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000009","SpanId":"|bbb3d176-4497fde266d756e6.","TraceId":"bbb3d176-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:38:20 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 2514.5804 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:0000000A","SpanId":"|bbb3d177-4497fde266d756e6.","TraceId":"bbb3d177-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:38:23 INF] HTTP POST /DocumentsView/ChangeContractorData responded 200 in 31.8908 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"021eb372-91e2-437b-9053-50b3dfef1e07","ActionName":"FvpWebApp.Controllers.DocumentsViewController.ChangeContractorData (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:0000000B","SpanId":"|bbb3d178-4497fde266d756e6.","TraceId":"bbb3d178-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:38:37 INF] HTTP POST /DocumentsView/setValid responded 200 in 37.7847 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"842864e7-f614-4aa1-a050-4b3d285d5314","ActionName":"FvpWebApp.Controllers.DocumentsViewController.SetValid (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:0000000C","SpanId":"|bbb3d179-4497fde266d756e6.","TraceId":"bbb3d179-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:38:59 INF] HTTP GET /DocumentsView/Details/4964 responded 200 in 85.2182 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:0000000D","SpanId":"|bbb3d17a-4497fde266d756e6.","TraceId":"bbb3d17a-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:39:12 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 5250.7832 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:0000000E","SpanId":"|bbb3d17b-4497fde266d756e6.","TraceId":"bbb3d17b-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:39:43 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 2098.0040 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:0000000F","SpanId":"|bbb3d17c-4497fde266d756e6.","TraceId":"bbb3d17c-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:39:48 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 1379.0310 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000010","SpanId":"|bbb3d17d-4497fde266d756e6.","TraceId":"bbb3d17d-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:39:51 INF] HTTP POST /DocumentsView/ChangeContractorData responded 200 in 36.1148 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"021eb372-91e2-437b-9053-50b3dfef1e07","ActionName":"FvpWebApp.Controllers.DocumentsViewController.ChangeContractorData (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000011","SpanId":"|bbb3d17e-4497fde266d756e6.","TraceId":"bbb3d17e-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:39:57 INF] HTTP POST /DocumentsView/setValid responded 200 in 19.9199 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"842864e7-f614-4aa1-a050-4b3d285d5314","ActionName":"FvpWebApp.Controllers.DocumentsViewController.SetValid (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000012","SpanId":"|bbb3d17f-4497fde266d756e6.","TraceId":"bbb3d17f-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:40:03 INF] HTTP GET /DocumentsView/Documents?id=2&month=10&year=2020 responded 200 in 7.5113 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HM4PUFTBPDLC:00000013","SpanId":"|bbb3d180-4497fde266d756e6.","TraceId":"bbb3d180-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:40:05 INF] HTTP GET /DocumentsView/GetDocuments?id=2&month=10&year=2020&_=1607265603419 responded 200 in 1769.4267 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"da1a9252-67d9-45a1-8d4d-c65b3c1f78de","ActionName":"FvpWebApp.Controllers.DocumentsViewController.GetDocuments (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000014","SpanId":"|bbb3d181-4497fde266d756e6.","TraceId":"bbb3d181-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:40:59 INF] HTTP GET /DocumentsView/Details/3422 responded 200 in 60.7509 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"b5f8f41e-7ff1-45f9-9292-3e90737d33d1","ActionName":"FvpWebApp.Controllers.DocumentsViewController.Details (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000015","SpanId":"|bbb3d183-4497fde266d756e6.","TraceId":"bbb3d183-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
+[15:41:07 INF] HTTP POST /DocumentsView/CheckContractorByApi responded 200 in 1809.7915 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","ActionId":"ee205b29-8830-425a-bf7e-bb1c76fea1b5","ActionName":"FvpWebApp.Controllers.DocumentsViewController.CheckContractorByApi (FvpWebApp)","RequestId":"0HM4PUFTBPDLC:00000016","SpanId":"|bbb3d184-4497fde266d756e6.","TraceId":"bbb3d184-4497fde266d756e6","ParentId":"","ConnectionId":"0HM4PUFTBPDLC"}
