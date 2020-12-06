@@ -55,14 +55,25 @@ namespace C2FKInterface.Services
             return incrementValue;
         }
 
-        public async Task<C21Year> GetYearId(DateTime documentSaleDate)
+        public async Task<C21Year> GetYearId(DateTime documentDate)
         {
             if (years == null)
                 using (var db = new SageDb("Db"))
                 {
                     years = await db.C21Years.ToListAsync();
                 }
-            return years.FirstOrDefault(y => documentSaleDate >= y.poczatek && documentSaleDate <= y.koniec);
+            return years.FirstOrDefault(y => documentDate >= y.poczatek && documentDate <= y.koniec);
+        }
+
+        public async Task<List<FKFDokument>> GetFKDocuments(int year, int month, string documentShortcut)
+        {
+            var c21Year = await GetYearId(new DateTime(year, month, 1));
+            List<FKFDokument> fkDocuments;
+            using (var db = new SageDb("Db"))
+            {
+                fkDocuments = await db.FKFDokuments.Where(d => d.datadok.Value.Month == month && d.rokId == c21Year.rokId && d.skrot == documentShortcut).ToListAsync();
+            }
+            return fkDocuments;
         }
 
         public async Task<C21DocumentDefinition> GetDocumentDefinition(string documentShortcut, short yearId)

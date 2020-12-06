@@ -15,5 +15,6 @@ namespace C2FKInterface.Data
         public ITable<C21Year> C21Years => GetTable<C21Year>();
         public ITable<C21VatRegisterDef> C21VatRegisterDefs => GetTable<C21VatRegisterDef>();
         public ITable<C21DocumentDefinition> C21DocumentDefinitions => GetTable<C21DocumentDefinition>();
+        public ITable<FKFDokument> FKFDokuments => GetTable<FKFDokument>();
     }
 }

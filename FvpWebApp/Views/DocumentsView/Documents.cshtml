@@ -383,6 +383,83 @@
             }
         })
 
+        $(document).ready(function () {
+            table = $('#documents').DataTable({
+                'dom': 'Blfrtip',
+                'pageLength': 15,
+                'lengthChange': false,
+                'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
+                'language': datatableLanguage,
+                'processing': true,
+                'ajax': url,
+                'fnRowCallback': function (row, data, iDisplayIndex, iDisplayIndexFull) {
+                    if (parseInt(data.contractorStatus) === 1 || parseInt(data.documentStatus) === 2) {
+                        $(row).addClass('contractor-invalid')
+                    }
+                    if (parseInt(data.contractorStatus) === 3 && parseInt(data.documentStatus) === 6) {
+                        $(row).addClass('contractor-accepted')
+                    }
+                },
+                'rowId': 'documentId',
+                'columns': [
+                    { data: 'sourceDescription' },
+                    { data: 'documentNumber' },
+                    { data: 'jpkV7' },
+                    {
+                        data: 'saleDate', render: function (data, type, row) {
+                            return moment(data).format('YYYY-MM-DD')
+                        }
+                    },
+                    {
+                        data: 'documentDate', render: function (data, type, row) {
+                            return moment(data).format('YYYY-MM-DD')
+                        }
+                    },
+                    { data: 'net', }, //render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'gross', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'vat', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'contractorName' },
+                    { data: 'contractorVatId' },
+                    { data: 'contractorCountryCode' },
+                    {
+                        data: 'documentId', render(data, type, row) {
+                            return '<div id="btn-' + row.documentId + '">' + renderButtons(row) + '</div>'
+                        }
+                    },
+                    { data: 'contractorStatus' },
+                    { data: 'documentStatus' },
+                    { data: 'contractorId' },
+                ],
+                "createdRow": function (row, data, index) {
+                    $('[name="btn-details"]', row).tooltip({ trigger: 'hover' })
+                },
+                'columnDefs': [
+                    {
+                        'targets': [12, 13, 14],
+                        'visible': false,
+                        'searchable': true
+                    },
+                    {
+                        'targets': [5, 6, 7],
+                        'className': 'text-right'
+                    },
+                ],
+                buttons: [
+                    { extend: 'pageLength', text: 'Wiersze' },
+                    { extend: 'copy', text: 'Kopiuj' },
+                    { extend: 'csv', text: 'CSV' },
+                    { extend: 'excelHtml5', text: 'Excel' },
+                    { extend: 'csv', text: 'CSV' },
+                    { extend: 'print', text: 'Drukuj' },
+                    { extend: 'colvis', text: 'Kolumny' },
+                ]
+            })
+            $('#documents').on('click', 'tr[role="row"]', function () {
+                app.rowId = table.row(this).index()
+                app.rowData = table.row(this).data()
+            })
+        })
+
         function changeContractorData() {
             window.setTimeout(function () {
                 contractor.contractorData = app.documentData.contractors[0]
@@ -460,83 +537,6 @@
         }
 
         $("#all-docs").attr('checked', true)
-
-        $(document).ready(function () {
-            table = $('#documents').DataTable({
-                'dom': 'Blfrtip',
-                'pageLength': 15,
-                'lengthChange': false,
-                'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
-                'language': datatableLanguage,
-                'processing': true,
-                'ajax': url,
-                'fnRowCallback': function (row, data, iDisplayIndex, iDisplayIndexFull) {
-                    if (parseInt(data.contractorStatus) === 1 || parseInt(data.documentStatus) === 2) {
-                        $(row).addClass('contractor-invalid')
-                    }
-                    if (parseInt(data.contractorStatus) === 3 && parseInt(data.documentStatus) === 6) {
-                        $(row).addClass('contractor-accepted')
-                    }
-                },
-                'rowId': 'documentId',
-                'columns': [
-                    { data: 'sourceDescription' },
-                    { data: 'documentNumber' },
-                    { data: 'jpkV7' },
-                    {
-                        data: 'saleDate', render: function (data, type, row) {
-                            return moment(data).format('YYYY-MM-DD')
-                        }
-                    },
-                    {
-                        data: 'documentDate', render: function (data, type, row) {
-                            return moment(data).format('YYYY-MM-DD')
-                        }
-                    },
-                    { data: 'net', }, //render: $.fn.dataTable.render.number(' ', ',', 2) },
-                    { data: 'gross', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
-                    { data: 'vat', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
-                    { data: 'contractorName' },
-                    { data: 'contractorVatId' },
-                    { data: 'contractorCountryCode' },
-                    {
-                        data: 'documentId', render(data, type, row) {
-                            return '<div id="btn-' + row.documentId + '">' + renderButtons(row) + '</div>'
-                        }
-                    },
-                    { data: 'contractorStatus' },
-                    { data: 'documentStatus' },
-                    { data: 'contractorId' },
-                ],
-                "createdRow": function (row, data, index) {
-                    $('[name="btn-details"]', row).tooltip({ trigger: 'hover' })
-                },
-                'columnDefs': [
-                    {
-                        'targets': [12, 13, 14],
-                        'visible': false,
-                        'searchable': true
-                    },
-                    {
-                        'targets': [5, 6, 7],
-                        'className': 'text-right'
-                    },
-                ],
-                buttons: [
-                    { extend: 'pageLength', text: 'Wiersze' },
-                    { extend: 'copy', text: 'Kopiuj' },
-                    { extend: 'csv', text: 'CSV' },
-                    { extend: 'excelHtml5', text: 'Excel' },
-                    { extend: 'csv', text: 'CSV' },
-                    { extend: 'print', text: 'Drukuj' },
-                    { extend: 'colvis', text: 'Kolumny' },
-                ]
-            })
-            $('#documents').on('click', 'tr[role="row"]', function () {
-                app.rowId = table.row(this).index()
-                app.rowData = table.row(this).data()
-            })
-        })
 
         function replaceContractor(contractor, changeAll) {
             window.setTimeout(function () {

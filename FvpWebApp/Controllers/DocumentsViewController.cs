@@ -1,4 +1,6 @@
-﻿using FvpWebApp.Data;
+﻿using C2FKInterface.Data;
+using C2FKInterface.Services;
+using FvpWebApp.Data;
 using FvpWebApp.Infrastructure;
 using FvpWebApp.Models;
 using FvpWebApp.Services;
@@ -329,6 +331,47 @@ namespace FvpWebApp.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.OK);
             }
             return new StatusCodeResult((int)HttpStatusCode.NotFound);
+        }
+
+        [HttpGet]
+        [Route("DocumentsView/GetFkNotPresentDocuments/{sourceId}/{year}/{month}")]
+        public async Task<IActionResult> GetFkNotPresentDocuments(int sourceId, int year, int month)
+        {
+            var target = await _context.Targets.FirstOrDefaultAsync(t => t.Sources.Select(s => s.SourceId).Contains(sourceId));
+            var docSettings = await _context.TargetDocumentsSettings.FirstOrDefaultAsync(t => t.SourceId == sourceId);
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings(target.DatabaseAddress, target.DatabaseUsername, target.DatabasePassword, target.DatabaseName);
+            C21DocumentService c21DocumentService = new C21DocumentService(dbConnectionSettings, null);
+            var fkfDocuments = (await c21DocumentService.GetFKDocuments(year, month, docSettings.DocumentShortcut));
+            _context.Database.SetCommandTimeout(0);
+            var systemDocuments = await _context.Documents.Where(d => d.SourceId == sourceId && d.DocumentDate.Month == month).ToListAsync();
+            //var ids = systemDocuments.Select(d => d.DocumentId).ToArray();
+            //var docVats = await _context.DocumentVats.Where(v => ids.Contains((int)v.DocumentId)).ToListAsync();
+            var notPresentDocs = systemDocuments.Where(d => !fkfDocuments.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
+            return Ok(new { data = notPresentDocs });
+        }
+
+        [HttpGet]
+        [Route("DocumentsView/GetFkDuplicatedDocuments/{sourceId}/{year}/{month}")]
+        public async Task<IActionResult> GetFkDuplicatedDocuments(int sourceId, int year, int month)
+        {
+            var target = await _context.Targets.FirstOrDefaultAsync(t => t.Sources.Select(s => s.SourceId).Contains(sourceId));
+            var docSettings = await _context.TargetDocumentsSettings.FirstOrDefaultAsync(t => t.SourceId == sourceId);
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings(target.DatabaseAddress, target.DatabaseUsername, target.DatabasePassword, target.DatabaseName);
+            C21DocumentService c21DocumentService = new C21DocumentService(dbConnectionSettings, null);
+            var fkfDocuments = (await c21DocumentService.GetFKDocuments(year, month, docSettings.DocumentShortcut));
+            _context.Database.SetCommandTimeout(0);
+            var systemDocuments = await _context.Documents.Where(d => d.SourceId == sourceId && d.DocumentDate.Month == month).ToListAsync();
+
+            var duplicates = fkfDocuments.GroupBy(d => new { d.tresc }).Select(d => new
+            {
+                d.Key.tresc,
+                cnt = d.Count()
+            }).ToList();
+            duplicates = duplicates.Where(d => d.cnt > 1).ToList();
+            //var ids = systemDocuments.Select(d => d.DocumentId).ToArray();
+            //var docVats = await _context.DocumentVats.Where(v => ids.Contains((int)v.DocumentId)).ToListAsync();
+            var notPresentDocs = systemDocuments.Where(d => duplicates.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
+            return Ok(new { data = notPresentDocs });
         }
     }
 }
