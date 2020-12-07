@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using C2FKInterface.Data;
-using C2FKInterface.Models;
-using LinqToDB;
 using LinqToDB.Data;
 
 namespace C2FKInterface.Services

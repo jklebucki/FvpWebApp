@@ -2,10 +2,8 @@
 using FvpWebApp.Infrastructure;
 using FvpWebApp.Models;
 using FvpWebAppModels.Models;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FvpWebApp.Services

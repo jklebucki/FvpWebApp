@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FvpWebApp.Infrastructure
 {
@@ -52,7 +51,7 @@ namespace FvpWebApp.Infrastructure
             var documentVats = new List<DocumentVat>();
             if (decimal.Parse(row[50].ToString()) != 0)
             {
-                var vatAmount = decimal.Parse(row[51].Replace(',','.'));
+                var vatAmount = decimal.Parse(row[51].Replace(',', '.'));
                 var netAmount = decimal.Parse(row[50].Replace(',', '.'));
                 documentVats.Add(new DocumentVat
                 {

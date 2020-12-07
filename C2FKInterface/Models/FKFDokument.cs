@@ -1,5 +1,5 @@
-using System;
 using LinqToDB.Mapping;
+using System;
 
 namespace C2FKInterface.Models
 {
