@@ -1,0 +1,699 @@
+﻿@model IEnumerable<FvpWebApp.Models.DocumentView>
+
+    @{
+    ViewData["Title"] = "Documents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <h3>Dokumenty z wybranego zakresu nie obecne w FK</h3>
+    <div class="row mb-2">
+        <div class="col-2">
+            <a href="~/DocumentsView/Index" class="btn btn-outline-primary btn-block">Wróć</a>
+        </div>
+        @*<div class="col-2">
+            Filtruj dokumenty
+        </div>
+        <div class="col-8">
+            <div class="custom-control custom-radio custom-control-inline">
+                <input onclick="filterTable()" type="radio" id="all-docs" name="status-docs" value="0"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="all-docs">Wszystkie</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input onclick="filterTable()" type="radio" id="invalid-docs" name="status-docs" value="1"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="invalid-docs">Błędne</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input onclick="filterTable()" type="radio" id="many-contractors-docs" name="status-docs" value="2"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="many-contractors-docs">Wielu kontrahentów</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input onclick="filterTable()" type="radio" id="sent-docs" name="status-docs" value="3"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="sent-docs">Wysłane</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input onclick="filterTable()" type="radio" id="not-sent-docs" name="status-docs" value="4"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="not-sent-docs">Nie wysłane</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input onclick="filterTable()" type="radio" id="accepted-docs" name="status-docs" value="5"
+                    class="custom-control-input">
+                <label class="custom-control-label" for="accepted-docs">Zaakceptowane</label>
+            </div>
+        </div>*@
+    </div>
+
+    <table id="documents" class="table table-bordered table-responsive-sm table-sm table-hover" style="width:100%">
+        <thead>
+            <tr>
+                <th>Źródło</th>
+                <th>Nr dok.</th>
+                <th>JPK</th>
+                <th>Data sprzed.</th>
+                <th>Data dok.</th>
+                <th>Netto</th>
+                <th>Brutto</th>
+                <th>Vat</th>
+                <th style="width: 25%;">Nazwa kontrah.</th>
+                <th>NIP</th>
+                <th>Kraj</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="contractor-modal" tabindex="-1" role="dialog" aria-labelledby="contrator-title-modal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contrator-title-modal">Edycja kontrahenta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="contractor-body-modal" class="modal-body">
+                    <div id="contractor">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-1">
+                                        <label class="col-5" for="contractorData-name">Nazwa</label>
+                                        <input v-model="contractorData.name" type="text"
+                                            class="form-control form-control-sm col-7" id="contractorData-name"
+                                            placeholder="Nazwa">
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-1">
+                                        <label class="col-5" for="contractorData-street">Ulica</label>
+                                        <input v-model="contractorData.street" type="text"
+                                            class="form-control form-control-sm col-7" id="contractorData-street"
+                                            placeholder="Ulica">
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-1">
+                                        <label class="col-5" for="contractorData-estateNumber">Nr posesji</label>
+                                        <input v-model="contractorData.estateNumber" type="text"
+                                            class="form-control form-control-sm col-7" id="contractorData-estateNumber"
+                                            placeholder="Nr posesji">
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-1">
+                                        <label class="col-5" for="contractorData-quartersNumber">Nr lokalu</label>
+                                        <input v-model="contractorData.quartersNumber" type="text"
+                                            class="form-control form-control-sm col-7"
+                                            id="contractorData-quartersNumber" placeholder="Nr lokalu">
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-1">
+                                        <label class="col-5" for="contractorData-city">Miasto</label>
+                                        <input v-model="contractorData.city" type="text"
+                                            class="form-control form-control-sm col-7" id="contractorData-city"
+                                            placeholder="Miasto">
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-2">
+                                        <label class="col-5" for="contractorData-postalCode">Kod pocztowy</label>
+                                        <input v-model="contractorData.postalCode" type="text"
+                                            class="form-control form-control-sm col-7" id="contractorData-postalCode"
+                                            placeholder="Kod pocztowy">
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-2">
+                                        <label class="col-5" for="contractorData-vatId">Nip</label>
+                                        <input v-model="contractorData.vatId" type="text"
+                                            class="form-control form-control-sm col-7" id="contractorData-vatId"
+                                            placeholder="Nip">
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group col-12 mb-2">
+                                        <label class="col-5" for="contractorData-countryCode">Kod kraju</label>
+                                        <input v-model="contractorData.countryCode" type="text"
+                                            class="form-control form-control-sm col-7" id="contractorData-countryCode"
+                                            placeholder="Kod kraju">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="footer-info"></div>
+                        <button onclick="checkContractorByApi()" type="button" class="btn btn-primary">Sprawdź
+                            kontrahenta</button>
+                        <button onclick="updateContractor()" type="button" class="btn btn-secondary">Aktualizuj</button>
+                        <button onclick="closeContractorModal()" type="button"
+                            class="btn btn-secondary">Zamknij</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="document-modal" tabindex="-1" role="dialog" aria-labelledby="title-modal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-full" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="title-modal">Edycja dokumentu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="body-modal" class="modal-body">
+                    <div id="app">
+                        <div class="row">
+                            <div class="col-6">
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <th>Numer dokumentu</th>
+                                        <td style="text-align: right;">{{ documentData.document.documentNumber }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Data dokumentu</th>
+                                        <td style="text-align: right;">
+                                            {{ moment(documentData.document.documentDate).format('YYYY-MM-DD') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Data sprzedaży</th>
+                                        <td style="text-align: right;">
+                                            {{ moment(documentData.document.saleDate).format('YYYY-MM-DD') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Jpk</th>
+                                        <td style="text-align: right;">{{ documentData.document.jpkV7 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Netto</th>
+                                        <td style="text-align: right;">
+                                            {{ Number(documentData.document.net).toFixed(2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vat</th>
+                                        <td style="text-align: right;">
+                                            {{ Number(documentData.document.vat).toFixed(2) }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Brutto</th>
+                                        <td style="text-align: right;">
+                                            {{ Number(documentData.document.gross).toFixed(2) }}</td>
+                                    </tr>
+                                </table>
+                                <hr />
+                                <span style="font-weight: 800">Kontrahent z dokumentu</span> <br />
+                                <table class="table table-borderless table-sm">
+                                    <tr>
+                                        <th>Nazwa</th>
+                                        <td>{{ documentData.document.docContractorName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Adres</th>
+                                        <td>{{ documentData.document.docContractorStreetAndNumber }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>NIP</th>
+                                        <td>{{ documentData.document.docContractorVatId }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Miasto</th>
+                                        <td>{{ documentData.document.docContractorCity }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kod pocztowy</th>
+                                        <td>{{ documentData.document.docContractorPostCode }}</td>
+                                    </tr>
+                                </table>
+                                <hr />
+                                <table class="table table-bordered table-sm" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Stawka</th>
+                                            <th>Netto</th>
+                                            <th>Vat</th>
+                                            <th>Brutto</th>
+                                            <th>Jpk</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="vat in  documentData.document.documentVats">
+                                            <td>{{ vat.vatValue }}</td>
+                                            <td>{{ vat.netAmount }}</td>
+                                            <td>{{ vat.vatAmount }}</td>
+                                            <td>{{ vat.grossAmount }}</td>
+                                            <td> {{ vat.vatTags }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6" id="col-contractors">
+                                <div v-for="contractor in documentData.contractors">
+                                    <div class="card mb-2"
+                                        :style="isContractorMatched(contractor) ? 'background-color: #B9F6CA' : '' ">
+                                        <div class="card-body">
+                                            <table class="table table-bordered table-sm"
+                                                style="width: 100%; font-size: small;">
+                                                <tr>
+                                                    <th>FK ID</th>
+                                                    <td>{{ contractor.contractorErpPosition }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Nazwa</th>
+                                                    <td>{{ contractor.name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Ulica</th>
+                                                    <td>{{ contractor.street }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Numer posesji</th>
+                                                    <td>{{ contractor.estateNumber }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Numer lokalu</th>
+                                                    <td>{{ contractor.quartersNumber }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Miasto</th>
+                                                    <td>{{ contractor.city }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Kod pocztowy</th>
+                                                    <td>{{ contractor.postalCode }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>NIP</th>
+                                                    <td>{{ contractor.vatId }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Kraj</th>
+                                                    <td>{{ contractor.countryCode }}</td>
+                                                </tr>
+                                            </table>
+                                            <div v-if="!isContractorMatched(contractor)">
+                                                <button v-on:click="setContractor(contractor,false)"
+                                                    class="btn btn btn-outline-primary btn-sm">Wybierz</button>
+                                                <button v-on:click="setContractor(contractor,true)"
+                                                    class="btn btn btn-outline-primary btn-sm">Wybierz na
+                                                    wszystkie</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="changeContractorData()" type="button" class="btn btn-secondary">Zmień dane
+                        kontrahenta</button>
+                    <button id="close-modal" type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section scripts{
+    <script>
+        url = '/DocumentsView/GetFkNotPresentDocuments/'+(@ViewBag.DocId) + '/' + (@ViewBag.Year) + '/' + (@ViewBag.Month)
+        Vue.config.devtools = true
+        var contractor = new Vue({
+            el: '#contractor',
+            data: {
+                contractorData,
+            },
+        })
+
+        var table
+        var app = new Vue({
+            el: '#app',
+            data: {
+                documentData: documentInfo,
+                rowId: null,
+                rowData: null,
+            },
+            methods: {
+                isContractorMatched: function (contractor) {
+                    if (contractor.contractorId === this.documentData.document.contractorId)
+                        return true
+                    else
+                        return false
+                },
+                setContractor: function (contractor, changeAllDocuments) {
+                    const headers = {
+                        'Content-Type': 'application/json',
+                    }
+                    var data = {
+                        DocumentId: this.documentData.document.documentId,
+                        ContractorId: contractor.contractorId,
+                        ChangeAllDocuments: changeAllDocuments
+                    }
+                    axios.post(
+                        '/DocumentsView/ChangeContractor',
+                        data,
+                        {
+                            headers: headers,
+                        })
+                        .then(response => {
+                            if (response.status == 200) {
+                                this.documentData.document.contractorId = contractor.contractorId
+                                replaceContractor(contractor, changeAllDocuments)
+                            }
+                        })
+                        .catch(error => {
+                            console.log("AXIOS Error", error)
+                        })
+
+                }
+            }
+        })
+
+        $(document).ready(function () {
+            table = $('#documents').DataTable({
+                'dom': 'Blfrtip',
+                'pageLength': 15,
+                'lengthChange': false,
+                'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
+                'language': datatableLanguage,
+                'processing': true,
+                'ajax': url,
+                'fnRowCallback': function (row, data, iDisplayIndex, iDisplayIndexFull) {
+                    if (parseInt(data.contractorStatus) === 1 || parseInt(data.documentStatus) === 2) {
+                        $(row).addClass('contractor-invalid')
+                    }
+                    if (parseInt(data.contractorStatus) === 3 && parseInt(data.documentStatus) === 6) {
+                        $(row).addClass('contractor-accepted')
+                    }
+                },
+                'rowId': 'documentId',
+                'columns': [
+                    { data: 'sourceDescription' },
+                    { data: 'documentNumber' },
+                    { data: 'jpkV7' },
+                    {
+                        data: 'saleDate', render: function (data, type, row) {
+                            return moment(data).format('YYYY-MM-DD')
+                        }
+                    },
+                    {
+                        data: 'documentDate', render: function (data, type, row) {
+                            return moment(data).format('YYYY-MM-DD')
+                        }
+                    },
+                    { data: 'net', }, //render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'gross', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'vat', },// render: $.fn.dataTable.render.number(' ', ',', 2) },
+                    { data: 'contractorName' },
+                    { data: 'contractorVatId' },
+                    { data: 'contractorCountryCode' },
+                    {
+                        data: 'documentId', render(data, type, row) {
+                            return '<div id="btn-' + row.documentId + '">' + renderButtons(row) + '</div>'
+                        }
+                    },
+                    { data: 'contractorStatus' },
+                    { data: 'documentStatus' },
+                    { data: 'contractorId' },
+                ],
+                "createdRow": function (row, data, index) {
+                    $('[name="btn-details"]', row).tooltip({ trigger: 'hover' })
+                },
+                'columnDefs': [
+                    {
+                        'targets': [12, 13, 14],
+                        'visible': false,
+                        'searchable': true
+                    },
+                    {
+                        'targets': [5, 6, 7],
+                        'className': 'text-right'
+                    },
+                ],
+                buttons: [
+                    { extend: 'pageLength', text: 'Wiersze' },
+                    { extend: 'copy', text: 'Kopiuj' },
+                    { extend: 'csv', text: 'CSV' },
+                    { extend: 'excelHtml5', text: 'Excel' },
+                    { extend: 'csv', text: 'CSV' },
+                    { extend: 'print', text: 'Drukuj' },
+                    { extend: 'colvis', text: 'Kolumny' },
+                ]
+            })
+            $('#documents').on('click', 'tr[role="row"]', function () {
+                app.rowId = table.row(this).index()
+                app.rowData = table.row(this).data()
+            })
+        })
+
+        function changeContractorData() {
+            window.setTimeout(function () {
+                contractor.contractorData = app.documentData.contractors[0]
+                $('#footer-info').html("")
+                $("#document-modal").modal('hide')
+                $("#contractor-modal").modal('show')
+            }, 200)
+        }
+
+        function updateContractor() {
+            closeContractorModal()
+            updateContractorInDatabase(contractor.contractorData)
+        }
+
+        function updateContractorInDatabase() {
+            $('#footer-info').html("Wykonuję, czekaj...")
+            window.setTimeout(function () {
+                const headers = { 'Content-Type': 'application/json' }
+                axios.post(
+                    '/DocumentsView/ChangeContractorData',
+                    JSON.stringify(contractor.contractorData),
+                    {
+                        headers: headers,
+                    })
+                    .then(response => {
+                        if (response.status == 200) {
+                            replaceContractor(contractor.contractorData, true)
+                        }
+                    })
+                    .catch(error => {
+                        alert("AXIOS Error", error)
+                        console.log("AXIOS Error", error)
+                    })
+            }, 200)
+        }
+
+        function checkContractorByApi() {
+            $('#footer-info').html("Sprawdzam, czekaj...")
+            const headers = { 'Content-Type': 'application/json' }
+            window.setTimeout(function () {
+                axios.post(
+                    '/DocumentsView/CheckContractorByApi',
+                    JSON.stringify(contractor.contractorData),
+                    {
+                        headers: headers,
+                    })
+                    .then(response => {
+                        if (response.status == 200) {
+                            console.dir(response.data)
+                            parsResponse(response.data)
+                        }
+                    })
+                    .catch(error => {
+                        $('#footer-info').html("Błąd sprawdzania!")
+                        console.log("AXIOS Error", error)
+                    })
+            }, 200)
+        }
+
+        function parsResponse(response) {
+            if (response.valid) {
+                $('#footer-info').html("Dane prawidłowe!")
+                contractor.contractorData.contractorStatus = 0
+            } else {
+                $('#footer-info').html("Dane nieprawidłowe!")
+            }
+            if (response.origin === 'GUS' && response.valid) {
+                contractor.contractorData = response.data
+            }
+        }
+
+        function closeContractorModal() {
+            $("#contractor-modal").modal('hide')
+            $("#document-modal").modal('show')
+        }
+
+        $("#all-docs").attr('checked', true)
+
+        function replaceContractor(contractor, changeAll) {
+            window.setTimeout(function () {
+                var allRows = table.rows(function (idx, data, node) {
+                    return data.contractorId == app.rowData.contractorId ? true : false
+                }).indexes()
+                var newData = app.rowData
+                newData.contractorName = contractor.name
+                newData.contractorCountryCode = contractor.countryCode
+                newData.contractorVatId = contractor.vatId
+                if (!changeAll)
+                    table.row(app.rowId).data(newData).invalidate()
+                else
+                    allRows.toArray().forEach(function (element, index, array) {
+                        table.row(element).data(newData).invalidate()
+                    })
+            }, 200)
+        }
+
+        function documentDetails(id) {
+            app.rowData = table.rows().data().toArray().find(element => element.documentId === id);
+            axios.get('/DocumentsView/Details/'.concat(id))
+                .then(function (response) {
+                    app.documentData = response.data
+                    $("#document-modal").modal('show')
+                })
+                .catch(function (error) {
+                    $("#body-modal").html(error)
+                    $("#document-modal").modal('show')
+                })
+                .then(function () {
+                    $("#col-contractors").scroll()
+                });
+        }
+
+        function renderButtons(row) {
+            var btnDetails = '<button name="btn-details" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Pokaż szczegóły" onclick="documentDetails(' + row.documentId + ')"><span class="oi oi-eye icon-button"></span></button>'
+            var btnValidate = '<button onclick="' + (((Number(row.contractorStatus) === 1 || Number(row.contractorStatus) === 3)) ? 'setValidAsPerson(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako osoba"><span class="oi oi-check icon-button"></span></button>'
+            var btnInvalid = '<button onclick="' + (((Number(row.documentStatus) === 6)) ? 'setAsInvalid(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako nieprawidłowy"><span class="oi oi-x icon-button"></span></button>'
+            var btnValid = '<button class="btn btn-outline-primary btn-sm ml-1" title="Ustaw jako poprawny" onclick="setValidDocument(' + row.documentId + ')"><span class="oi oi-plus icon-button"></span></button>'
+            return btnDetails + btnValidate + btnInvalid + btnValid
+        }
+
+        function setValidAsPerson(documentId) {
+            app.rowData = table.rows().data().toArray().find(element => element.documentId === documentId);
+            window.setTimeout(function () {
+                const headers = {
+                    'Content-Type': 'application/json',
+                }
+                axios.patch('/DocumentsView/setValidAsPerson', documentId, { headers: headers })
+                    .then(function (response) {
+                        console.dir(response.data)
+                        if (response.data.status) {
+                            var newData = app.rowData
+                            newData.contractorVatId = 'BRAK'
+                            newData.documentStatus = 6
+                            newData.contractorStatus = 3
+                            table.row(app.rowId).data(newData).invalidate()
+                            $('#btn-' + newData.documentId).html(renderButtons(newData))
+                            $('#' + app.rowData.documentId).removeClass('contractor-invalid')
+                            $('#' + app.rowData.documentId).addClass('contractor-accepted')
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    })
+            }, 200)
+        }
+
+        function setValidDocument(documentId) {
+            app.rowData = table.rows().data().toArray().find(element => element.documentId === documentId);
+            window.setTimeout(function () {
+                const headers = {
+                    'Content-Type': 'application/json',
+                }
+                axios.post('/DocumentsView/setValid', documentId, { headers: headers })
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            table.rows(function (idx, data, node) {
+                                return data.contractorId == app.rowData.contractorId ? true : false
+                            }).ids().toArray().forEach(function (e, i, a) { $('#' + e).removeClass('contractor-invalid') })
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    })
+            }, 200)
+        }
+
+        function setAsInvalid(documentId) {
+            app.rowData = table.rows().data().toArray().find(element => element.documentId === documentId);
+            window.setTimeout(function () {
+                const headers = { 'Content-Type': 'application/json' }
+                axios.patch('/DocumentsView/setInvalid', documentId, { headers: headers })
+                    .then(function (response) {
+                        console.dir(response.data)
+                        if (response.data.status) {
+                            var newData = app.rowData
+                            newData.documentStatus = 2
+                            newData.contractorStatus = 1
+                            table.row(app.rowId).data(newData).invalidate()
+                            $('#btn-' + newData.documentId).html(renderButtons(newData))
+                            $('#' + app.rowData.documentId).removeClass('contractor-accepted')
+                            $('#' + app.rowData.documentId).addClass('contractor-invalid')
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    })
+            }, 200)
+        }
+
+        //$.fn.dataTable.ext.search.push(
+        //    function (settings, data, dataIndex) {
+        //        var allDocuments = $("#all-docs").prop('checked')
+        //        var invalid = $("#invalid-docs").prop('checked')
+        //        var manyContractors = $("#many-contractors-docs").prop('checked')
+        //        var sent = $("#sent-docs").prop('checked')
+        //        var notSent = $("#not-sent-docs").prop('checked')
+        //        var accepted = $("#accepted-docs").prop('checked')
+        //        var validValues = parseInt(data[13])
+        //        if (allDocuments) {
+        //            if (validValues >= 0) return true
+        //        }
+        //        else if (invalid) {
+        //            if (validValues === 2) return true
+        //        }
+        //        else if (manyContractors) {
+        //            if (validValues === 3) return true
+        //        }
+        //        else if (sent) {
+        //            if (validValues === 4) return true
+        //        }
+        //        else if (notSent) {
+        //            if (validValues !== 4) return true
+        //        }
+        //        else if (accepted) {
+        //            if (validValues === 6) return true
+        //        }
+        //        else
+        //            return false
+        //    }
+        //);
+
+        function filterTable() {
+            if (table !== null)
+                table.draw();
+        }
+
+        //function getFilteredRows() {
+        //    var filtered = table.rows({ search: 'applied' }).data()
+        //    console.log(filtered)
+        //}
+
+        $(window).on('resize', function () {
+            if (table !== null)
+                table.columns.adjust();
+        });
+    </script>
+    }

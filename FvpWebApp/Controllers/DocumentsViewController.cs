@@ -57,6 +57,24 @@ namespace FvpWebApp.Controllers
             return View();
         }
 
+        public async Task<IActionResult> GetDocuments(int id, int month, int year)
+        {
+            var sources = await _context.Sources.Select(s => s.SourceId).ToListAsync();
+            if (id > 0)
+                sources = new List<int> { id };
+            var documents = await (
+                from d in _context.Documents
+                from c in _context.Contractors
+                from s in _context.Sources
+                where d.ContractorId == c.ContractorId && d.SourceId == s.SourceId
+                && sources.Contains((int)d.SourceId) && d.DocumentDate.Month == month
+                && d.DocumentDate.Year == year
+                orderby d.DocumentDate
+                select new DocumentView(d, s, c)).ToListAsync();
+
+            return new JsonResult(new { data = documents });
+        }
+
         [HttpPatch]
         public async Task<IActionResult> SetValidAsPerson([FromBody] int documentId)
         {
@@ -100,24 +118,6 @@ namespace FvpWebApp.Controllers
             {
                 return new JsonResult(new { Status = false, Message = ex.Message });
             }
-        }
-
-        public async Task<IActionResult> GetDocuments(int id, int month, int year)
-        {
-            var sources = await _context.Sources.Select(s => s.SourceId).ToListAsync();
-            if (id > 0)
-                sources = new List<int> { id };
-            var documents = await (
-                from d in _context.Documents
-                from c in _context.Contractors
-                from s in _context.Sources
-                where d.ContractorId == c.ContractorId && d.SourceId == s.SourceId
-                && sources.Contains((int)d.SourceId) && d.DocumentDate.Month == month
-                && d.DocumentDate.Year == year
-                orderby d.DocumentDate
-                select new DocumentView(d, s, c)).ToListAsync();
-
-            return new JsonResult(new { data = documents });
         }
 
         public async Task<IActionResult> Details(int id)
@@ -332,21 +332,56 @@ namespace FvpWebApp.Controllers
             return new StatusCodeResult((int)HttpStatusCode.NotFound);
         }
 
+        public ActionResult DuplicatedDocuments(int id, int month, int year)
+        {
+            ViewBag.DocId = id;
+            ViewBag.Month = month;
+            ViewBag.Year = year;
+            return View();
+        }
+
+        public ActionResult NotPresentDocuments(int id, int month, int year)
+        {
+            ViewBag.DocId = id;
+            ViewBag.Month = month;
+            ViewBag.Year = year;
+            return View();
+        }
+
         [HttpGet]
         [Route("DocumentsView/GetFkNotPresentDocuments/{sourceId}/{year}/{month}")]
         public async Task<IActionResult> GetFkNotPresentDocuments(int sourceId, int year, int month)
         {
+
             var target = await _context.Targets.FirstOrDefaultAsync(t => t.Sources.Select(s => s.SourceId).Contains(sourceId));
             var docSettings = await _context.TargetDocumentsSettings.FirstOrDefaultAsync(t => t.SourceId == sourceId);
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings(target.DatabaseAddress, target.DatabaseUsername, target.DatabasePassword, target.DatabaseName);
             C21DocumentService c21DocumentService = new C21DocumentService(dbConnectionSettings, null);
             var fkfDocuments = (await c21DocumentService.GetFKDocuments(year, month, docSettings.DocumentShortcut));
+            if (fkfDocuments == null)
+                return Ok(new { data = new List<DocumentView>() });
             _context.Database.SetCommandTimeout(0);
             var systemDocuments = await _context.Documents.Where(d => d.SourceId == sourceId && d.DocumentDate.Month == month).ToListAsync();
             //var ids = systemDocuments.Select(d => d.DocumentId).ToArray();
             //var docVats = await _context.DocumentVats.Where(v => ids.Contains((int)v.DocumentId)).ToListAsync();
             var notPresentDocs = systemDocuments.Where(d => !fkfDocuments.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
-            return Ok(new { data = notPresentDocs });
+
+            var sourcesIds = await _context.Sources.Select(s => s.SourceId).ToListAsync();
+            if (sourceId > 0)
+                sourcesIds = new List<int> { sourceId };
+            var contractors = await _context.Contractors.ToListAsync();
+            var sources = await _context.Sources.ToListAsync();
+            var documents = (
+                    from d in notPresentDocs
+                    from c in contractors
+                    from s in sources
+                    where d.ContractorId == c.ContractorId && d.SourceId == s.SourceId
+                    && sourcesIds.Contains((int)d.SourceId) && d.DocumentDate.Month == month
+                    && d.DocumentDate.Year == year
+                    orderby d.DocumentDate
+                    select new DocumentView(d, s, c)).ToList();
+
+            return Ok(new { data = documents });
         }
 
         [HttpGet]
@@ -369,8 +404,22 @@ namespace FvpWebApp.Controllers
             duplicates = duplicates.Where(d => d.cnt > 1).ToList();
             //var ids = systemDocuments.Select(d => d.DocumentId).ToArray();
             //var docVats = await _context.DocumentVats.Where(v => ids.Contains((int)v.DocumentId)).ToListAsync();
-            var notPresentDocs = systemDocuments.Where(d => duplicates.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
-            return Ok(new { data = notPresentDocs });
+            var duplicatedDocs = systemDocuments.Where(d => duplicates.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
+            var sourcesIds = await _context.Sources.Select(s => s.SourceId).ToListAsync();
+            if (sourceId > 0)
+                sourcesIds = new List<int> { sourceId };
+            var contractors = await _context.Contractors.ToListAsync();
+            var sources = await _context.Sources.ToListAsync();
+            var documents = (
+                    from d in duplicatedDocs
+                    from c in contractors
+                    from s in sources
+                    where d.ContractorId == c.ContractorId && d.SourceId == s.SourceId
+                    && sourcesIds.Contains((int)d.SourceId) && d.DocumentDate.Month == month
+                    && d.DocumentDate.Year == year
+                    orderby d.DocumentDate
+                    select new DocumentView(d, s, c)).ToList();
+            return Ok(new { data = documents });
         }
     }
 }

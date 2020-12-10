@@ -10,7 +10,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-3"></div>
+    <div class="col-1"></div>
     <div class="col-2">
         Źródło
     </div>
@@ -24,7 +24,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-3"></div>
+    <div class="col-1"></div>
     <div class="col-2">
         @Html.DropDownList("Source", ViewBag.Sources, "Wybierz żródło", new { @class = "form-control" })
     </div>
@@ -35,17 +35,41 @@
         @Html.Editor("Year", new { htmlAttributes = new { @class = "form-control" } })
     </div>
     <div class="col-2">
-        <button onclick="proceed()" class="btn btn-outline-primary btn-block">Pokaż dane</button>
+        <button onclick="importedDocuments()" class="btn btn-outline-primary btn-block">Pokaż dane</button>
+    </div>
+    <div class="col-2">
+        <button onclick="notPresentDocuments()" class="btn btn-outline-primary btn-block">Brak w FK</button>
+    </div>
+    <div class="col-2">
+        <button onclick="duplicatedDocuments()" class="btn btn-outline-primary btn-block">Zdublowane w FK</button>
     </div>
 </div>
 @section scripts{
     <script>
-        function proceed() {
+        function importedDocuments() {
             var source = $("#Source").val()
             var month = $("#Month").val()
             var year = $("#Year").val()
             if (source>0)
                 window.location.replace('/DocumentsView/Documents?id=' + source + '&month=' + month + '&year=' + year)
+            else
+                alert("Wybierz źródło")
+        }
+        function notPresentDocuments() {
+            var source = $("#Source").val()
+            var month = $("#Month").val()
+            var year = $("#Year").val()
+            if (source > 0)
+                window.location.replace('/DocumentsView/NotPresentDocuments?id=' + source + '&month=' + month + '&year=' + year)
+            else
+                alert("Wybierz źródło")
+        }
+        function duplicatedDocuments() {
+            var source = $("#Source").val()
+            var month = $("#Month").val()
+            var year = $("#Year").val()
+            if (source > 0)
+                window.location.replace('/DocumentsView/DuplicatedDocuments?id=' + source + '&month=' + month + '&year=' + year)
             else
                 alert("Wybierz źródło")
         }
