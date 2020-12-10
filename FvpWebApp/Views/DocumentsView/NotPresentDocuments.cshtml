@@ -577,7 +577,7 @@
             var btnValidate = '<button onclick="' + (((Number(row.contractorStatus) === 1 || Number(row.contractorStatus) === 3)) ? 'setValidAsPerson(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako osoba"><span class="oi oi-check icon-button"></span></button>'
             var btnInvalid = '<button onclick="' + (((Number(row.documentStatus) === 6)) ? 'setAsInvalid(' + row.documentId + ')' : 'alert(\'Niedozwolone\')') + '" class="btn btn-outline-primary btn-sm ml-1" data-toggle="tooltip" data-placement="top" title="Ustaw jako nieprawidłowy"><span class="oi oi-x icon-button"></span></button>'
             var btnValid = '<button class="btn btn-outline-primary btn-sm ml-1" title="Ustaw jako poprawny" onclick="setValidDocument(' + row.documentId + ')"><span class="oi oi-plus icon-button"></span></button>'
-            return btnDetails + btnValidate + btnInvalid + btnValid
+            return ""//btnDetails + btnValidate + btnInvalid + btnValid
         }
 
         function setValidAsPerson(documentId) {
