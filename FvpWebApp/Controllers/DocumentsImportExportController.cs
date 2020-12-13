@@ -165,14 +165,14 @@ namespace FvpWebApp.Controllers
                                 {
                                     if (fields.Length != 69)
                                         errorsJpkVdek += $"{lineNo},";
-                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA")
+                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
                                         jpkVdek.Add(fields);
                                 }
                                 if (fields[2] == "JPK_VAT")
                                 {
                                     if (fields.Length != 43)
                                         errorsJpkVat += $"{lineNo},";
-                                    else if (fields[9] != "brak")
+                                    else if (fields[9] != "brak" && fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
                                         jpkVat.Add(fields);
                                 }
 

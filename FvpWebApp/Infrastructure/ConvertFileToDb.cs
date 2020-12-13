@@ -14,34 +14,42 @@ namespace FvpWebApp.Infrastructure
             {
                 var documentVats = GetTocumentVats(row);
                 var date = DateTime.Now;
-                documents.Add(new Document
+                try
                 {
-                    ExternalId = row[10].GetHashCode(),
-                    SourceId = sourceId,
-                    ContractorId = null,
-                    TaskTicketId = -1,//todo
-                    DocumentNumber = row[10],
-                    DocumentSymbol = row[2],
-                    SaleDate = string.IsNullOrEmpty(row[12]) ? Convert.ToDateTime(row[11]) : Convert.ToDateTime(row[12]),
-                    DocumentDate = Convert.ToDateTime(row[11]),
-                    Net = documentVats.Sum(n => n.NetAmount),
-                    Gross = documentVats.Sum(g => g.GrossAmount),
-                    Vat = documentVats.Sum(v => v.VatAmount),
-                    JpkV7 = GetJpkDocumentTags(row),
-                    DocumentStatus = DocumentStatus.Added,
-                    DocContractorId = string.IsNullOrEmpty(row[8]) ? row[9].GetHashCode().ToString() : row[8].GetHashCode().ToString(),
-                    DocContractorName = row[9],
-                    DocContractorVatId = row[8].Replace("-", "").Replace(" ", ""),
-                    DocContractorCity = null,
-                    DocContractorPostCode = null,
-                    DocContractorCountryCode = string.IsNullOrEmpty(row[7]) ? "-" : row[7],
-                    DocContractorStreetAndNumber = row[78],
-                    DocContractorFirm = -1,
-                    CreatedAt = date,
-                    UpdatedAt = date,
-                    UpdatedBy = null,
-                    DocumentVats = documentVats
-                });
+                    documents.Add(new Document
+                    {
+                        ExternalId = row[10].GetHashCode(),
+                        SourceId = sourceId,
+                        ContractorId = null,
+                        TaskTicketId = -1,//todo
+                        DocumentNumber = row[10],
+                        DocumentSymbol = row[2],
+                        SaleDate = string.IsNullOrEmpty(row[12]) ? Convert.ToDateTime(row[11]) : Convert.ToDateTime(row[12]),
+                        DocumentDate = Convert.ToDateTime(row[11]),
+                        Net = documentVats.Sum(n => n.NetAmount),
+                        Gross = documentVats.Sum(g => g.GrossAmount),
+                        Vat = documentVats.Sum(v => v.VatAmount),
+                        JpkV7 = GetJpkDocumentTags(row),
+                        DocumentStatus = DocumentStatus.Added,
+                        DocContractorId = string.IsNullOrEmpty(row[8]) ? row[9].GetHashCode().ToString() : row[8].GetHashCode().ToString(),
+                        DocContractorName = row[9],
+                        DocContractorVatId = row[8].Replace("-", "").Replace(" ", ""),
+                        DocContractorCity = null,
+                        DocContractorPostCode = null,
+                        DocContractorCountryCode = string.IsNullOrEmpty(row[7]) ? "-" : row[7],
+                        DocContractorStreetAndNumber = row[78],
+                        DocContractorFirm = -1,
+                        CreatedAt = date,
+                        UpdatedAt = date,
+                        UpdatedBy = null,
+                        DocumentVats = documentVats
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
             }
             return documents;
         }
