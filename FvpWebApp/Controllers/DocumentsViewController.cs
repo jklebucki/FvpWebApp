@@ -262,8 +262,8 @@ namespace FvpWebApp.Controllers
         }
 
         [HttpPost]
-        [Route("DocumentsView/SetValid")]
-        public async Task<IActionResult> SetValid([FromBody] int documentId)
+        [Route("DocumentsView/SetDocumentValid")]
+        public async Task<IActionResult> SetDocumentValid([FromBody] int documentId)
         {
 
             var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
@@ -274,11 +274,10 @@ namespace FvpWebApp.Controllers
             {
                 try
                 {
-                    contractor.ContractorStatus = ContractorStatus.Valid;
-                    var documents = await _context.Documents.Where(d => d.ContractorId == document.ContractorId && d.SourceId == document.SourceId).ToListAsync();
-                    documents.ForEach(d => d.DocumentStatus = DocumentStatus.Valid);
+                    contractor.ContractorStatus = ContractorStatus.Accepted;
+                    document.DocumentStatus = DocumentStatus.Accepted;
                     _context.Update(contractor);
-                    _context.UpdateRange(documents);
+                    _context.Update(document);
                     await _context.SaveChangesAsync();
                 }
                 catch
