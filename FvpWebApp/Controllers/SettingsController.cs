@@ -69,7 +69,6 @@ namespace FvpWebApp.Controllers
                 Target = target,
                 TargetDocumentSettings = targetDocumentSettings,
                 VatRegisters = vatRegisters,
-                AccountingRecords = accountingRecords
             });
         }
 
