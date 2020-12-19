@@ -1,4 +1,5 @@
-﻿var datatableLanguage = {
+﻿Vue.config.devtools = true
+var datatableLanguage = {
   processing: "Przetwarzanie...",
   search: "Szukaj:",
   lengthMenu: "Pokaż _MENU_ pozycji",
