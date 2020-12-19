@@ -60,12 +60,16 @@ namespace FvpWebApp.Controllers
             var vatRegisters = await _context.VatRegisters.Where(v => v.TargetDocumentSettingsId == targetDocumentSettings.TargetDocumentSettingsId).ToListAsync();
             if (vatRegisters == null)
                 vatRegisters = new List<VatRegister>();
+            var accountingRecords = await _context.AccountingRecords.Where(a => a.SourceId == source.SourceId).ToListAsync();
+            if (accountingRecords == null)
+                accountingRecords = new List<AccountingRecord>();
             return new JsonResult(new
             {
                 Source = source,
                 Target = target,
                 TargetDocumentSettings = targetDocumentSettings,
-                VatRegisters = vatRegisters
+                VatRegisters = vatRegisters,
+                AccountingRecords = accountingRecords
             });
         }
 

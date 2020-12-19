@@ -167,6 +167,15 @@ var sourceConfig = {
         sourceId: 0,
         documentShortcut: null,
         vatRegisterId: 0
+    }],
+    accountingRecords: [{
+        account: null,
+        accountingRecordId: 0,
+        credit: null,
+        debit: null,
+        recordOrder: 0,
+        sign: null,
+        sourceId: 0
     }]
 
 }

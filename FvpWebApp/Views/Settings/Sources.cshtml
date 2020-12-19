@@ -1,6 +1,6 @@
 ﻿@{
-ViewData["Title"] = "Index";
-Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="text-center">
@@ -45,49 +45,49 @@ Layout = "~/Views/Shared/_Layout.cshtml";
                                         <div class="form-group col-12 mt-2 mb-1">
                                             <label class="col-5" for="source-code">Kod</label>
                                             <input v-model="sourceConfig.source.code" type="text"
-                                                class="form-control form-control-sm col-7" id="source-code">
+                                                   class="form-control form-control-sm col-7" id="source-code">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-descryption">Opis</label>
                                             <input v-model="sourceConfig.source.description" type="text"
-                                                class="form-control form-control-sm col-7" id="source-descryption">
+                                                   class="form-control form-control-sm col-7" id="source-descryption">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-type">Typ danych</label>
                                             <input v-model="sourceConfig.source.type" type="text"
-                                                class="form-control form-control-sm col-7" id="source-type">
+                                                   class="form-control form-control-sm col-7" id="source-type">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-address">Lokalizacja</label>
                                             <input v-model="sourceConfig.source.address" type="text"
-                                                class="form-control form-control-sm col-7" id="source-address">
+                                                   class="form-control form-control-sm col-7" id="source-address">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-dbName">Baza danych</label>
                                             <input v-model="sourceConfig.source.dbName" type="text"
-                                                class="form-control form-control-sm col-7" id="source-dbName">
+                                                   class="form-control form-control-sm col-7" id="source-dbName">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-1">
                                             <label class="col-5" for="source-username">Użytkownik</label>
                                             <input v-model="sourceConfig.source.username" type="text"
-                                                class="form-control form-control-sm col-7" id="source-username">
+                                                   class="form-control form-control-sm col-7" id="source-username">
                                         </div>
                                     </div>
                                     <div class="form-inline">
                                         <div class="form-group col-12 mb-2">
                                             <label class="col-5" for="source-username">Hasło</label>
                                             <input v-model="sourceConfig.source.password" type="password"
-                                                class="form-control form-control-sm col-7" id="source-password">
+                                                   class="form-control form-control-sm col-7" id="source-password">
                                         </div>
                                     </div>
                                 </div>
@@ -98,8 +98,47 @@ Layout = "~/Views/Shared/_Layout.cshtml";
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6" style="height: 300px !important">
-
+                        <div class="col-8">
+                            <table style="width: 100%" class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%">Kol.</th>
+                                        <th style="width: 25%">Konto</th>
+                                        <th style="width: 20%">WN</th>
+                                        <th style="width: 20%">MA</th>
+                                        <th>Akcja</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="record in sourceConfig.accountingRecords">
+                                        <td>{{ record.recordOrder }}</td>
+                                        <td><input class="form-control" type="text" v-model="record.account"></td>
+                                        <td>
+                                            <select v-on:change="setValAccRec(record,'credit')" v-model="record.credit" class="custom-select" id="debitSelect">
+                                                <option selected>{{ record.credit }}</option>
+                                                <option value="netto">netto</option>
+                                                <option value="brutto">brutto</option>
+                                                <option value="vat">vat</option>
+                                                <option value="">----</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select v-on:change="setValAccRec(record,'debit')" v-model="record.debit" class="custom-select" id="debitSelect">
+                                                <option selected>{{ record.debit }}</option>
+                                                <option value="netto">netto</option>
+                                                <option value="brutto">brutto</option>
+                                                <option value="vat">vat</option>
+                                                <option value="">----</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <button v-on:click="orderUp(record.accountingRecordId)" class="btn btn-sm btn-outline-primary"><span class="oi oi-caret-top"></span></button>
+                                            <button v-on:click="orderDown(record.accountingRecordId)" class="btn btn-sm btn-outline-primary"><span class="oi oi-caret-bottom"></span></button>
+                                            <button v-on:click="deleteAccRec(record.accountingRecordId)" class="btn btn-sm btn-outline-primary"><span class="oi oi-delete"></span></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="col-6">
 
@@ -115,78 +154,110 @@ Layout = "~/Views/Shared/_Layout.cshtml";
 </div>
 
 @section scripts{
-<script>
-    var table
-    var app = new Vue({
-        el: '#app',
-        data: {
-            sourceConfig,
-            rowId: null,
-            rowData: null,
-            vat: null,
-        },
-        mounted() {
-            axios
-                .get('/settings/getvatregisters/1')
-                .then(response => (this.vats = response.data))
-        }
-    })
-    $(document).ready(function () {
-        url = '/DocumentsImportExport/GetSources'
-        table = $('#sources').DataTable({
-            'dom': 'lfrtip',
-            'pageLength': 15,
-            'lengthChange': false,
-            'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
-            'language': datatableLanguage,
-            'processing': true,
-            'ajax': url,
-            'rowId': 'sourceId',
-            'columns': [
-                { data: 'code' },
-                { data: 'description' },
-                { data: 'address' },
-                {
-                    data: 'sourceId', render(data, type, row) {
-                        return '<a onclick="getData(' + data + ')" data-toggle="tooltip" data-placement="top" title="Pokaż szczegóły"><span class="oi oi-eye icon-button"></span></a>'
-                    }
-                },
-                { data: 'sourceId' },
-            ],
-            "createdRow": function (row, data, index) {
-                $('a', row).tooltip()
+    <script>
+        Vue.config.devtools = true
+        var table
+        var app = new Vue({
+            el: '#app',
+            data: {
+                sourceConfig,
+                rowId: null,
+                rowData: null,
+                vat: null,
             },
-            'columnDefs': [
-                {
-                    'targets': [4],
-                    'visible': false,
-                    'searchable': true
+            mounted() {
+                axios
+                    .get('/settings/getvatregisters/1')
+                    .then(response => (this.vats = response.data))
+            },
+            methods: {
+                orderUp: function (recId) {
+                    console.log('up', recId)
+                },
+                orderDown: function (recId) {
+                    console.log('down', recId)
+                },
+                deleteAccRec: function (recId) {
+                    console.log('delete', recId)
+                },
+                setValAccRec: function (row, operType) {
+                    if (operType == 'debit') {
+                        if (row.debit !== '') {
+                            row.credit = ''
+                        }
+                        if (row.credit === '' && row.debit === '') {
+                            row.credit = 'brutto'
+                        }
+                    }
+                    if (operType == 'credit') {
+                        if (row.credit !== '') {
+                            row.debit = ''
+                        }
+                        if (row.credit === '' && row.debit === '') {
+                            row.debit = 'brutto'
+                        }
+                    }
                 }
-            ]
+            }
         })
-    })
-    $(window).on('resize', function () {
-        if (table !== null)
-            table.columns.adjust();
-    });
-    function getData(id) {
-        //debugger
-        $('#modalBody').html()
-        axios.get('/Settings/GetSource/' + id)
-            .then(response => {
-                if (response.status == 200) {
-                    console.log(response.data);
-                    app.sourceConfig = response.data
-                    //$('#infoBody').html(response.data.source.description)
-                }
+        $(document).ready(function () {
+            url = '/DocumentsImportExport/GetSources'
+            table = $('#sources').DataTable({
+                'dom': 'lfrtip',
+                'pageLength': 15,
+                'lengthChange': false,
+                'lengthMenu': [10, 15, 20, 25, 50, 75, 100],
+                'language': datatableLanguage,
+                'processing': true,
+                'ajax': url,
+                'rowId': 'sourceId',
+                'columns': [
+                    { data: 'code' },
+                    { data: 'description' },
+                    { data: 'address' },
+                    {
+                        data: 'sourceId', render(data, type, row) {
+                            return '<a onclick="getData(' + data + ')" data-toggle="tooltip" data-placement="top" title="Pokaż szczegóły"><span class="oi oi-eye icon-button"></span></a>'
+                        }
+                    },
+                    { data: 'sourceId' },
+                ],
+                "createdRow": function (row, data, index) {
+                    $('a', row).tooltip()
+                },
+                'columnDefs': [
+                    {
+                        'targets': [4],
+                        'visible': false,
+                        'searchable': true
+                    }
+                ]
             })
-            .catch(error => {
-                $('#infoBody').html(error)
-                console.log("AXIOS Error", error)
-            })
-            .then(function () {
-                $('#infoModal').modal('show')
-            })
-    }
-</script>
+        })
+
+        $(window).on('resize', function () {
+            if (table !== null)
+                table.columns.adjust();
+        });
+
+        function getData(id) {
+            //debugger
+            $('#modalBody').html()
+            axios.get('/Settings/GetSource/' + id)
+                .then(response => {
+                    if (response.status == 200) {
+                        console.log(response.data);
+                        app.sourceConfig = response.data
+                        //$('#infoBody').html(response.data.source.description)
+                    }
+                })
+                .catch(error => {
+                    $('#infoBody').html(error)
+                    console.log("AXIOS Error", error)
+                })
+                .then(function () {
+                    $('#infoModal').modal('show')
+                })
+        }
+    </script>
 }
