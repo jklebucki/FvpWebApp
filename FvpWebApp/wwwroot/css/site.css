@@ -18,6 +18,11 @@ for details on configuring this project to bundle and minify static web assets. 
     margin-left: 5%;
 }
 
+.modal-70 {
+    min-width: 70%;
+    margin-left: 15%;
+}
+
     .modal-full .modal-content {
         min-height: 80vh;
     }
