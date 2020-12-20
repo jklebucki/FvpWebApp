@@ -35,10 +35,18 @@ namespace FvpWebApp.Controllers
         {
             return View();
         }
+        [Route("[controller]/getTargets")]
         public async Task<IActionResult> GetTargets()
         {
             var data = await _context.Targets.ToListAsync();
             return new JsonResult(new { data = data });
+        }
+
+        [Route("[controller]/getTargetsView")]
+        public async Task<IActionResult> GetTargetsView()
+        {
+            var data = await _context.Targets.Select(t => new { t.TargetId, t.Descryption }).ToListAsync();
+            return new JsonResult(data);
         }
 
         public async Task<IActionResult> GetTarget(int id)
@@ -49,11 +57,6 @@ namespace FvpWebApp.Controllers
         public async Task<IActionResult> GetSource(int id)
         {
             var source = await _context.Sources.FirstOrDefaultAsync(s => s.SourceId == id);
-            var target = await _context.Targets.FirstOrDefaultAsync(t => t.TargetId == source.TargetId);
-            if (target == null)
-                target = new Target();
-            else
-                target.Sources = new List<Source>();
             var targetDocumentSettings = await _context.TargetDocumentsSettings.FirstOrDefaultAsync(t => t.SourceId == source.SourceId);
             if (targetDocumentSettings == null)
                 targetDocumentSettings = new TargetDocumentSettings();
@@ -66,9 +69,7 @@ namespace FvpWebApp.Controllers
             return new JsonResult(new
             {
                 Source = source,
-                Target = target,
                 TargetDocumentSettings = targetDocumentSettings,
-                VatRegisters = vatRegisters,
             });
         }
 
@@ -124,6 +125,19 @@ namespace FvpWebApp.Controllers
             {
                 await _context.AddAsync(target);
                 await _context.SaveChangesAsync();
+                return Ok(new { Status = true, Message = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Status = true, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message });
+            }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateSource([FromBody] SourceAggregate source)
+        {
+            try
+            {
                 return Ok(new { Status = true, Message = "OK" });
             }
             catch (Exception ex)

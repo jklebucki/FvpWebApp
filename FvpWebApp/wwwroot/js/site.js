@@ -1,4 +1,4 @@
-﻿Vue.config.devtools = true
+﻿Vue.config.devtools = true;
 var datatableLanguage = {
   processing: "Przetwarzanie...",
   search: "Szukaj:",
@@ -136,10 +136,10 @@ var targetConfig = {
   },
 };
 var vatRegister = {
+  erpVatRegisterId: 0,
   targetDocumentSettingsId: 0,
-  sourceId: 0,
-  documentShortcut: null,
   vatRegisterId: 0,
+  vatValue: 0,
 };
 var accountingRecord = {
   account: null,
@@ -164,7 +164,7 @@ var source = {
 };
 var target = {
   targetId: 0,
-  description: null,
+  descryption: null,
   databaseAddress: null,
   databaseName: null,
   databaseUsername: null,
@@ -175,10 +175,19 @@ var targetDocumentSettings = {
   sourceId: 0,
   documentShortcut: null,
   vatRegisterId: 0,
+  vatRegisters: [vatRegister]
 };
 var sourceConfig = {
   source,
   target,
   targetDocumentSettings,
-  vatRegisters: [vatRegister],
 };
+
+var vatValues = [
+  { vatValue: 23, vatDesc: "23" },
+  { vatValue: 8, vatDesc: "8" },
+  { vatValue: 5, vatDesc: "5" },
+  { vatValue: 0, vatDesc: "0" },
+  { vatValue: -1, vatDesc: "ZW" },
+  { vatValue: -2, vatDesc: "NP" },
+];
