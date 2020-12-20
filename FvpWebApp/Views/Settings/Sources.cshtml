@@ -292,6 +292,9 @@
                     })
                 },
                 addVatRegister: function(){
+                    if(this.sourceConfig.targetDocumentSettings.vatRegisters === null){
+                        this.sourceConfig.targetDocumentSettings.vatRegisters = []
+                    }
                     this.sourceConfig.targetDocumentSettings.vatRegisters.push({
                         erpVatRegisterId: 0,
                         targetDocumentSettingsId: this.sourceConfig.targetDocumentSettings.targetDocumentSettingsId,
