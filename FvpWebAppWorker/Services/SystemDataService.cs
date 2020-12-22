@@ -150,7 +150,7 @@ namespace FvpWebAppWorker.Services
             {
                 await _dbContext.AddRangeAsync(newContractors).ConfigureAwait(true);
                 await _dbContext.SaveChangesAsync().ConfigureAwait(true);
-                _logger.LogInformation($"Dodano : {newContractors.Count} nowych kontrahent�w.");
+                _logger.LogInformation($"Dodano : {newContractors.Count} nowych kontrahentów.");
             }
             catch (Exception ex)
             {
@@ -203,7 +203,7 @@ namespace FvpWebAppWorker.Services
                         await ClassificateContractor(documentContractor, response);
                     }
                 }
-                await UpdateContractorsOnDocuments();
+                await UpdateStatusAndContractorOnDocuments();
                 await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicketId, TicketStatus.Done).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -340,7 +340,7 @@ namespace FvpWebAppWorker.Services
             }
         }
 
-        private async Task UpdateContractorsOnDocuments()
+        private async Task UpdateStatusAndContractorOnDocuments()
         {
             var contractors = await _dbContext.Contractors.ToListAsync().ConfigureAwait(false);
             if (contractors != null && contractors.Count > 0)
@@ -352,18 +352,18 @@ namespace FvpWebAppWorker.Services
                         foreach (var document in documents)
                         {
                             //If digits present
-                            if (FvpWebAppUtils.GetDigitsFromString(document.DocContractorVatId).Length > 5)
+                            if (FvpWebAppUtils.GetDigitsFromString(document.DocContractorVatId).Length > 3)
                             {
                                 //Find by name
                                 var matchedContractors = contractors.Where(c =>
                                     c.Name == document.DocContractorName &&
-                                    c.VatId == FvpWebAppUtils.GetDigitsFromString(document.DocContractorVatId) &&
+                                    FvpWebAppUtils.GetDigitsFromString(c.VatId) == FvpWebAppUtils.GetDigitsFromString(document.DocContractorVatId) &&
                                     c.SourceId == document.SourceId).ToList();
                                 //If not found by name - find by DocContractorId
                                 if (matchedContractors == null || matchedContractors.Count == 0)
                                     matchedContractors = contractors.Where(c => c.ContractorSourceId == document.DocContractorId && c.SourceId == document.SourceId).ToList();
                                 if (matchedContractors != null && matchedContractors.Count > 0)
-                                    document.ContractorId = matchedContractors[0].ContractorId;
+                                    document.ContractorId = matchedContractors[0].ContractorId; //set contractor
                                 //Update document status depending on the contractor status
                                 if (matchedContractors != null
                                     && matchedContractors.Count == 1
@@ -380,17 +380,27 @@ namespace FvpWebAppWorker.Services
                                 var matchedContractors = contractors.Where(c =>
                                     c.Name.ToUpper() == document.DocContractorName.ToUpper() &&
                                     c.SourceId == document.SourceId).ToList();
+                                if (matchedContractors != null && matchedContractors.Count > 0)
+                                    document.ContractorId = matchedContractors[0].ContractorId; //set contractor
+                                //Update document status depending on the contractor status
+                                if (matchedContractors != null
+                                    && matchedContractors.Count == 1
+                                    && (matchedContractors[0].ContractorStatus == ContractorStatus.Valid || matchedContractors[0].ContractorStatus == ContractorStatus.Accepted))
+                                    document.DocumentStatus = DocumentStatus.Valid;
+                                else if (matchedContractors != null && matchedContractors.Count == 1 && matchedContractors[0].ContractorStatus == ContractorStatus.Invalid)
+                                    document.DocumentStatus = DocumentStatus.Invalid;
+                                else if (matchedContractors != null && matchedContractors.Count > 1)
+                                    document.DocumentStatus = DocumentStatus.ManyContractors;
                             }
-
                         }
-                        _dbContext.UpdateRange(contractors);
+                        _dbContext.UpdateRange(documents);
                         await _dbContext.SaveChangesAsync();
                     }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex.Message);
-                    Console.WriteLine("Błąd aktualiazcji kontrahentów na dokumentach");
+                    Console.WriteLine("Błąd aktualiazcji statusu i kontrahentów na dokumentach");
                 }
         }
 

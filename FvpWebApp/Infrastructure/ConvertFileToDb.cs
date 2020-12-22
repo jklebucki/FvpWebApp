@@ -31,7 +31,7 @@ namespace FvpWebApp.Infrastructure
                         Vat = documentVats.Sum(v => v.VatAmount),
                         JpkV7 = GetJpkDocumentTags(row),
                         DocumentStatus = DocumentStatus.Added,
-                        DocContractorId = string.IsNullOrEmpty(row[8]) ? row[9].GetHashCode().ToString() : row[8].GetHashCode().ToString(),
+                        DocContractorId = (string.IsNullOrEmpty(row[8]) || row[8].ToUpper() == "BRAK") ? row[9].GetHashCode().ToString() : row[8].GetHashCode().ToString(),
                         DocContractorName = row[9],
                         DocContractorVatId = row[8].Replace("-", "").Replace(" ", ""),
                         DocContractorCity = null,

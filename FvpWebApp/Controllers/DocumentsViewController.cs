@@ -120,6 +120,33 @@ namespace FvpWebApp.Controllers
             }
         }
 
+        [HttpPatch]
+        public async Task<IActionResult> SetValid([FromBody] int documentId)
+        {
+            try
+            {
+                var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
+                if(document != null && document.DocumentStatus == DocumentStatus.SentToC2FK)
+                {
+                    return new JsonResult(new { Status = false, Message = "Dokument wysłany do FK - operacja niedozwolona." });
+                }
+                var transaction = await _context.Database.BeginTransactionAsync();
+                document.DocumentStatus = DocumentStatus.Accepted;
+                _context.Update(document);
+                await _context.SaveChangesAsync();
+                var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorId == document.ContractorId);
+                contractor.ContractorStatus = ContractorStatus.Accepted;
+                _context.Update(contractor);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync().ConfigureAwait(false);
+                return new JsonResult(new { Status = true, Message = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { Status = false, Message = ex.Message });
+            }
+        }
+
         public async Task<IActionResult> Details(int id)
         {
             var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == id);
