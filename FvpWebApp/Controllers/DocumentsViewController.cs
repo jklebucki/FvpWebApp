@@ -28,14 +28,15 @@ namespace FvpWebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var month = DateTime.Now.Month;
+            var year = DateTime.Now.Year;
             if (month == 1)
+            {
+                year = year - 1;
                 month = 12;
+            }
             else
                 month = month - 1;
-            var year = DateTime.Now.Year;
             ViewBag.Month = month;
-            if (month == 1)
-                year = year - 1;
             ViewBag.Year = year;
             var sources = await _context.Sources.ToListAsync();
             var sourcesSelectListItems = from s in sources
@@ -126,7 +127,7 @@ namespace FvpWebApp.Controllers
             try
             {
                 var document = await _context.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
-                if(document != null && document.DocumentStatus == DocumentStatus.SentToC2FK)
+                if (document != null && document.DocumentStatus == DocumentStatus.SentToC2FK)
                 {
                     return new JsonResult(new { Status = false, Message = "Dokument wysłany do FK - operacja niedozwolona." });
                 }

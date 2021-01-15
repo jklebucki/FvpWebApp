@@ -26,14 +26,15 @@ namespace FvpWebApp.Controllers
         public IActionResult Index()
         {
             var month = DateTime.Now.Month;
+            var year = DateTime.Now.Year;
             if (month == 1)
+            {
+                year = year - 1;
                 month = 12;
+            }
             else
                 month = month - 1;
-            var year = DateTime.Now.Year;
             ViewBag.Month = month;
-            if (month == 1)
-                year = year - 1;
             ViewBag.Year = year;
             ViewBag.Months = ConstData.MonthsSelectList();
             return View();
