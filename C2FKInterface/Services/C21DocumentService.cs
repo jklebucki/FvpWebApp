@@ -62,7 +62,8 @@ namespace C2FKInterface.Services
                 {
                     years = await db.C21Years.ToListAsync();
                 }
-            return years.FirstOrDefault(y => documentDate >= y.poczatek && documentDate <= y.koniec);
+            var docDate = new DateTime(documentDate.Year, documentDate.Month, documentDate.Day);
+            return years.FirstOrDefault(y => docDate >= y.poczatek && docDate <= y.koniec);
         }
 
         public async Task<List<FKFDokument>> GetFKDocuments(int year, int month, string documentShortcut)
