@@ -138,11 +138,11 @@ namespace FvpWebApp.Controllers
         {
             try
             {
-                return Ok(new { Status = true, Message = "OK" });
+                return await Task.FromResult(Ok(new { Status = true, Message = "OK" }));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Status = true, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message });
+                return await Task.FromResult(BadRequest(new { Status = true, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message }));
             }
         }
 
