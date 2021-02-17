@@ -154,7 +154,7 @@ namespace C2FKInterface.Services
             }
         }
 
-        public async void ProceedDocumentsAsync(int pack, int ticketId, int debug = 1)
+        public async void ProceedDocumentsAsync(int pack, int ticketId, int debug = 0)
         {
             //List<string> procOutput = new List<string>();
             Console.WriteLine($"Task ticket id:{ticketId} Packiet size:{pack} Packiet Log lines: {_procOutput.Count} Start time: {DateTime.Now}");

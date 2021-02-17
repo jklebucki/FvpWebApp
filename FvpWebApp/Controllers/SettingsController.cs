@@ -134,16 +134,29 @@ namespace FvpWebApp.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateSource([FromBody] SourceAggregate source)
+        public async Task<IActionResult> UpdateSource([FromBody] SourceAggregate sourceAggregate)
         {
-            try
-            {
-                return await Task.FromResult(Ok(new { Status = true, Message = "OK" }));
-            }
-            catch (Exception ex)
-            {
-                return await Task.FromResult(BadRequest(new { Status = true, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message }));
-            }
+            if (sourceAggregate != null)
+                try
+                {
+                    if (sourceAggregate.Source.SourceId == 0)
+                    {
+                        //add new source
+                        return await Task.FromResult(BadRequest(new { Status = true, Message = "Dodano nowe żródło danych!" }));
+                    }
+                    else
+                    {
+                        //update source
+                        return await Task.FromResult(BadRequest(new { Status = true, Message = "Zaktualizowano dane!" }));
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    return await Task.FromResult(BadRequest(new { Status = true, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message }));
+                }
+            else
+                return await Task.FromResult(BadRequest(new { Status = true, Message = "Niepoprawne dane!" }));
         }
 
         [HttpDelete]
