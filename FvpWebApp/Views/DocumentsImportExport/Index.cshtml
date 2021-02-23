@@ -148,7 +148,7 @@
 
         function getBpFiles(id, ticketsGropup) {
             var info = '<div class="text-center font-weight-lighter"><p>Wybierz 2 pliki z tego samego zakresu dat pobrane z platformy iBard.</p><p>Pierwszy plik zawiera w nazwie "_JPK_VDEK_SprzedazWiersz_"'
-                + ' a drugi "_JPK_VAT_SprzedazWiersz_".</p><p>Następnie kliknij przycisk wykonaj.</p></div></br>'
+                + ' a drugi "_JPK_FA_Faktura".</p><p>Następnie kliknij przycisk wykonaj.</p></div></br>'
             var fileButton = '<input type="file" id="file" multiple="multiple"/><button class="btn btn-outline-secondary btn-sm" type="button" onclick="uploadFile(' + id + ',\'' + ticketsGropup + '\')">Wykonaj</button>'
             $('#infoBody').html(info + fileButton)
             $('#infoModal').modal('show')

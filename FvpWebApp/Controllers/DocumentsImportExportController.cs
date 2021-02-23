@@ -213,7 +213,7 @@ namespace FvpWebApp.Controllers
             {
                 if (file.Length > 0)
                 {
-                    using (var reader = new StreamReader(file.OpenReadStream(), Encoding.GetEncoding(1250)))
+                    using (var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8))
                     {
                         while (reader.Peek() >= 0)
                         {
@@ -228,9 +228,9 @@ namespace FvpWebApp.Controllers
                                     else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
                                         jpkVdek.Add(fields);
                                 }
-                                if (fields[2] == "JPK_VAT")
+                                if (fields[2] == "JPK_FA")
                                 {
-                                    if (fields.Length != 43)
+                                    if (fields.Length != 62)
                                         errorsJpkVat += $"{lineNo},";
                                     else if (fields[9] != "brak" && fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
                                         jpkVat.Add(fields);
@@ -251,7 +251,7 @@ namespace FvpWebApp.Controllers
                 {
                     foreach (var jpkVdekRow in jpkVdek)
                     {
-                        var jpkVatRow = jpkVat.FirstOrDefault(r => r[10] == jpkVdekRow[10]);
+                        var jpkVatRow = jpkVat.FirstOrDefault(r => r[8] == jpkVdekRow[10]);
                         var concatedJpkRow = new string[jpkVdekRow.Length + jpkVatRow.Length];
                         jpkVdekRow.CopyTo(concatedJpkRow, 0);
                         jpkVatRow.CopyTo(concatedJpkRow, jpkVdekRow.Length);
@@ -270,6 +270,9 @@ namespace FvpWebApp.Controllers
                 message += "Pliki nie są poprawne.";
             }
             var docs = ConvertFileToDb.Documents(jpk, sourceId);
+
+            if(!status)
+                return new JsonResult(new { Status = status, Message = message });
 
             DocumentsImportService documentsImportService = new DocumentsImportService(_context);
             var serviceResponse = await documentsImportService
