@@ -64,7 +64,7 @@ namespace FvpWebAppWorker.Services
                     Miejscowosc = FvpWebAppUtils.TruncateToLength(c.Key.City, 40),
                     rejon = c.Key.Province.ToLower(),
                     Kraj = c.Key.CountryCode,
-                    kod = c.Key.PostalCode,
+                    kod = FvpWebAppUtils.TruncateToLength(c.Key.PostalCode, 10),
                     Telefon1 = c.Key.Phone,
                     email = c.Key.Email,
                     aktywny = true,
@@ -179,7 +179,7 @@ namespace FvpWebAppWorker.Services
             var contractor = contractors.FirstOrDefault(c => c.ContractorId == document.ContractorId);
             if (year != null && contractor != null && vatRegisterDef != null)
             {
-                var street = contractor.Street.Replace("UL. ", "").Replace("ul. ", "");
+                var street = !string.IsNullOrEmpty(contractor.Street) ? contractor.Street.Replace("UL. ", "").Replace("ul. ", "") : "";
                 c21DocumentAggregate.Document = new C21Document
                 {
                     id = c21documentId,
@@ -201,7 +201,7 @@ namespace FvpWebAppWorker.Services
                     kh_dom = contractor.EstateNumber,
                     kh_lokal = contractor.QuartersNumber,
                     kh_nip = contractor.VatId,
-                    kh_kodPocztowy = contractor.PostalCode,
+                    kh_kodPocztowy = FvpWebAppUtils.TruncateToLength(contractor.PostalCode, 10),
                     kh_miejscowosc = string.IsNullOrEmpty(contractor.City) ? "" : contractor.City.Length <= 50 ? contractor.City : contractor.City.Substring(0, 50),
                     kh_kraj = contractor.CountryCode
                 };

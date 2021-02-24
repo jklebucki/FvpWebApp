@@ -40,7 +40,7 @@ namespace FvpWebAppWorker.Infrastructure
 
         public static string TruncateToLength(string stringToCut, int length)
         {
-            if (stringToCut.Length > length)
+            if (!string.IsNullOrEmpty(stringToCut) && stringToCut.Length > length)
                 return stringToCut.Substring(0, length);
             else
                 return stringToCut;
