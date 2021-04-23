@@ -132,7 +132,7 @@ namespace FvpWebAppWorker.Services
 
         public async Task TransferContractors(List<Document> documents)
         {
-
+            
             ContractorService contractorService = new ContractorService(_dbContext);
             var documentsContractors = AggregateContractorsFromDocuments(documents);
             List<Contractor> newContractors = new List<Contractor>();

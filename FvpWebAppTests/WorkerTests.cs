@@ -40,5 +40,12 @@ namespace FvpWebAppTests
             var vatValueNP = targetDataService.GetVatValue(new DocumentVat { VatCode = "NP", VatValue = 0 });
             Assert.True(-2 == vatValueNP);
         }
+
+        [Fact]
+        public void GusApiTest()
+        {
+            var apiService = new ApiService();
+            Assert.Contains("HTTP", apiService.apiUrl.ToUpper());
+        }
     }
 }

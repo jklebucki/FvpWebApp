@@ -1,6 +1,8 @@
 using FvpWebAppWorker.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,8 +13,32 @@ namespace FvpWebAppWorker.Services
 {
     public class ApiService
     {
-        private static readonly string apiUrl = "https://api.ajk-software.pl/";
-        private static readonly ApiUserKey apiUserKey = new ApiUserKey { UserKey = "8317EA7B-524B-4981-BADC-EA8654851FB8" };
+        public string apiUrl { get; protected set; } //= "";//= "https://api.ajk-software.pl/";
+        public ApiUserKey apiUserKey { get; protected set; }//= new ApiUserKey();//= new ApiUserKey { UserKey = "8317EA7B-524B-4981-BADC-EA8654851FB8" };
+
+        public ApiService()
+        {
+            apiUserKey = new ApiUserKey();
+            ReadGusApiConfig();
+        }
+
+        public void ReadGusApiConfig()
+        {
+            using (StreamReader reader = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json")))
+            {
+                var config = JsonConvert.DeserializeObject<JObject>(reader.ReadToEnd());
+                foreach (KeyValuePair<string, JToken> configElement in config)
+                {
+                    if (configElement.Key == "GusApiConfig")
+                    {
+                        var cfg = JsonConvert.DeserializeObject<GusApiConfig>(configElement.Value.ToString());
+                        apiUrl = cfg.GusApiUrl;
+                        apiUserKey.UserKey = cfg.UserKey;
+                    }
+                }
+            }
+
+        }
 
         public async Task<ApiToken> ApiLogin()
         {
@@ -44,7 +70,10 @@ namespace FvpWebAppWorker.Services
             {
                 try
                 {
-                    return JsonConvert.DeserializeObject<List<GusContractor>>(await response.Content.ReadAsStringAsync());
+                    var result = JsonConvert.DeserializeObject<List<GusContractor>>(await response.Content.ReadAsStringAsync());
+                    if (result != null && result[0].Name == "ERROR")
+                        return new List<GusContractor>();
+                    return result;
                 }
                 catch
                 {

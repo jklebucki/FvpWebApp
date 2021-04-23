@@ -36,6 +36,8 @@ namespace FvpWebAppWorker
                     {
                         using (var _dbContext = scope.ServiceProvider.GetRequiredService<WorkerAppDbContext>())
                         {
+                            ApiService apiService = new ApiService();
+                            var login = await apiService.ApiLogin();
                             var taskTicket = await _dbContext.TaskTickets.FirstOrDefaultAsync(s => s.TicketStatus == TicketStatus.Added).ConfigureAwait(false);
                             if (taskTicket != null)
                             {
