@@ -132,7 +132,7 @@ namespace FvpWebAppWorker.Services
 
         public async Task TransferContractors(List<Document> documents)
         {
-            
+
             ContractorService contractorService = new ContractorService(_dbContext);
             var documentsContractors = AggregateContractorsFromDocuments(documents);
             List<Contractor> newContractors = new List<Contractor>();
@@ -436,7 +436,7 @@ namespace FvpWebAppWorker.Services
                 target.DatabaseName);
             C21ContractorService contractorService = new C21ContractorService(c21ConnectionSettings);
             var erpContractors = await contractorService.GetC21FvpContractorsAsync(false).ConfigureAwait(false);
-            erpContractors.Where(c => (c.Country == "PL" || string.IsNullOrEmpty(c.Country)) && c.VatId.ToUpper() != "BRAK"  ).ToList().ForEach(c => c.VatId = FvpWebAppUtils.GetDigitsFromString(c.VatId));
+            erpContractors.Where(c => (c.Country == "PL" || string.IsNullOrEmpty(c.Country)) && c.VatId.ToUpper() != "BRAK").ToList().ForEach(c => c.VatId = FvpWebAppUtils.GetDigitsFromString(c.VatId));
             var allSourcesFromTarget = await _dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
             var contractors = await _dbContext.Contractors.Where(
                 c => c.ContractorErpId == null &&

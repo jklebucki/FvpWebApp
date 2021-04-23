@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using FvpWebAppModels.Models;
 
 namespace FvpWebApp.Models

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FvpWebAppWorker.Models
+﻿namespace FvpWebAppWorker.Models
 {
     public class GusApiConfig
     {

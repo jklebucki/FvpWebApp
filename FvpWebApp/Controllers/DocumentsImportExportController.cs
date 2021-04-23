@@ -271,7 +271,7 @@ namespace FvpWebApp.Controllers
             }
             var docs = ConvertFileToDb.Documents(jpk, sourceId);
 
-            if(!status)
+            if (!status)
                 return new JsonResult(new { Status = status, Message = message });
 
             DocumentsImportService documentsImportService = new DocumentsImportService(_context);
