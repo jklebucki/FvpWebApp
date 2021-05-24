@@ -51,63 +51,10 @@ namespace FvpWebApp.Controllers
             return new JsonResult(new { Data = ticets });
         }
 
-        public async Task<IActionResult> RepairData()
+        public async Task<IActionResult> RepairData() //to repair
         {
-            int[] ids = new int[] {
-                41467, 41481, 41523, 41536, 41539, 41557, 41558, 41578, 41655, 41656, 41657, 41658, 41659, 41660, 41661, 41662, 41663, 41706, 41725,
-                41753, 41765, 41779, 42036, 42289, 42420, 43148, 43149, 43150, 43182, 43334, 43898, 43899, 43900, 44021,
-                19060,19135,19219,19243,19279,19301,19303,19310,19360,19488,19500,19909,21037};
-
+            int[] ids = new int[] { 41467, 41481, 41523 };
             var documents = await _context.Documents.Where(d => ids.Contains(d.DocumentId)).ToListAsync();
-            //documents.ForEach(d => d.DocContractorId = d.DocContractorName.GetHashCode().ToString());
-
-            //var newContractors = documents
-            //    .GroupBy(g => new
-            //    {
-            //        g.SourceId,
-            //        g.DocContractorId,
-            //        g.DocContractorName,
-            //        g.DocContractorStreetAndNumber,
-            //        g.DocContractorCity,
-            //        g.DocContractorCountryCode,
-            //        g.DocContractorPostCode,
-            //        g.DocContractorVatId,
-            //        g.DocContractorFirm,
-            //    })
-            //    .Select(c => new Contractor
-            //    {
-            //        SourceId = c.Key.SourceId,
-            //        ContractorSourceId = c.Key.DocContractorId,
-            //        Name = c.Key.DocContractorName,
-            //        Street = c.Key.DocContractorStreetAndNumber,
-            //        City = c.Key.DocContractorCity,
-            //        CountryCode = c.Key.DocContractorCountryCode,
-            //        PostalCode = c.Key.DocContractorPostCode,
-            //        VatId = c.Key.DocContractorVatId,
-            //        ContractorStatus = ContractorStatus.Accepted,
-            //        Firm = (Firm)c.Key.DocContractorFirm
-            //    }).ToList();
-
-            //foreach (var cont in newContractors)
-            //{
-            //    var contractorExist = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorSourceId == cont.ContractorSourceId && c.SourceId == cont.SourceId);
-            //    if (contractorExist == null)
-            //        await _context.Contractors.AddAsync(cont);
-            //}
-            //await _context.SaveChangesAsync();
-
-            //foreach (var doc in documents)
-            //{
-            //    doc.DocContractorId = doc.DocContractorName.GetHashCode().ToString();
-            //    var contractor = await _context.Contractors.FirstOrDefaultAsync(c => c.ContractorSourceId == doc.DocContractorId);
-            //    if (contractor == null)
-            //        doc.ContractorId = null;
-            //    else
-            //        doc.ContractorId = contractor.ContractorId;
-            //}
-
-            //_context.UpdateRange(documents);
-            //await _context.SaveChangesAsync();
             return new JsonResult(documents);
         }
 
@@ -232,7 +179,7 @@ namespace FvpWebApp.Controllers
                                 {
                                     if (fields.Length != 62)
                                         errorsJpkVat += $"{lineNo},";
-                                    else if (fields[9] != "brak" && fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
+                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
                                         jpkVat.Add(fields);
                                 }
 
