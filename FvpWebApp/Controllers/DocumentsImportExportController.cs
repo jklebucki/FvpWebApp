@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FvpWebApp.Controllers
@@ -179,7 +180,9 @@ namespace FvpWebApp.Controllers
                                 {
                                     if (fields.Length != 62)
                                         errorsJpkVat += $"{lineNo},";
-                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
+                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" 
+                                        && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA" 
+                                        && !Regex.Match(fields[8], @"\d{6}\/\d{4}").Success)//!fields[8].Contains("/"))
                                         jpkVat.Add(fields);
                                 }
 
