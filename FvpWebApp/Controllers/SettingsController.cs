@@ -2,6 +2,7 @@
 using C2FKInterface.Services;
 using FvpWebApp.Data;
 using FvpWebApp.Models;
+using FvpWebApp.Services;
 using FvpWebAppModels.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -97,6 +98,26 @@ namespace FvpWebApp.Controllers
             return new JsonResult(defList);
         }
 
+        [HttpPatch]
+        [Route("[controller]/clearcontractors")]
+        public async Task<IActionResult> ClearContractors([FromBody] int id)
+        {
+            SourceService sourceService = new SourceService(_context);
+            var message = await sourceService.ClearContractors(id);
+            return new JsonResult(new { message = message.MessageText, isError = message.IsError });
+        }
+
+        [Route("[controller]/getdocumentdef/{targetId}/{documentShortcut}")]
+        public async Task<IActionResult> GetDocumentDef(int targetId, string documentShortcut)
+        {
+            var target = await _context.Targets.FirstOrDefaultAsync(t => t.TargetId == targetId);
+            C21DocumentService documentService = new C21DocumentService(GetDbSettings(target), null);
+            var year = await documentService.GetYearId(DateTime.Now);
+            var documentDef = await documentService.GetDocumentDefinition(documentShortcut, year.rokId);
+
+            return new JsonResult(new { docExist = documentDef != null ? true : false, documentDef });
+        }
+
         [HttpPut]
         public async Task<IActionResult> PutTarget([FromBody] Target target)
         {
@@ -142,12 +163,16 @@ namespace FvpWebApp.Controllers
                     if (sourceAggregate.Source.SourceId == 0)
                     {
                         //add new source
-                        return await Task.FromResult(BadRequest(new { Status = true, Message = "Dodano nowe żródło danych!" }));
+                        return await Task.FromResult(Ok(new { Status = true, Message = "Dodano nowe żródło danych!" }));
                     }
                     else
                     {
                         //update source
-                        return await Task.FromResult(BadRequest(new { Status = true, Message = "Zaktualizowano dane!" }));
+                        SourceService sourceService = new SourceService(_context);
+                        var message = await sourceService.UpdateSource(sourceAggregate);
+                        if (message.IsError)
+                            throw new Exception(message.MessageText);
+                        return await Task.FromResult(Ok(new { Status = true, Message = "Zaktualizowano dane!" }));
                     }
 
                 }

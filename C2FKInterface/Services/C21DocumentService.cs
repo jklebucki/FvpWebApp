@@ -102,7 +102,7 @@ namespace C2FKInterface.Services
             if (c21VatRegisterDefs == null)
                 using (var db = new SageDb("Db"))
                 {
-                    c21VatRegisterDefs = await db.C21VatRegisterDefs.ToListAsync();
+                    c21VatRegisterDefs = await db.C21VatRegisterDefs.OrderBy(r => r.rNazwa).ToListAsync();
                 }
             return c21VatRegisterDefs;
         }
