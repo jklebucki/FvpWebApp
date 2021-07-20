@@ -67,7 +67,7 @@ namespace FvpWebAppWorker
                                             catch (Exception ex)
                                             {
                                                 await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                                _logger.LogError(ex.Message);
+                                                _logger.LogError(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                                             }
                                         else
                                             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace FvpWebAppWorker
                                         }
                                         catch (Exception ex)
                                         {
-                                            _logger.LogError(ex.Message);
+                                            _logger.LogError(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                                         }
                                         break;
                                     case TicketType.ImportContractors:
@@ -92,7 +92,7 @@ namespace FvpWebAppWorker
                                         }
                                         catch (Exception ex)
                                         {
-                                            _logger.LogError(ex.Message);
+                                            _logger.LogError(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                                         }
                                         break;
                                     case TicketType.MatchContractors:
@@ -102,9 +102,10 @@ namespace FvpWebAppWorker
                                             await systemDataService.MatchContractors(taskTicket, target);
                                             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                         }
-                                        catch (Exception)
+                                        catch (Exception ex)
                                         {
                                             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                            _logger.LogError(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                                         }
                                         break;
                                     case TicketType.ExportContractorsToErp:
@@ -115,9 +116,10 @@ namespace FvpWebAppWorker
                                             await targetDataService.ExportContractorsToErp(taskTicket, target);
                                             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Done).ConfigureAwait(false);
                                         }
-                                        catch (Exception)
+                                        catch (Exception ex)
                                         {
                                             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                                            _logger.LogError(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                                         }
                                         break;
                                     case TicketType.ExportDocumentsToErp:
@@ -131,7 +133,7 @@ namespace FvpWebAppWorker
                                         catch (Exception ex)
                                         {
                                             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed).ConfigureAwait(false);
-                                            _logger.LogError(ex.Message);
+                                            _logger.LogError(ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                                         }
                                         break;
                                     default:
