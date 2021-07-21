@@ -75,5 +75,17 @@ namespace FvpWebAppTests
             Console.WriteLine($"C21ContractorServiceProceedContractorTest - output records : {output.Count}");
             Assert.True(output.Count > 0);
         }
+
+        [Fact]
+        public async void C21ContractorServiceCreateViewTest()
+        {
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
+            C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
+
+            var output = await contractorService.CreateContractorView();
+
+            Console.WriteLine($"C21ContractorServiceCreateViewTest - status : {output}");
+            Assert.True(output.Length > 0);
+        }
     }
 }

@@ -57,7 +57,6 @@ namespace C2FKInterface.Services
             }
         }
 
-
         public async Task<List<string>> ProceedContractorsAsync(int debug = 1)
         {
             List<string> procOutput = new List<string>();
@@ -69,6 +68,36 @@ namespace C2FKInterface.Services
                     new DataParameter("Debug", debug, DataType.Int32)
                     ).ConfigureAwait(false);
                 procOutput = response.ToList();
+            }
+            return procOutput;
+        }
+
+        public async Task<string> CreateContractorView()
+        {
+            var procOutput = "";
+            using (var db = new SageDb("Db"))
+            {
+                db.CommandTimeout = 0;
+                var response = await db.QueryToListAsync<bool>(
+                    "SELECT CASE WHEN EXISTS(select * FROM sys.views where name = 'C21_FVP_Contractors') THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END"
+                    ).ConfigureAwait(false);
+
+                if (!response[0])
+                {
+                    var viewDef =
+                                " CREATE VIEW [FK].[C21_FVP_Contractors]" + Environment.NewLine +
+                                " AS" + Environment.NewLine +
+                                " SELECT" + Environment.NewLine +
+                                " cast(Elements1.[AccountNo] as int) AS FkId, Con.Id, Con.Name, Con.NIP As VatId, Po.[Street]," + Environment.NewLine +
+                                " Po.[HouseNo], Po.[ApartmentNo], Po.[Place]," + Environment.NewLine +
+                                " Po.[PostCode], Po.[Country], Con.[BankingInfoGuid], Elements1.[Active]" + Environment.NewLine +
+                                " FROM SSCommon.[STContractors] as Con   INNER JOIN SSCommon.[STElements] as Elements1 ON(Elements1.[Guid] = Con.[MainElement])" + Environment.NewLine +
+                                " LEFT OUTER JOIN SSCommon.[STContacts] as Contacts4 ON(Contacts4.[Guid] = Con.[ContactGuid])" + Environment.NewLine +
+                                " LEFT OUTER JOIN SSCommon.[STPostOfficeAddresses] as Po ON(Po.[Guid] = Contacts4.[MainPostOfficeAddress])";
+                    var createResponse = await db.QueryToListAsync<string>(viewDef).ConfigureAwait(false);
+                    procOutput = "View created";
+                } else
+                    procOutput = "View exist";
             }
             return procOutput;
         }
