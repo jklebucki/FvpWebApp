@@ -175,6 +175,8 @@ namespace FvpWebAppWorker.Services
             if (year == null)
                 Console.WriteLine($"Brak roku w FK dla dokumentu z tego okresu.");
             var docTypDef = await c21DocumentService.GetDocumentDefinition(targetDocumentSettings.DocumentShortcut, year.rokId);
+            if (docTypDef == null)
+                Console.WriteLine($"Brak definicji dokumentu w FK dla dokumentu z tego okresu. ({document.DocumentNumber})");
             var vatRegisterDef = await c21DocumentService.GetVatRegistersDefs(docTypDef.rejestr);
             var contractor = contractors.FirstOrDefault(c => c.ContractorId == document.ContractorId);
             if (year != null && contractor != null && vatRegisterDef != null)

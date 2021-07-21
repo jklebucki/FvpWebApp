@@ -239,7 +239,10 @@ namespace FvpWebApp.Controllers
                     contractorToChange.CountryCode = contractor.CountryCode;
                     contractorToChange.CheckDate = DateTime.Now;
 
-                    var documents = await _context.Documents.Where(d => d.ContractorId == contractor.ContractorId).ToListAsync();
+                    var documents = await _context.Documents.Where(
+                        d => d.ContractorId == contractor.ContractorId
+                        && (d.DocumentStatus != DocumentStatus.SentToC2FK || d.DocumentStatus != DocumentStatus.DoNotSentToErp || d.DocumentStatus != DocumentStatus.Accepted))
+                        .ToListAsync();
                     documents.ForEach(d => d.DocumentStatus = DocumentStatus.Valid);
                     _context.Update(contractorToChange);
                     _context.UpdateRange(documents);
