@@ -46,7 +46,7 @@ namespace FvpWebAppTests
 
             await contractorService.AddContractorsAsync(new List<C21Contractor> { contractor });
             var contractorReaded = await contractorService.GetC21ContractorsAsync();
-            Console.WriteLine($"C21ContractorServiceAddContractorTest - contractorReaded : {contractorReaded.FirstOrDefault().nazwa}");
+            Console.WriteLine($"C21ContractorServiceAddContractorTest - contractor read : {contractorReaded.FirstOrDefault().nazwa}");
             Assert.True(contractorReaded.Count > 0);
         }
 
@@ -59,7 +59,7 @@ namespace FvpWebAppTests
             var memBefore = GC.GetTotalMemory(false);
             var fvpContractors = await contractorService.GetC21FvpContractorsAsync(true).ConfigureAwait(false);
             var memDiff = ((GC.GetTotalMemory(false) - memBefore) / 1024) / 1024;
-            Console.WriteLine($"C21ContractorServiceGetFvpContractorTest - contractorsReaded : {fvpContractors.Count}");
+            Console.WriteLine($"C21ContractorServiceGetFvpContractorTest - contractors read : {fvpContractors.Count}");
             Console.WriteLine($"C21ContractorServiceGetFvpContractorTest - size in MB : {memDiff}");
             Assert.True(fvpContractors.Count > 0);
         }
