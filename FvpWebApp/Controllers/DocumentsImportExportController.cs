@@ -173,7 +173,9 @@ namespace FvpWebApp.Controllers
                                 {
                                     if (fields.Length != 69)
                                         errorsJpkVdek += $"{lineNo},";
-                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA")
+                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" 
+                                        && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA"
+                                        && !Regex.Match(fields[10], @"A\d{5}D\d{8}").Success)
                                         jpkVdek.Add(fields);
                                 }
                                 if (fields[2] == "JPK_FA")
@@ -182,7 +184,8 @@ namespace FvpWebApp.Controllers
                                         errorsJpkVat += $"{lineNo},";
                                     else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA"
                                         && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA"
-                                        && !Regex.Match(fields[8], @"\d{6}\/\d{4}").Success)//!fields[8].Contains("/"))
+                                        && !Regex.Match(fields[8], @"\d{6}\/\d{4}").Success
+                                        && !Regex.Match(fields[8], @"A\d{5}D\d{8}").Success)//!fields[8].Contains("/"))
                                         jpkVat.Add(fields);
                                 }
 
