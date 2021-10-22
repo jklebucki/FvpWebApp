@@ -12,6 +12,8 @@ namespace C2FKInterface.Models
         public int Id { get; set; }
         [Column(Name = "Name")]
         public string Name { get; set; }
+        [Column(Name = "Shortcut")]
+        public string Shortcut { get; set; }
         [Column(Name = "VatId")]
         public string VatId { get; set; }
         [Column(Name = "Street")]

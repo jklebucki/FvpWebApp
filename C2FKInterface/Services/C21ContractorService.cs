@@ -88,7 +88,7 @@ namespace C2FKInterface.Services
                                 " CREATE VIEW [FK].[C21_FVP_Contractors]" + Environment.NewLine +
                                 " AS" + Environment.NewLine +
                                 " SELECT" + Environment.NewLine +
-                                " cast(Elements1.[AccountNo] as int) AS FkId, Con.Id, Con.Name, Con.NIP As VatId, Po.[Street]," + Environment.NewLine +
+                                " cast(Elements1.[AccountNo] as int) AS FkId, Con.Id, Con.Shortcut, Con.Name, Con.NIP As VatId, Po.[Street]," + Environment.NewLine +
                                 " Po.[HouseNo], Po.[ApartmentNo], Po.[Place]," + Environment.NewLine +
                                 " Po.[PostCode], Po.[Country], Con.[BankingInfoGuid], Elements1.[Active]" + Environment.NewLine +
                                 " FROM SSCommon.[STContractors] as Con   INNER JOIN SSCommon.[STElements] as Elements1 ON(Elements1.[Guid] = Con.[MainElement])" + Environment.NewLine +

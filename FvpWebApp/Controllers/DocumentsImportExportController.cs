@@ -30,11 +30,11 @@ namespace FvpWebApp.Controllers
             var year = DateTime.Now.Year;
             if (month == 1)
             {
-                year = year - 1;
+                year = year--;
                 month = 12;
             }
             else
-                month = month - 1;
+                month = month--;
             ViewBag.Month = month;
             ViewBag.Year = year;
             ViewBag.Months = ConstData.MonthsSelectList();

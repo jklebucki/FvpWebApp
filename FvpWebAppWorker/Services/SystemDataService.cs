@@ -467,12 +467,22 @@ namespace FvpWebAppWorker.Services
                     }
                     else
                     {
-                        var erpcontractor = erpContractors.FirstOrDefault(c => c.VatId.ToUpper() == vatId.ToUpper() && c.Active && c.Name.ToUpper() == contractor.Name.ToUpper());
+                        var shortcut = $"FVP-{taskTicket.SourceId}-{contractor.ContractorId}";
+                        var erpcontractor = erpContractors.FirstOrDefault(c => c.Shortcut == shortcut);
                         if (erpcontractor != null)
                         {
                             contractor.ContractorErpId = erpcontractor.Id;
                             contractor.ContractorErpPosition = erpcontractor.FkId;
                         }
+
+                        if (erpcontractor == null)
+                            erpcontractor = erpContractors.FirstOrDefault(c => c.Active && c.Name.ToUpper() == contractor.Name.ToUpper());
+                        if (erpcontractor != null)
+                        {
+                            contractor.ContractorErpId = erpcontractor.Id;
+                            contractor.ContractorErpPosition = erpcontractor.FkId;
+                        }
+
                     }
                 }
                 try
