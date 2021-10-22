@@ -40,7 +40,7 @@ namespace FvpWebAppWorker.Services
                 new
                 {
                     ContractorId = c.ContractorId,
-                    VatId = string.IsNullOrEmpty(c.VatId) ? "" : c.VatId,
+                    VatId = string.IsNullOrEmpty(c.VatId) || c.VatId.ToUpper() == "BRAK" ? "" : c.VatId,
                     Regon = string.IsNullOrEmpty(c.Regon) ? "" : c.Regon,
                     Name = string.IsNullOrEmpty(c.Name) ? "" : c.Name,
                     Street = string.IsNullOrEmpty(c.Street) ? "" : c.Street,
