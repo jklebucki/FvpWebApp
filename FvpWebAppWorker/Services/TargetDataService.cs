@@ -33,7 +33,7 @@ namespace FvpWebAppWorker.Services
             var notMatchedContractors = await _dbContext.Contractors.Where(
                 c => c.ContractorErpId == null &&
                 c.ContractorErpPosition == null &&
-                c.GusContractorEntriesCount == 1 &&
+                //c.GusContractorEntriesCount == 1 &&
                 (c.ContractorStatus == ContractorStatus.Valid || c.ContractorStatus == ContractorStatus.Accepted) &&
                 c.SourceId == taskTicket.SourceId).ToListAsync().ConfigureAwait(false);
             var c21Contractors = notMatchedContractors.GroupBy(c =>
