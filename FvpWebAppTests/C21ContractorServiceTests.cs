@@ -15,7 +15,7 @@ namespace FvpWebAppTests
         public async void C21ContractorServiceAddContractorTest()
         {
             DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
-
+            //test
             C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
             var erpContractors = await contractorService.GetC21FvpContractorsAsync(true);
             int? erpContractorId = null;
