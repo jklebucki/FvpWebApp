@@ -439,9 +439,13 @@ namespace FvpWebAppWorker.Services
             erpContractors.Where(c => (c.Country == "PL" || string.IsNullOrEmpty(c.Country)) && c.VatId.ToUpper() != "BRAK").ToList().ForEach(c => c.VatId = FvpWebAppUtils.GetDigitsFromString(c.VatId));
             var allSourcesFromTarget = await _dbContext.Sources.Where(s => s.TargetId == target.TargetId).Select(i => i.SourceId).ToListAsync();
             var contractors = await _dbContext.Contractors.Where(
-                c => c.ContractorErpId == null &&
-                c.SourceId == taskTicket.SourceId && //only contractors from specific source
-                (c.ContractorStatus == ContractorStatus.Valid || c.ContractorStatus == ContractorStatus.Accepted)).ToListAsync().ConfigureAwait(false);
+                c => //c.ContractorErpId == null &&
+                c.SourceId == taskTicket.SourceId //&& //only contractors from specific source
+                //(c.ContractorStatus == ContractorStatus.Valid || c.ContractorStatus == ContractorStatus.Accepted) //all
+                ).ToListAsync().ConfigureAwait(false);
+            contractors.ForEach(c => { 
+                c.ContractorErpId = null; 
+                c.ContractorErpPosition = null; }); // remove all previous agreements 
             if (contractors != null && contractors.Count > 0)
             {
                 Console.WriteLine("Matching contractors...");
