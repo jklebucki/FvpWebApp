@@ -238,10 +238,9 @@ namespace FvpWebApp.Controllers
                     contractorToChange.Firm = contractor.Firm;
                     contractorToChange.CountryCode = contractor.CountryCode;
                     contractorToChange.CheckDate = DateTime.Now;
-
-                    var documents = await _context.Documents.Where(
-                        d => d.ContractorId == contractor.ContractorId
-                        && (d.DocumentStatus != DocumentStatus.SentToC2FK || d.DocumentStatus != DocumentStatus.DoNotSentToErp || d.DocumentStatus != DocumentStatus.Accepted))
+                    var forbiddenStatuses = new DocumentStatus[] { DocumentStatus.SentToC2FK, DocumentStatus.DoNotSentToErp, DocumentStatus.Accepted };
+                    var documents = await _context.Documents
+                        .Where(d => d.ContractorId == contractor.ContractorId && !forbiddenStatuses.Contains(d.DocumentStatus))
                         .ToListAsync();
                     documents.ForEach(d => d.DocumentStatus = DocumentStatus.Valid);
                     _context.Update(contractorToChange);
@@ -392,8 +391,6 @@ namespace FvpWebApp.Controllers
                 return Ok(new { data = new List<DocumentView>() });
             _context.Database.SetCommandTimeout(0);
             var systemDocuments = await _context.Documents.Where(d => d.SourceId == sourceId && d.DocumentDate.Month == month).ToListAsync();
-            //var ids = systemDocuments.Select(d => d.DocumentId).ToArray();
-            //var docVats = await _context.DocumentVats.Where(v => ids.Contains((int)v.DocumentId)).ToListAsync();
             var notPresentDocs = systemDocuments.Where(d => !fkfDocuments.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
 
             var sourcesIds = await _context.Sources.Select(s => s.SourceId).ToListAsync();
@@ -432,8 +429,6 @@ namespace FvpWebApp.Controllers
                 cnt = d.Count()
             }).ToList();
             duplicates = duplicates.Where(d => d.cnt > 1).ToList();
-            //var ids = systemDocuments.Select(d => d.DocumentId).ToArray();
-            //var docVats = await _context.DocumentVats.Where(v => ids.Contains((int)v.DocumentId)).ToListAsync();
             var duplicatedDocs = systemDocuments.Where(d => duplicates.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
             var sourcesIds = await _context.Sources.Select(s => s.SourceId).ToListAsync();
             if (sourceId > 0)
