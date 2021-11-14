@@ -185,7 +185,7 @@ namespace FvpWebApp.Controllers
                                     else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA"
                                         && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA"
                                         && !Regex.Match(fields[8], @"\d{6}\/\d{4}").Success
-                                        && !Regex.Match(fields[8], @"A\d{5}D\d{8}").Success)//!fields[8].Contains("/"))
+                                        && !Regex.Match(fields[8], @"A\d{5}D\d{8}").Success)
                                         jpkVat.Add(fields);
                                 }
 
