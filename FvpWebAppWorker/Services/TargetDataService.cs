@@ -95,6 +95,7 @@ namespace FvpWebAppWorker.Services
                             || d.DocumentStatus == DocumentStatus.ManyContractors
                             || d.DocumentStatus == DocumentStatus.Accepted)
                             && d.DocumentDate.Month == taskTicket.DateFrom.Month
+                            && d.DocumentDate.Year == taskTicket.DateFrom.Year
                             && d.SourceId == taskTicket.SourceId).ToListAsync();
             if (documentsToSend != null)
             {
