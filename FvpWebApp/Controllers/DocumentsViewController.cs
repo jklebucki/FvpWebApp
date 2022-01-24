@@ -446,5 +446,29 @@ namespace FvpWebApp.Controllers
                     select new DocumentView(d, s, c)).ToList();
             return Ok(new { data = documents });
         }
+
+        [HttpDelete]
+        [Route("DocumentsView/DeleteData")]
+        public async Task<IActionResult> DeleteData([FromBody] int id)
+        {
+            try
+            {
+                var document = await _context.Documents.FirstOrDefaultAsync(t => t.DocumentId == id).ConfigureAwait(false);
+                var documents = await _context.Documents.Where(t => t.TaskTicketId == document.TaskTicketId).ToListAsync();
+                var docVats = await _context.DocumentVats.Where(v => documents.Select(i => i.DocumentId).ToList().Contains((int)v.DocumentId)).ToListAsync();
+                using var transaction = _context.Database.BeginTransaction();
+                _context.RemoveRange(docVats);
+                _context.RemoveRange(documents);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest("Error");
+
+            }
+            return Ok(id);
+        }
     }
 }

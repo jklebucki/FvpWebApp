@@ -7,10 +7,10 @@
 
 <h3>Dokumenty z wybranego zakresu</h3>
 <div class="row mb-2">
-    <div class="col-2">
+    <div class="col-1">
         <a href="~/DocumentsView/Index" class="btn btn-outline-primary btn-block">Wróć</a>
     </div>
-    <div class="col-2">
+    <div class="col-1">
         Filtruj dokumenty
     </div>
     <div class="col-8">
@@ -45,6 +45,9 @@
             <label class="custom-control-label" for="accepted-docs">Zaakceptowane</label>
         </div>
     </div>
+    <div class="col-1 offset-1">
+        <button onclick="deleteDataButton()" class="btn btn-danger btn-block">Usuń dane</button>
+    </div>
 </div>
 
 <table id="documents" class="table table-bordered table-responsive-sm table-sm table-hover" style="width:100%">
@@ -69,6 +72,28 @@
     <tbody>
     </tbody>
 </table>
+
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="contrator-title-modal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contrator-title-modal">Usuwanie danych</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="delete-body-modal" class="modal-body">
+                <div class="h3">Na pewno chcesz usunąć dane?</div>
+            </div>
+            <div class="modal-footer">
+                <div id="delete-info"></div>
+                <button onclick="deleteDataTask()" type="button" class="btn btn-danger">Usuń dane</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="contractor-modal" tabindex="-1" role="dialog" aria-labelledby="contrator-title-modal"
      aria-hidden="true">
@@ -151,18 +176,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <div id="footer-info"></div>
-                    <button onclick="checkContractorByApi()" type="button" class="btn btn-primary">
-                        Sprawdź
-                        kontrahenta
-                    </button>
-                    <button onclick="updateContractor()" type="button" class="btn btn-success">Zatwierdź</button>
-                    <button onclick="closeContractorModal()" type="button"
-                            class="btn btn-secondary">
-                        Zamknij
-                    </button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="footer-info"></div>
+                <button onclick="checkContractorByApi()" type="button" class="btn btn-primary">
+                    Sprawdź
+                    kontrahenta
+                </button>
+                <button onclick="updateContractor()" type="button" class="btn btn-success">Zatwierdź</button>
+                <button onclick="closeContractorModal()" type="button"
+                        class="btn btn-secondary">
+                    Zamknij
+                </button>
             </div>
         </div>
     </div>
@@ -524,7 +549,6 @@
                     })
                     .then(response => {
                         if (response.status == 200) {
-                            console.dir(response.data)
                             parsResponse(response.data)
                         }
                     })
@@ -716,6 +740,29 @@
         function getFilteredRows() {
             var filtered = table.rows({ search: 'applied' }).data()
             console.log(filtered)
+        }
+
+        function deleteDataButton() {
+            if (table.rows().count() > 0) {
+                $("#delete-modal").modal('show')
+            } else {
+                console.log("Empty table")
+            }
+        }
+
+        function deleteDataTask() {
+            let dokId = table.row(0).data().documentId
+            const headers = { 'Content-Type': 'application/json' }
+            axios.delete('/DocumentsView/deleteData', {
+                headers: headers,
+                data: dokId
+            }).then(() => {
+                $("#delete-modal").modal('hide')
+                table.ajax.reload()
+            }
+            ).catch((err) => {
+                $("#delete-info").html('Błąd usuwania')
+            });
         }
 
         $(window).on('resize', function () {
