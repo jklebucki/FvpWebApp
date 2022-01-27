@@ -391,6 +391,25 @@ namespace FvpWebAppWorker.Services
                                     document.DocumentStatus = DocumentStatus.Invalid;
                                 else if (matchedContractors != null && matchedContractors.Count > 1)
                                     document.DocumentStatus = DocumentStatus.ManyContractors;
+
+                                if (matchedContractors != null && matchedContractors.Count == 0)
+                                {
+                                    matchedContractors = contractors.Where(c =>
+                                        c.ContractorSourceId == document.DocContractorId &&
+                                        c.SourceId == document.SourceId).ToList();
+                                    if (matchedContractors != null && matchedContractors.Count > 0)
+                                        document.ContractorId = matchedContractors[0].ContractorId; //set contractor
+                                    //Update document status depending on the contractor status
+                                    if (matchedContractors != null
+                                        && matchedContractors.Count == 1
+                                        && (matchedContractors[0].ContractorStatus == ContractorStatus.Valid || matchedContractors[0].ContractorStatus == ContractorStatus.Accepted))
+                                        document.DocumentStatus = DocumentStatus.Valid;
+                                    else if (matchedContractors != null && matchedContractors.Count == 1 && matchedContractors[0].ContractorStatus == ContractorStatus.Invalid)
+                                        document.DocumentStatus = DocumentStatus.Invalid;
+                                    else if (matchedContractors != null && matchedContractors.Count > 1)
+                                        document.DocumentStatus = DocumentStatus.ManyContractors;
+                                }
+
                             }
                         }
                         _dbContext.UpdateRange(documents);
