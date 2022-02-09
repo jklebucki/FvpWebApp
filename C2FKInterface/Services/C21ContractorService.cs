@@ -96,7 +96,8 @@ namespace C2FKInterface.Services
                                 " LEFT OUTER JOIN SSCommon.[STPostOfficeAddresses] as Po ON(Po.[Guid] = Contacts4.[MainPostOfficeAddress])";
                     var createResponse = await db.QueryToListAsync<string>(viewDef).ConfigureAwait(false);
                     procOutput = "View created";
-                } else
+                }
+                else
                     procOutput = "View exist";
             }
             return procOutput;

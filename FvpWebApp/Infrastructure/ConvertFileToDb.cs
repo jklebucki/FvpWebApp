@@ -62,10 +62,10 @@ namespace FvpWebApp.Infrastructure
             var documentVats = new List<DocumentVat>();
             try
             {
-                if (decimal.Parse(row[50].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
+                if (decimal.Parse(row[51].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
                 {
-                    var vatAmount = decimal.Parse(row[51].Replace(",", "."), NumberFormatInfo.InvariantInfo);
-                    var netAmount = decimal.Parse(row[50].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
+                    var vatAmount = decimal.Parse(row[52].Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    var netAmount = decimal.Parse(row[51].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
                     documentVats.Add(new DocumentVat
                     {
                         VatCode = "A",
@@ -76,10 +76,10 @@ namespace FvpWebApp.Infrastructure
                         VatTags = GetJpkVatTags(row),
                     });
                 }
-                if (decimal.Parse(row[48].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
+                if (decimal.Parse(row[49].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
                 {
-                    var vatAmount = decimal.Parse(row[49].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
-                    var netAmount = decimal.Parse(row[48].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
+                    var vatAmount = decimal.Parse(row[50].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
+                    var netAmount = decimal.Parse(row[49].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
                     documentVats.Add(new DocumentVat
                     {
                         VatCode = "B",
@@ -90,10 +90,10 @@ namespace FvpWebApp.Infrastructure
                         VatTags = GetJpkVatTags(row),
                     });
                 }
-                if (decimal.Parse(row[46].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
+                if (decimal.Parse(row[47].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
                 {
-                    var vatAmount = decimal.Parse(row[47].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
-                    var netAmount = decimal.Parse(row[46].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
+                    var vatAmount = decimal.Parse(row[48].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
+                    var netAmount = decimal.Parse(row[47].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
                     documentVats.Add(new DocumentVat
                     {
                         VatCode = "C",
@@ -106,7 +106,7 @@ namespace FvpWebApp.Infrastructure
                 }
                 if (decimal.Parse(row[44].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
                 {
-                    var netAmount = decimal.Parse(row[44].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
+                    var netAmount = decimal.Parse(row[45].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
                     documentVats.Add(new DocumentVat
                     {
                         VatCode = "D",
@@ -117,7 +117,7 @@ namespace FvpWebApp.Infrastructure
                         VatTags = GetJpkVatTags(row),
                     });
                 }
-                if (decimal.Parse(row[41].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
+                if (decimal.Parse(row[42].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
                 {
                     var netAmount = decimal.Parse(row[44].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
                     documentVats.Add(new DocumentVat
@@ -130,7 +130,7 @@ namespace FvpWebApp.Infrastructure
                         VatTags = GetJpkVatTags(row),
                     });
                 }
-                if (decimal.Parse(row[42].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
+                if (decimal.Parse(row[43].Replace(',', '.'), NumberFormatInfo.InvariantInfo) != 0)
                 {
                     var netAmount = decimal.Parse(row[42].Replace(',', '.'), NumberFormatInfo.InvariantInfo);
                     documentVats.Add(new DocumentVat
@@ -166,7 +166,7 @@ namespace FvpWebApp.Infrastructure
             tags += string.IsNullOrEmpty(row[36]) ? "" : "B_SPV,";
             tags += string.IsNullOrEmpty(row[37]) ? "" : "B_SPV_DOSTAWA,";
             tags += string.IsNullOrEmpty(row[38]) ? "" : "B_MPV_PROWIZJA,";
-            tags += string.IsNullOrEmpty(row[39]) ? "" : "MPP,";
+            //tags += string.IsNullOrEmpty(row[39]) ? "" : "MPP,";
             return tags.TrimEnd(',');
         }
 

@@ -155,7 +155,6 @@ namespace FvpWebApp.Controllers
             List<string[]> jpk = new List<string[]>();
             string errorsJpkVdek = "";
             string errorsJpkVat = "";
-            int lineNo = 1;
 
             foreach (var file in files)
             {
@@ -163,6 +162,8 @@ namespace FvpWebApp.Controllers
                 {
                     using (var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8))
                     {
+                        int lineNoVdek = 1;
+                        int lineNoFa = 1;
                         while (reader.Peek() >= 0)
                         {
                             var line = await reader.ReadLineAsync();
@@ -171,24 +172,25 @@ namespace FvpWebApp.Controllers
                                 var fields = line.Split("|");
                                 if (fields[2] == "JPK_VDEK")
                                 {
-                                    if (fields.Length != 69)
-                                        errorsJpkVdek += $"{lineNo},";
-                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA" 
+                                    if (fields.Length != 70)
+                                        errorsJpkVdek += $"{lineNoVdek}, ";
+                                    else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA"
                                         && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA"
                                         && !Regex.Match(fields[10], @"A\d{5}D\d{8}").Success)
                                         jpkVdek.Add(fields);
+                                    lineNoVdek++;
                                 }
                                 if (fields[2] == "JPK_FA")
                                 {
                                     if (fields.Length != 62)
-                                        errorsJpkVat += $"{lineNo},";
+                                        errorsJpkVat += $"{lineNoFa}, ";
                                     else if (fields[9] != "SPRZEDAZ NIEFAKTUROWA"
                                         && fields[9].ToUpper() != "SPRZEDAZ NIEFAKTUROWANA"
                                         && !Regex.Match(fields[8], @"\d{6}\/\d{4}").Success
                                         && !Regex.Match(fields[8], @"A\d{5}D\d{8}").Success)
                                         jpkVat.Add(fields);
+                                    lineNoFa++;
                                 }
-
                             }
                         }
                     }
@@ -196,8 +198,8 @@ namespace FvpWebApp.Controllers
             }
 
             var status = true;
-            var message = (errorsJpkVdek.Length > 0 ? $"Błędy w JPK_VDEK: {errorsJpkVdek}\t" : "")
-                + (errorsJpkVat.Length > 0 ? $"Błędy w JPK_VAT: {errorsJpkVat}\t" : "");
+            var message = (errorsJpkVdek.Length > 0 ? $"Błędy w JPK_VDEK (wiersze): {errorsJpkVdek}\t" : "")
+                + (errorsJpkVat.Length > 0 ? $"Błędy w JPK_VAT (wiersze): {errorsJpkVat}\t" : "");
             if (jpkVdek.Count == jpkVat.Count)
             {
                 try

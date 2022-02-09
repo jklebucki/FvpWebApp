@@ -462,9 +462,11 @@ namespace FvpWebAppWorker.Services
                 c.SourceId == taskTicket.SourceId //&& //only contractors from specific source
                 //(c.ContractorStatus == ContractorStatus.Valid || c.ContractorStatus == ContractorStatus.Accepted) //all
                 ).ToListAsync().ConfigureAwait(false);
-            contractors.ForEach(c => { 
-                c.ContractorErpId = null; 
-                c.ContractorErpPosition = null; }); // remove all previous agreements 
+            contractors.ForEach(c =>
+            {
+                c.ContractorErpId = null;
+                c.ContractorErpPosition = null;
+            }); // remove all previous agreements 
             if (contractors != null && contractors.Count > 0)
             {
                 Console.WriteLine("Matching contractors...");
