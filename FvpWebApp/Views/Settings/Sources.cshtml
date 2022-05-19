@@ -7,7 +7,15 @@
     <h1 class="display-4">FVP Importer - konfiguracja źródeł danych</h1>
     <p></p>
 </div>
-
+<div class="row mb-4">
+    <div class="col-2"></div>
+    <div class="col-4">
+        <button onclick="addSource()" class="btn btn-outline-secondary btn-block">Dodaj</button>
+    </div>
+    <div class="col-4">
+    </div>
+    <div class="col-2"></div>
+</div>
 <div>
     <div class="row mb-2">
         <div class="offset-2 col-8">
@@ -237,23 +245,23 @@
                 message: '',
                 ajaxError: false,
             },
-            mounted: function () {
+            mounted: function() {
                 axios
                     .get('/settings/getTargetsView')
                     .then(response => (this.targets = response.data))
             },
             watch: {
-                sourceConfig: function () {
+                sourceConfig: function() {
                     this.sortAccRec()
                 }
             },
             methods: {
-                reloadTarget: function (e) {
+                reloadTarget: function(e) {
                     axios
                         .get('/settings/getvatregisters/' + app.sourceConfig.source.targetId)
                         .then(response => (app.vats = response.data))
                 },
-                generateDecrees: function () {
+                generateDecrees: function() {
                     this.sourceConfig.source.accountingRecords = []
                     this.sourceConfig.source.accountingRecords.push({
                         account: this.account,
@@ -283,7 +291,7 @@
                         sourceId: 0,
                     })
                 },
-                setValAccRec: function (row, operType) {
+                setValAccRec: function(row, operType) {
                     if (operType == 'debit') {
                         if (row.debit !== '') {
                             row.credit = ''
@@ -301,12 +309,12 @@
                         }
                     }
                 },
-                sortAccRec: function () {
-                    this.sourceConfig.source.accountingRecords.sort(function (a, b) {
+                sortAccRec: function() {
+                    this.sourceConfig.source.accountingRecords.sort(function(a, b) {
                         return a.recordOrder - b.recordOrder;
                     })
                 },
-                addVatRegister: function () {
+                addVatRegister: function() {
                     if (this.sourceConfig.targetDocumentSettings.vatRegisters === null) {
                         this.sourceConfig.targetDocumentSettings.vatRegisters = []
                     }
@@ -317,10 +325,10 @@
                         vatValue: 0,
                     })
                 },
-                deleteVatRegister: function (i) {
+                deleteVatRegister: function(i) {
                     this.sourceConfig.targetDocumentSettings.vatRegisters.splice(i, 1)
                 },
-                updateSource: function () {
+                updateSource: function() {
                     const headers = { 'Content-Type': 'application/json' }
                     axios
                         .patch('/settings/updateSource', this.sourceConfig, { headers: headers })
@@ -334,7 +342,7 @@
                             console.dir(error.response.data.message)
                         })
                 },
-                setDefVatRegister: function () {
+                setDefVatRegister: function() {
                     axios
                         .get('/settings/getdocumentdef/' + this.sourceConfig.source.targetId + '/' + this.sourceConfig.targetDocumentSettings.documentShortcut)
                         .then(response => {
@@ -347,7 +355,7 @@
                             }
                         })
                 },
-                clearContractorsErp: function () {
+                clearContractorsErp: function() {
                     this.ajaxError = false
                     this.message = "Wykonuję, czekaj..."
                     const headers = { 'Content-Type': 'application/json' }
@@ -366,7 +374,7 @@
             }
         })
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             url = '/DocumentsImportExport/GetSources'
             table = $('#sources').DataTable({
                 'dom': 'lfrtip',
@@ -388,7 +396,7 @@
                     },
                     { data: 'sourceId' },
                 ],
-                "createdRow": function (row, data, index) {
+                "createdRow": function(row, data, index) {
                     $('a', row).tooltip()
                 },
                 'columnDefs': [
@@ -401,7 +409,7 @@
             })
         })
 
-        $(window).on('resize', function () {
+        $(window).on('resize', function() {
             if (table !== null)
                 table.columns.adjust();
         });
@@ -419,12 +427,15 @@
                     $('#infoBody').html(error)
                     console.log("AXIOS Error", error)
                 })
-                .then(function () {
+                .then(function() {
                     $('#infoModal').modal('show')
                     axios
                         .get('/settings/getvatregisters/' + app.sourceConfig.source.targetId)
                         .then(response => (app.vats = response.data))
                 })
+        }
+        function addSource() {
+            location.href = '/sources/create';
         }
     </script>
 }

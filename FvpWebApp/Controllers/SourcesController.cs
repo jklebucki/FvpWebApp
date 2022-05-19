@@ -47,8 +47,6 @@ namespace FvpWebApp.Controllers
         }
 
         // POST: Sources/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SourceId,Description,Code,Type,Address,DbName,Username,Password")] Source source)
@@ -57,7 +55,7 @@ namespace FvpWebApp.Controllers
             {
                 _context.Add(source);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Sources", "Settings");
             }
             return View(source);
         }
@@ -79,8 +77,6 @@ namespace FvpWebApp.Controllers
         }
 
         // POST: Sources/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("SourceId,Description,Code,Type,Address,DbName,Username,Password")] Source source)

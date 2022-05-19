@@ -470,9 +470,11 @@ namespace FvpWebAppWorker.Services
             if (contractors != null && contractors.Count > 0)
             {
                 Console.WriteLine("Matching contractors...");
+                var contractorVatId = "NIP";
                 foreach (var contractor in contractors)
                 {
                     string vatId = contractor.VatId;
+                    contractorVatId = vatId;
                     if (vatId.ToUpper() != "BRAK")
                     {
                         if (contractor.CountryCode == "PL")
@@ -519,7 +521,7 @@ namespace FvpWebAppWorker.Services
                 catch (Exception ex)
                 {
                     await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicket.TaskTicketId, TicketStatus.Failed);
-                    _logger.LogError(ex.Message);
+                    _logger.LogError("NIP:" + contractorVatId + "--" + ex.Message);
                 }
             }
         }
