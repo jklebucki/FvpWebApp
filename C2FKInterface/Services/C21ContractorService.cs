@@ -48,13 +48,34 @@ namespace C2FKInterface.Services
 
         public async Task<List<C21FvpContractor>> GetC21FvpContractorsAsync(bool active = true)
         {
-            using (var db = new SageDb("Db"))
+            var tryCounts = 0;
+            List<C21FvpContractor> c21FvpContractors = new List<C21FvpContractor>();
+            var ex = new Exception();
+            while (tryCounts < 10)
             {
-                if (active)
-                    return await db.C21FvpContractors.Where(a => a.Active).ToListAsync();
-                else
-                    return await db.C21FvpContractors.ToListAsync();
-            }
+                try
+                {
+                    using (var db = new SageDb("Db"))
+                    {
+                        if (active)
+                            c21FvpContractors = await db.C21FvpContractors.Where(a => a.Active).ToListAsync();
+                        else
+                            c21FvpContractors = await db.C21FvpContractors.ToListAsync();
+                    }
+                }
+                catch (Exception e)
+                {
+                    ex = e;
+                }
+
+                if (c21FvpContractors.Count > 0)
+                    break;
+            }//Problem z widokiem C21_FVP_Contractors - Nie zawsze działa dlatego jest max 10 powtórzeń.
+
+            if (c21FvpContractors.Count == 0)
+                throw ex;
+            return c21FvpContractors;
+
         }
 
         public async Task<List<string>> ProceedContractorsAsync(int debug = 1)
