@@ -7,6 +7,7 @@ using FvpWebAppWorker.Models;
 using FvpWebAppWorker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -162,6 +163,7 @@ namespace FvpWebAppWorker.Services
         public async Task CheckContractors(int taskTicketId)
         {
             await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicketId, TicketStatus.Pending).ConfigureAwait(false);
+            var contractorData = "";
             try
             {
                 var token = await _apiService.ApiLogin().ConfigureAwait(false);
@@ -173,7 +175,7 @@ namespace FvpWebAppWorker.Services
                 _logger.LogInformation($"Kontrahenci do sprawdzenia: {documentsContractors.Count}");
                 foreach (var documentContractor in documentsContractors)
                 {
-
+                    contractorData = JsonConvert.SerializeObject(documentContractor);
                     if (documentContractor.CountryCode == "PL" || documentContractor.Firm == Firm.FirmaPolska)
                     {
                         var response = await CheckContractorByGusApi(FvpWebAppUtils.GetDigitsFromString(documentContractor.VatId));
@@ -209,6 +211,7 @@ namespace FvpWebAppWorker.Services
             catch (Exception ex)
             {
                 await FvpWebAppUtils.ChangeTicketStatus(_dbContext, taskTicketId, TicketStatus.Failed).ConfigureAwait(false);
+                _logger.LogError(contractorData);
                 _logger.LogError(ex.Message);
             }
         }
