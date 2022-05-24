@@ -48,34 +48,14 @@ namespace C2FKInterface.Services
 
         public async Task<List<C21FvpContractor>> GetC21FvpContractorsAsync(bool active = true)
         {
-            var tryCounts = 0;
-            List<C21FvpContractor> c21FvpContractors = new List<C21FvpContractor>();
-            var ex = new Exception();
-            while (tryCounts < 10)
+            await CreateContractorView();
+            using (var db = new SageDb("Db"))
             {
-                try
-                {
-                    using (var db = new SageDb("Db"))
-                    {
-                        if (active)
-                            c21FvpContractors = await db.C21FvpContractors.Where(a => a.Active).ToListAsync();
-                        else
-                            c21FvpContractors = await db.C21FvpContractors.ToListAsync();
-                    }
-                }
-                catch (Exception e)
-                {
-                    ex = e;
-                }
-
-                if (c21FvpContractors.Count > 0)
-                    break;
-            }//Problem z widokiem C21_FVP_Contractors - Nie zawsze działa dlatego jest max 10 powtórzeń.
-
-            if (c21FvpContractors.Count == 0)
-                throw ex;
-            return c21FvpContractors;
-
+                if (active)
+                    return await db.C21FvpContractors.Where(a => a.Active).ToListAsync();
+                else
+                    return await db.C21FvpContractors.ToListAsync();
+            }
         }
 
         public async Task<List<string>> ProceedContractorsAsync(int debug = 1)
@@ -108,13 +88,20 @@ namespace C2FKInterface.Services
                     var viewDef =
                                 " CREATE VIEW [FK].[C21_FVP_Contractors]" + Environment.NewLine +
                                 " AS" + Environment.NewLine +
-                                " SELECT" + Environment.NewLine +
-                                " cast(Elements1.[AccountNo] as int) AS FkId, Con.Id, Con.Shortcut, Con.Name, Con.NIP As VatId, Po.[Street]," + Environment.NewLine +
-                                " Po.[HouseNo], Po.[ApartmentNo], Po.[Place]," + Environment.NewLine +
-                                " Po.[PostCode], Po.[Country], Con.[BankingInfoGuid], Elements1.[Active]" + Environment.NewLine +
-                                " FROM SSCommon.[STContractors] as Con   INNER JOIN SSCommon.[STElements] as Elements1 ON(Elements1.[Guid] = Con.[MainElement])" + Environment.NewLine +
-                                " LEFT OUTER JOIN SSCommon.[STContacts] as Contacts4 ON(Contacts4.[Guid] = Con.[ContactGuid])" + Environment.NewLine +
-                                " LEFT OUTER JOIN SSCommon.[STPostOfficeAddresses] as Po ON(Po.[Guid] = Contacts4.[MainPostOfficeAddress])";
+                                " SELECT [fk_kontrahenci].[pozycja] as FkId" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[id] as Id" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[skrot] as Shortcut" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[nazwa] as Name" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[nip] as VatId" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[ulica] as [Street]" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[numerDomu] as [HouseNo]" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[numerMieszk] as [ApartmentNo]" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[Miejscowosc] as Place" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[kod] as [PostCode]" + Environment.NewLine +
+                                "	,[fk_kontrahenci].[kodKraju] as [Country]" + Environment.NewLine +
+                                "	,cast(null as uniqueidentifier) as [BankingInfoGuid]" + Environment.NewLine +
+                                "	,isnull([fk_kontrahenci].[aktywny],0) as [Active]" + Environment.NewLine +
+                                " FROM fk.[fk_kontrahenci]";
                     var createResponse = await db.QueryToListAsync<string>(viewDef).ConfigureAwait(false);
                     procOutput = "View created";
                 }

@@ -455,10 +455,13 @@ namespace FvpWebApp.Controllers
             {
                 var document = await _context.Documents.FirstOrDefaultAsync(t => t.DocumentId == id).ConfigureAwait(false);
                 var documents = await _context.Documents.Where(t => t.TaskTicketId == document.TaskTicketId).ToListAsync();
-                var docVats = await _context.DocumentVats.Where(v => documents.Select(i => i.DocumentId).ToList().Contains((int)v.DocumentId)).ToListAsync();
+                var ticket = await _context.TaskTickets.FirstOrDefaultAsync(t => t.TaskTicketId == document.TaskTicketId).ConfigureAwait(false);
+                var tickets = await _context.TaskTickets.Where(t => t.DateFrom == ticket.DateFrom && t.DateTo == ticket.DateTo && t.SourceId == ticket.SourceId).ToListAsync().ConfigureAwait(false);
+                var docVats = await _context.DocumentVats.Where(v => documents.Select(i => i.DocumentId).ToList().Contains((int)v.DocumentId)).ToListAsync().ConfigureAwait(false);
                 using var transaction = _context.Database.BeginTransaction();
                 _context.RemoveRange(docVats);
                 _context.RemoveRange(documents);
+                _context.RemoveRange(tickets);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

@@ -14,7 +14,7 @@ namespace FvpWebAppTests
         [Fact]
         public async void C21ContractorServiceAddContractorTest()
         {
-            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.21", "sa", "#sa2015!", "fkf_test_db");
             //test
             C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
             var erpContractors = await contractorService.GetC21FvpContractorsAsync(true);
@@ -53,7 +53,7 @@ namespace FvpWebAppTests
         [Fact]
         public async void C21ContractorServiceGetFvpContractorTest()
         {
-            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.21", "sa", "#sa2015!", "fkf_test_db");
             C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
 
             var memBefore = GC.GetTotalMemory(false);
@@ -67,7 +67,7 @@ namespace FvpWebAppTests
         [Fact]
         public async void C21ContractorServiceProceedContractorTest()
         {
-            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.21", "sa", "#sa2015!", "fkf_test_db");
             C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
 
             var output = await contractorService.ProceedContractorsAsync();
@@ -79,7 +79,7 @@ namespace FvpWebAppTests
         [Fact]
         public async void C21ContractorServiceCreateViewTest()
         {
-            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.20", "sa", "#sa2015!", "fkf_test_db");
+            DbConnectionSettings dbConnectionSettings = new DbConnectionSettings("192.168.21.21", "sa", "#sa2015!", "fkf_test_db");
             C21ContractorService contractorService = new C21ContractorService(dbConnectionSettings);
 
             var output = await contractorService.CreateContractorView();
