@@ -29,9 +29,9 @@ for details on configuring this project to bundle and minify static web assets. 
     margin-left: 15%;
 }
 
-    .modal-full .modal-content {
-        min-height: 80vh;
-    }
+.modal-full .modal-content {
+    min-height: 80vh;
+}
 
 .invalid-contractor {
     background-color: red !important;
@@ -55,7 +55,8 @@ a {
     border-color: #1861ac;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
@@ -107,5 +108,6 @@ body {
     bottom: 0;
     width: 100%;
     white-space: nowrap;
-    line-height: 60px; /* Vertically center the text there */
+    line-height: 60px;
+    /* Vertically center the text there */
 }
