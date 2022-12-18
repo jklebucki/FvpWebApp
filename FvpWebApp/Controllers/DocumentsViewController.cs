@@ -391,22 +391,22 @@ namespace FvpWebApp.Controllers
                 return Ok(new { data = new List<DocumentView>() });
             _context.Database.SetCommandTimeout(0);
             var systemDocuments = await _context.Documents.Where(d => d.SourceId == sourceId && d.DocumentDate.Month == month).ToListAsync();
-            var notPresentDocs = systemDocuments.Where(d => !fkfDocuments.Select(d => d.tresc).Contains(d.DocumentNumber)).ToList();
+            var notPresentDocs = systemDocuments.Where(d => !fkfDocuments.Select(d => d.tresc).Contains(d.DocumentNumber) && d.DocumentDate.Year == year).ToList();
 
             var sourcesIds = await _context.Sources.Select(s => s.SourceId).ToListAsync();
             if (sourceId > 0)
                 sourcesIds = new List<int> { sourceId };
-            var contractors = await _context.Contractors.ToListAsync();
-            var sources = await _context.Sources.ToListAsync();
+            var contractors = await _context.Contractors.Where(s=>s.SourceId == sourceId).ToListAsync();
+            var source = await _context.Sources.FirstOrDefaultAsync(i=>i.SourceId == sourceId);
             var documents = (
                     from d in notPresentDocs
                     from c in contractors
-                    from s in sources
-                    where d.ContractorId == c.ContractorId && d.SourceId == s.SourceId
-                    && sourcesIds.Contains((int)d.SourceId) && d.DocumentDate.Month == month
-                    && d.DocumentDate.Year == year
+                    where 
+                        d.ContractorId == c.ContractorId 
+                        && d.DocumentDate.Month == month
+                        && d.DocumentDate.Year == year
                     orderby d.DocumentDate
-                    select new DocumentView(d, s, c)).ToList();
+                    select new DocumentView(d, source, c)).ToList();
 
             return Ok(new { data = documents });
         }
