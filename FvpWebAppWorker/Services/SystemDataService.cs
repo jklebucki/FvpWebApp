@@ -345,6 +345,7 @@ namespace FvpWebAppWorker.Services
         private async Task UpdateStatusAndContractorOnDocuments()
         {
             var contractors = await _dbContext.Contractors.ToListAsync().ConfigureAwait(false);
+            contractors = contractors.Where(c=>c.Name != null || c.ContractorErpId != null || c.ContractorErpPosition != null).ToList();
             if (contractors != null && contractors.Count > 0)
                 try
                 {

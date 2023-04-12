@@ -88,7 +88,9 @@
             </div>
             <div class="modal-footer">
                 <div id="delete-info"></div>
-                <button onclick="deleteDataTask()" type="button" class="btn btn-danger">Usuń dane</button>
+                <div id="del-button">
+                    <button onclick="deleteDataTask()" type="button" class="btn btn-danger">Usuń dane</button>
+                </div>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
             </div>
         </div>
@@ -372,7 +374,7 @@
 
 @section scripts{
     <script>
-        url = '/DocumentsView/GetDocuments?' + 'id=' + (@ViewBag.DocId) + '&month=' + (@ViewBag.Month) + '&year=' + (@ViewBag.Year)
+        url = '/DocumentsView/GetDocuments?' + 'id=' + (@ViewBag.SourceId) + '&month=' + (@ViewBag.Month) + '&year=' + (@ViewBag.Year)
         var contractor = new Vue({
             el: '#contractor',
             data: {
@@ -744,9 +746,11 @@
 
         function deleteDataButton() {
             if (table.rows().count() > 0) {
+                $("#del-button").html('<button onclick="deleteDataTask()" type="button" class="btn btn-danger">Usuń dane</button>');
                 $("#delete-modal").modal('show')
             } else {
-                console.log("Empty table")
+                $("#del-button").html('<button onclick="deletePeriodDataTask()" type="button" class="btn btn-danger">Usuń dane</button>');
+                $("#delete-modal").modal('show');
             }
         }
 
@@ -765,9 +769,26 @@
             });
         }
 
+        function deletePeriodDataTask() {
+            let period = new String(@ViewBag.SourceId).concat(';').concat(@ViewBag.Month).concat(';').concat(@ViewBag.Year);
+            console.log(period);
+            const headers = { 'Content-Type': 'application/json' }
+            axios.delete('/DocumentsView/deleteDataFromPeriod/' + period, {
+                headers: headers,
+                data: 0
+            }).then(() => {
+                $("#delete-modal").modal('hide')
+                table.ajax.reload()
+            }
+            ).catch((err) => {
+                $("#delete-info").html('Błąd usuwania')
+            });
+        }
+
         $(window).on('resize', function () {
             if (table !== null)
                 table.columns.adjust();
         });
+
     </script>
 }

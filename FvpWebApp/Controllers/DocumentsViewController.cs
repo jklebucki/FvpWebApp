@@ -52,7 +52,7 @@ namespace FvpWebApp.Controllers
 
         public ActionResult Documents(int id, int month, int year)
         {
-            ViewBag.DocId = id;
+            ViewBag.SourceId = id;
             ViewBag.Month = month;
             ViewBag.Year = year;
             return View();
@@ -471,6 +471,44 @@ namespace FvpWebApp.Controllers
                 return BadRequest("Error");
 
             }
+            return Ok(id);
+        }
+
+        [HttpDelete]
+        [Route("DocumentsView/DeleteDataFromPeriod/{period}")]
+        public async Task<IActionResult> DeleteDataFromPeriod(string period, [FromBody] int id)
+        {
+            if (period == null) 
+                return BadRequest("The criteria are null");
+            var criteria = period.Split(';');
+            if (criteria.Count() != 3)
+            {
+                return BadRequest("The criteria were not set correctly");
+            }
+            int source = int.Parse(criteria[0]);
+            int month = int.Parse(criteria[1]);
+            int year = int.Parse(criteria[2]);
+
+
+            try
+            {
+                var ticket = await _context.TaskTickets.FirstOrDefaultAsync(t => t.SourceId == source && t.DateFrom.Year == year && t.DateFrom.Month == month).ConfigureAwait(false);
+                var documents = await _context.Documents.Where(t => t.TaskTicketId == ticket.TaskTicketId).ToListAsync();
+                var tickets = await _context.TaskTickets.Where(t => t.DateFrom == ticket.DateFrom && t.DateTo == ticket.DateTo && t.SourceId == ticket.SourceId).ToListAsync().ConfigureAwait(false);
+                var docVats = await _context.DocumentVats.Where(v => documents.Select(i => i.DocumentId).ToList().Contains((int)v.DocumentId)).ToListAsync().ConfigureAwait(false);
+                using var transaction = _context.Database.BeginTransaction();
+                _context.RemoveRange(docVats);
+                _context.RemoveRange(documents);
+                _context.RemoveRange(tickets);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest("Error");
+            }
+
             return Ok(id);
         }
     }
