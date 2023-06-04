@@ -20,7 +20,7 @@ namespace FvpWebApp
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .Enrich.FromLogContext()
-                .MinimumLevel.Warning() 
+                .MinimumLevel.Warning()
                 .WriteTo.File(
                     "applog.txt",
                     outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}",

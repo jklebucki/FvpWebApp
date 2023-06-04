@@ -396,13 +396,13 @@ namespace FvpWebApp.Controllers
             var sourcesIds = await _context.Sources.Select(s => s.SourceId).ToListAsync();
             if (sourceId > 0)
                 sourcesIds = new List<int> { sourceId };
-            var contractors = await _context.Contractors.Where(s=>s.SourceId == sourceId).ToListAsync();
-            var source = await _context.Sources.FirstOrDefaultAsync(i=>i.SourceId == sourceId);
+            var contractors = await _context.Contractors.Where(s => s.SourceId == sourceId).ToListAsync();
+            var source = await _context.Sources.FirstOrDefaultAsync(i => i.SourceId == sourceId);
             var documents = (
                     from d in notPresentDocs
                     from c in contractors
-                    where 
-                        d.ContractorId == c.ContractorId 
+                    where
+                        d.ContractorId == c.ContractorId
                         && d.DocumentDate.Month == month
                         && d.DocumentDate.Year == year
                     orderby d.DocumentDate
@@ -478,7 +478,7 @@ namespace FvpWebApp.Controllers
         [Route("DocumentsView/DeleteDataFromPeriod/{period}")]
         public async Task<IActionResult> DeleteDataFromPeriod(string period, [FromBody] int id)
         {
-            if (period == null) 
+            if (period == null)
                 return BadRequest("The criteria are null");
             var criteria = period.Split(';');
             if (criteria.Count() != 3)

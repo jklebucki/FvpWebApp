@@ -29,7 +29,7 @@ namespace FvpWebAppWorker.Services
 
             using (OracleConnection conn = new OracleConnection(
                 "Data Source=" + source.Address
-                + "/XE;User ID=" + source.Username
+                + ";User ID=" + source.Username
                 + ";Password=" + source.Password
                 + ";Pooling=False;Connection Timeout=60;"))
             {

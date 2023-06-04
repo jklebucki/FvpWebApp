@@ -1,4 +1,5 @@
 using FvpWebAppWorker.Services;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
 using Xunit;
@@ -42,6 +43,27 @@ namespace FvpWebAppTests
 
             var tags = sBenDataService.JpkV7DocumentTags(_dataRow);
             Assert.Equal("FP,TP,MPP", tags);
+        }
+
+        [Fact]
+        public void DatabaseConnectionTest()
+        {
+            bool isConnection = false;
+            using (OracleConnection conn = new OracleConnection(
+                "Data Source=" + "192.168.164.70"
+                + "/xepdb1;User ID=" + "sben"
+                + ";Password=" + "almarwinnet"
+                + ";Pooling=False;Connection Timeout=60;"))
+            {
+                conn.Open();
+                var connInfo = conn.GetSessionInfo();
+                if (connInfo != null)
+                {
+                    isConnection = true;
+                }
+                conn.Close();
+            }
+            Assert.True(isConnection);
         }
 
     }
