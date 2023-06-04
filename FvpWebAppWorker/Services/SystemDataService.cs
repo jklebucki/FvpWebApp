@@ -28,7 +28,7 @@ namespace FvpWebAppWorker.Services
 
         public async Task<ApiResponseContractor> CheckContractorByGusApi(string vatId)
         {
-            if (vatId != "-")
+            if(vatId != "-")
             {
                 var apiToken = await _apiService.ApiLogin();
                 if (apiToken.Token == null)
